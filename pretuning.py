@@ -32,7 +32,7 @@ def continuous_frame(runs, prices):
     if set(prices) != set(MENUS):
         raise ValueError('Price mapping must contain exactly the 11 menu names')
     if any(type(p) is not int or p not in PRICE_OPTIONS for p in prices.values()):
-        raise ValueError('Set each menu price to one of 3000, 3500, ..., 7500')
+        raise ValueError(f'Set each menu price to one of {PRICE_OPTIONS}')
     result = sum(runs) / 5
     result['가격'] = [(prices[m] - min(PRICE_OPTIONS)) / (max(PRICE_OPTIONS) - min(PRICE_OPTIONS)) for m in MENUS]
     result.index.name = '메뉴'
@@ -138,5 +138,5 @@ def generate(prices_path, output, model):
     continuous_frame(runs, prices).to_csv(out / 'continuous.csv', encoding='utf-8-sig')
     (out / 'metadata.json').write_text(json.dumps({'model': model, 'runs': 5, 'prices': prices,
         'taste_normalization': 'score / 10; then arithmetic mean of five runs',
-        'price_normalization': '(price - 3000) / 4500',
+        'price_normalization': f'(price - {min(PRICE_OPTIONS)}) / {max(PRICE_OPTIONS) - min(PRICE_OPTIONS)}',
         'note': 'Web-informed estimates, not measured taste or trained model weights'}, ensure_ascii=False, indent=2), encoding='utf-8')
