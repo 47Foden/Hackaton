@@ -1,5 +1,9 @@
 # 카페 키오스크 — 팀원용 개발 환경 안내
 
+구현을 시작할 때: [3인 구현 첫날 계획 — 순서·분업·완료 기준](docs/plans/implementation-day1.md)
+
+메뉴 DB 준비: [migration·seed 실행과 PostgreSQL 테스트](backend/app/db/README.md). 화면은 기본적으로 실제 메뉴를 조회하고, 주문 확정 시 PostgreSQL에 주문을 저장합니다. 개발용 mock 설정은 [프론트 API 안내](frontend/src/api/README.md)를 따릅니다.
+
 처음 사용하는 팀원은 **1번부터 순서대로** 따라 하면 됩니다.
 이미 설치와 첫 실행을 마쳤다면 **5번 ‘매일 개발할 때’**만 보면 됩니다.
 

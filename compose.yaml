@@ -3,10 +3,19 @@ name: cafe-kiosk-dev
 services:
   frontend:
     build: ./frontend
+    environment:
+      VITE_API_MODE: ${VITE_API_MODE:-}
+      VITE_MENU_API_MODE: ${VITE_MENU_API_MODE:-}
+      VITE_ORDER_API_MODE: ${VITE_ORDER_API_MODE:-}
+      API_PROXY_TARGET: http://backend:8000
+      VITE_MOCK_SCENARIO: ${VITE_MOCK_SCENARIO:-success}
     ports:
       - "127.0.0.1:5173:5173"
     volumes:
       - ./frontend/src:/app/src
+      - ./common:/common:ro
+      - ./frontend/public:/app/public:ro
+      - ./frontend/tsconfig.json:/app/tsconfig.json:ro
       - ./frontend/index.html:/app/index.html
       - ./frontend/vite.config.ts:/app/vite.config.ts
     depends_on:
@@ -23,8 +32,12 @@ services:
     environment:
       DATABASE_URL: postgresql://kiosk:kiosk_local_only@db:5432/kiosk
       WATCHFILES_FORCE_POLLING: "true"
+      COMMON_DIR: /common
+      FRONTEND_PUBLIC_DIR: /frontend-public
     volumes:
       - ./backend/app:/app/app
+      - ./common:/common:ro
+      - ./frontend/public:/frontend-public:ro
     depends_on:
       db:
         condition: service_healthy

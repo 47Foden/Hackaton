@@ -1,4 +1,156 @@
-# API 명세 — 메뉴 속성표 사전 생성 및 추천
+# API 명세 — 기본 주문 흐름
+
+## 1. 기준과 구현 상태
+
+우선순위는 **common 데이터 → 이 문서와 DB 명세의 구체화된 계약 → [기본 주문 계획](plan/basic-order-flow.md)의 제안 → 이전 기획**이다. 사용자가 언급한 docs/basic-order-flow.md의 실제 경로는 docs/plan/basic-order-flow.md다.
+
+GET /api/health, GET /api/menus, POST /api/orders는 구현됐다. 음성·추천·Pretuning 관리 API는 후속 설계다.
+
+- 메뉴명·순서·분류: [menu_data.py](../common/menu_data.py)의 MENUS/CATEGORIES.
+- 가격: [menu_prices.json](../common/menu_prices.json). 메뉴 단위 정수 원화이며 온도별 가산금은 없다.
+- 온도·이미지: [menu_images.json](../common/menu_images.json)의 HOT/COLD 키와 정적 자산 경로.
+- 가격·이미지 근거: common/menu_price_sources.json, common/menu_image_sources.json. 가격은 전국 공통 공식 가격을 보장하지 않으며 에스프레소는 모바일쿠폰 가격이다.
+- common은 카탈로그의 기준 원본, PostgreSQL은 이를 반영한 조회 데이터와 주문 기록의 원본이다. 요청마다 사이트를 수집하거나 가격을 추정하지 않는다.
+
+## 2. 메뉴 ID와 데이터 매핑
+
+common의 한글 메뉴명은 변경하지 않는다. 아래 ID는 API/DB 연결용 고정 매핑이며 배열 위치에서 매번 생성하지 않는다. 레몬티와 레몬차는 같은 공식 상품·이미지를 사용하지만 별개 메뉴로 유지한다.
+
+| menu_id | name | price_krw | available_temperatures | categories |
+| --- | --- | ---: | --- | --- |
+| peach_iced_tea | 복숭아 아이스티 | 3000 | COLD | 티 |
+| lemon_tea_alias | 레몬티 | 3300 | HOT, COLD | 티 |
+| iced_americano | 아이스아메리카노 | 2000 | COLD | 커피 |
+| lemonade | 레몬에이드 | 3500 | COLD | 에이드 |
+| strawberry_latte | 딸기라떼 | 3700 | COLD | 논커피라떼, 라떼 |
+| green_grape_ade | 청포도에이드 | 3500 | COLD | 에이드 |
+| cafe_latte | 카페라떼 | 2900 | HOT, COLD | 커피, 라떼 |
+| lemon_tea | 레몬차 | 3300 | HOT, COLD | 티 |
+| citron_tea | 유자차 | 3300 | HOT, COLD | 티 |
+| espresso | 에스프레소 | 1500 | HOT | 커피 |
+| green_tea_latte | 녹차라떼 | 3500 | HOT, COLD | 논커피라떼, 라떼 |
+
+기존 초안의 lemon_iced_tea, matcha_latte는 사용하지 않는다. 카테고리는 CATEGORIES의 순서로 반환하며 중복 소속을 허용한다. 녹차라떼는 이름에 녹차가 있어도 티 카테고리에 추가하지 않는다.
+
+## 3. 공통 규칙
+
+- 프론트 요청은 /api 상대 경로, JSON/UTF-8을 사용한다.
+- 온도: HOT 또는 COLD. 공식 사이트 ICE는 수집 단계에서 COLD로 변환돼 있다.
+- 이용 방식: DINE_IN 또는 TAKEOUT. 메뉴 1개·수량 1개, 결제 없음.
+- 정수 가격, 불리언 상태를 사용한다. DB BIGINT 주문 ID는 JSON 문자열로 반환한다.
+- created_at은 시간대가 있는 ISO 8601 문자열이며 서버는 UTC로 반환한다. 화면에서 한국 시간으로 표시할 수 있다.
+- 알려지지 않은 주문 요청 필드, 필수 필드 누락, 자료형/enum 오류는 422다. 클라이언트가 전송한 가격·수량을 무시하고 성공시키지 않는다.
+- 판매/노출 설정은 common에 없으므로 seed 기본값을 사용한다: is_available=true, display_order=MENUS 위치(1부터), is_featured는 common/menu_display.json의 simplified_menu_names 포함 여부로 설정한다. 현재 간편 목록은 4종이며 공식 인기/추천 순위가 아닌 프로젝트 표시 설정이다. 간편 목록이 비어 있으면 전체 메뉴를 표시한다.
+
+## 4. GET /api/health — 구현됨
+
+요청 본문 없음. 성공 200:
+
+```json
+{"status":"ok","database":"connected"}
+```
+
+현재 DB 오류는 503과 `{"detail":"Database unavailable"}`다. 이 API는 SELECT 1만 확인하며 메뉴 테이블·seed·이미지·음성 모델 준비 여부를 보장하지 않는다.
+
+## 5. GET /api/menus — 구현됨
+
+쿼리/본문 없음. 성공 200, display_order 오름차순, 동점은 menu_id COLLATE "C" 오름차순으로 정렬한 menus 배열. 아래 예시는 한 건이며 정상 seed는 11건이다. 판매 중지 메뉴도 is_available=false로 반환한다.
+
+```json
+{
+  "menus": [
+    {
+      "menu_id": "peach_iced_tea",
+      "name": "복숭아 아이스티",
+      "categories": ["티"],
+      "price_krw": 3000,
+      "available_temperatures": ["COLD"],
+      "variants": [
+        {"temperature":"COLD","image_url":"/images/menus/peach-iced-tea-ice.jpg"}
+      ],
+      "image_url": "/images/menus/peach-iced-tea-ice.jpg",
+      "is_available": true,
+      "display_order": 1,
+      "is_featured": false
+    }
+  ]
+}
+```
+
+| 필드 | 자료형 / 규칙 |
+| --- | --- |
+| menu_id, name | 필수 비어 있지 않은 문자열, 위 고정 매핑 |
+| categories | 필수 문자열 배열, CATEGORIES의 소속 목록 |
+| price_krw | 필수 0 이상 정수, 현재 PRICE_OPTIONS의 값이며 메뉴별 common 가격과 일치 |
+| available_temperatures | 필수 비어 있지 않은 배열. HOT, COLD 순서, 중복 없음 |
+| variants | 각 제공 온도마다 정확히 한 객체. 온도 집합은 available_temperatures와 동일 |
+| variants[].image_url | 필수 문자열, common의 해당 온도 경로 |
+| image_url | 기본 카드 이미지. COLD가 있으면 COLD, 없으면 HOT 이미지 |
+| is_available, is_featured | 필수 boolean |
+| display_order | 필수 양의 정수 |
+
+이미지는 프론트 origin의 frontend/public 아래에서 제공한다. 백엔드가 이미지 파일을 JSON으로 전송하지 않는다. 이미지 요청 실패 시 화면이 대체 이미지를 표시하되 메뉴 이름·가격은 유지한다. 계획의 nullable 이미지/온도별 가격 제안보다 현재 common을 우선하므로 응답 가격은 메뉴당 하나다.
+
+온도가 한 가지면 프론트가 자동 선택해 이용 방식 단계로 이동한다. 두 가지면 선택 화면을 표시한다. 자동 선택한 온도도 최종 확인과 주문 요청에 반드시 담는다.
+
+메뉴가 없으면 200과 `{"menus":[]}`를 반환한다. DB 조회 실패/테이블 미적용과 카탈로그 응답 무결성 오류는 503 CATALOG_UNAVAILABLE이다. seed 검증은 빈 온도나 누락 이미지를 가진 메뉴의 게시를 막아야 한다.
+
+## 6. POST /api/orders — 구현됨
+
+프론트는 최종 확인 화면의 주문 확정 버튼을 눌렀을 때 요청한다. `request_id`는 하이픈을 포함한 UUID 문자열이다. 아래 네 필드가 필수다.
+
+```json
+{"request_id":"550e8400-e29b-41d4-a716-446655440000","menu_id":"peach_iced_tea","temperature":"COLD","service_type":"TAKEOUT"}
+```
+
+새 요청은 한 트랜잭션에서 메뉴 존재, 판매 여부, 제공 온도를 검증하고 DB 가격으로 주문을 저장한다. 수량은 1이며 커밋 확인 후 `201`을 반환한다. 같은 UUID와 같은 주문 내용은 `200`과 기존 저장 결과를 반환한다.
+
+```json
+{
+  "order_id":"1",
+  "order_number":"1",
+  "menu_id":"peach_iced_tea",
+  "menu_name":"복숭아 아이스티",
+  "temperature":"COLD",
+  "service_type":"TAKEOUT",
+  "quantity":1,
+  "total_price_krw":3000,
+  "created_at":"2026-11-07T00:00:00Z"
+}
+```
+
+order_id와 order_number는 같은 orders.id를 문자열로 표현한다. 일일 초기화·고정 자릿수·무결번을 보장하지 않는다. menu_name과 금액은 주문 시점 스냅샷이다. 주문 저장은 결제 성공을 뜻하지 않는다.
+
+### 오류 계약
+
+업무 오류 형태: `{"detail":{"code":"INVALID_OPTION","message":"선택할 수 없는 온도입니다."}}`.
+
+| HTTP | code | 조건 |
+| --- | --- | --- |
+| 404 | MENU_NOT_FOUND | 등록되지 않은 menu_id |
+| 409 | MENU_UNAVAILABLE | 판매 중지 |
+| 409 | IDEMPOTENCY_CONFLICT | 이미 저장된 UUID에 다른 메뉴, 온도 또는 이용 방식이 들어옴 |
+| 422 | INVALID_OPTION | enum 자체는 유효하지만 그 메뉴가 제공하지 않는 온도 |
+| 503 | ORDER_STORAGE_UNAVAILABLE | DB 연결·저장·COMMIT 확인 실패 |
+| 503 | CATALOG_UNAVAILABLE | 메뉴 조회 실패 (GET /menus) |
+
+필수 값·타입·enum·추가 필드 오류는 FastAPI의 기본 422 detail 배열을 사용한다. 프론트는 detail 객체/배열/문자열을 구분하고 HTTP 상태도 확인한다. 예상하지 못한 서버 오류는 일반 500으로 처리하며 성공을 꾸며 반환하지 않는다.
+
+### 중복 및 재시도
+
+같은 UUID로 요청이 동시에 들어와도 주문은 한 건만 저장된다. 재전송 응답은 원래 주문의 번호, 이름, 가격, 생성 시각을 그대로 사용한다. 서로 다른 UUID는 별개의 주문으로 처리한다.
+
+네트워크 단절, 타임아웃, `503`, `500`으로 접수 여부가 불명확하면 같은 주문 화면에서 사용자가 수동으로 재시도할 수 있다. 최초 UUID와 주문 내용을 그대로 보내므로 기존 저장 여부와 관계없이 주문은 최대 한 건이다. UUID 충돌은 직원 확인을 안내한다. 처음으로 이동하거나 페이지를 새로고침하면 주문 세션이 끝나며, 새 주문에는 새 UUID를 발급한다.
+
+## 7. 후속 음성·추천 계약
+
+이번 브랜치에서 구현하지 않는다. 음성은 POST /api/voice/interpret의 multipart audio와 stage/selected_menu_id/candidate_menu_ids를 제안한다. 응답은 transcript와 select_menu/set_temperature/set_service_type/recommend/retry 행동이다. MIME·파일 제한·직렬화·모델 환경은 후속 확정 대상이다. 음성은 최종 주문을 자동 확정하지 않는다.
+
+기존 Pretuning·추천 설계는 아래에 보존한다. 데이터와 충돌할 경우 위 common 매핑이 우선하며, 관리 작업의 request_id 정책을 기본 주문 API에 적용하지 않는다.
+
+---
+
+# 부록 — 후속 Pretuning·추천 설계
 
 ## 1. 목적과 구현 상태
 
@@ -6,7 +158,7 @@
 
 여기서 **Pretuning은 프로젝트 내부 명칭**입니다. 이번 작업은 모델 가중치를 학습하거나 파인튜닝하는 것이 아니라, 기존 모델로 추천용 메뉴 속성표를 생성하는 작업입니다. 단맛·신맛·쓴맛은 서로 배타적인 다중분류 확률이 아닌 **각각 독립적인 연속 점수**이며, 합이 1일 필요가 없습니다.
 
-현재 실제 구현된 API는 `GET /api/health`뿐입니다. 아래 생성·조회·추천 API와 필드명은 이번 요구사항을 반영한 설계 초안이며 아직 구현하지 않았습니다. 실제 5회 평가 결과도 아직 생성하지 않았습니다.
+현재 실제 구현된 API는 `GET /api/health`, `GET /api/menus`, `POST /api/orders`입니다. 아래 생성·조회·추천 API와 필드명은 이번 요구사항을 반영한 설계 초안이며 아직 구현하지 않았습니다. 실제 5회 평가 결과도 아직 생성하지 않았습니다.
 
 ## 2. 공통 규칙
 
@@ -21,21 +173,21 @@
 
 `binary_df`의 인덱스는 `menu_id`, 데이터 열은 `coffee`, `tea`, `ade`, `latte`, `non_coffee_latte`입니다. 값은 정수 `0` 또는 `1`입니다. 메뉴명은 별도 메뉴 목록에서 ID로 연결합니다.
 
-사용자가 확정한 종류 구분을 적용합니다. **라떼 열은 카페라떼만 1**, **논커피라떼 열은 딸기라떼·말차라떼만 1**입니다. 카페라떼는 커피 열도 1이므로 전체 종류 열이 서로 배타적인 것은 아닙니다. 말차라떼의 티 열은 0으로 둡니다. 평가 브랜드는 **메가MGC커피(메가커피)**로 확정합니다.
+사용자가 확정한 종류 구분을 적용합니다. **라떼 열은 카페라떼·딸기라떼·녹차라떼 모두 1**, **논커피라떼 열은 딸기라떼·녹차라떼만 1**입니다. 카페라떼는 커피 열도 1이므로 전체 종류 열이 서로 배타적인 것은 아닙니다. 녹차라떼의 티 열은 0으로 둡니다. 평가 브랜드는 **메가MGC커피(메가커피)**로 확정합니다.
 
 | menu_id | 메뉴 | 커피 | 티 | 에이드 | 라떼 | 논커피라떼 |
 | --- | --- | ---: | ---: | ---: | ---: | ---: |
 | peach_iced_tea | 복숭아 아이스티 | 0 | 1 | 0 | 0 | 0 |
-| lemon_iced_tea | 레몬 아이스티 | 0 | 1 | 0 | 0 | 0 |
+| lemon_tea_alias | 레몬티 | 0 | 1 | 0 | 0 | 0 |
 | iced_americano | 아이스아메리카노 | 1 | 0 | 0 | 0 | 0 |
 | lemonade | 레몬에이드 | 0 | 0 | 1 | 0 | 0 |
-| strawberry_latte | 딸기라떼 | 0 | 0 | 0 | 0 | 1 |
+| strawberry_latte | 딸기라떼 | 0 | 0 | 0 | 1 | 1 |
 | green_grape_ade | 청포도에이드 | 0 | 0 | 1 | 0 | 0 |
 | cafe_latte | 카페라떼 | 1 | 0 | 0 | 1 | 0 |
 | lemon_tea | 레몬차 | 0 | 1 | 0 | 0 | 0 |
 | citron_tea | 유자차 | 0 | 1 | 0 | 0 | 0 |
 | espresso | 에스프레소 | 1 | 0 | 0 | 0 | 0 |
-| matcha_latte | 말차라떼 | 0 | 0 | 0 | 0 | 1 |
+| green_tea_latte | 녹차라떼 | 0 | 0 | 0 | 1 | 1 |
 
 종류 값은 모델에 5회 질문하거나 평균 내지 않습니다. 논커피라떼는 커피가 없는 라떼를 뜻하며, 무카페인을 보장하는 속성으로 사용하지 않습니다.
 
@@ -63,16 +215,13 @@
 
 ### 가격
 
-허용 가격 집합: `[3000, 3500, 4000, 4500, 5000, 5500, 6000, 6500, 7000, 7500]`.
+허용 가격 집합은 common/menu_data.py의 PRICE_OPTIONS를 따른다. 현재 `[1500, 2000, 2900, 3000, 3300, 3500, 3700]`이다. 메뉴별 가격은 이미 common/menu_prices.json에 있으며 모델로 추정하거나 목록 순서대로 재배정하지 않는다.
 
 ```text
-price_normalized = (price_krw - 3000) / (7500 - 3000)
+price_normalized = (price_krw - 1500) / (3700 - 1500)
 ```
 
-3000원은 0, 7500원은 1입니다. 가격 집합의 고정 최솟값·최댓값을 사용하므로 메뉴 추가 때 기존 점수가 바뀌지 않습니다. 범위 밖 값이나 집합에 없는 가격을 자동 보정하지 않습니다.
-
-**메뉴는 11개, 가격 후보는 10개이며 메뉴별 가격 매핑은 제공되지 않았습니다.** 가격 중복은 허용하지만 목록 순서대로 배정하거나 모델로 추정하지 않습니다. 미입력 가격은 초안에서 `null`로 표시하고 최종 데이터셋 게시 전에 채워야 합니다. 실제 가격은 별도 `menu_catalog`에 `price_krw`로 보관합니다.
-
+정규화 경계는 데이터셋 생성 시 PRICE_OPTIONS의 min/max로 구하고 버전과 함께 저장한다. common 가격이 바뀌면 새 데이터셋을 생성하며 게시된 결과를 조용히 변경하지 않는다. min=max이면 나눗셈하지 않고 데이터셋 생성을 거부한다. 레몬티와 레몬차는 별개 행으로 유지한다. 공통 데이터의 라떼 분류와 한글 속성을 API 영문 열로 매핑한다: 커피→coffee, 티→tea, 에이드→ade, 라떼→latte, 논커피라떼→non_coffee_latte, 단맛→sweetness, 신맛→sourness, 쓴맛→bitterness, 가격→price_normalized.
 ## 5. 검색 및 5회 평가 절차
 
 1. 메가커피 공식 상품 설명·영양정보·공개 레시피를 검색하고 실제 페이지 내용을 확인합니다. 요청한 메뉴명과 공식 상품명을 매핑해 보관합니다. 동일 상품이 없거나 명칭이 불명확하면 확인 필요로 표시하며 다른 브랜드나 비슷한 메뉴로 자동 대체하지 않습니다. 공개되지 않은 배합은 사실처럼 추정하지 않습니다.
@@ -165,7 +314,7 @@ price_normalized = (price_krw - 3000) / (7500 - 3000)
   "continuous_df": {
     "index_name": "menu_id",
     "columns": ["sweetness", "sourness", "bitterness", "price_normalized"],
-    "rows": [{"menu_id":"peach_iced_tea","values":[0.7,0.2,0.1,0.0]}]
+    "rows": [{"menu_id":"peach_iced_tea","values":[0.7,0.2,0.1,0.6818]}]
   },
   "audit_url": "/api/admin/pretuning/datasets/pt-v1?include_audit=true"
 }
@@ -241,6 +390,17 @@ score = 1 - sum(weight[j] * abs(menu[j] - target[j])) / sum(weight[j])
 ## 8. 현재 미완료 사항
 
 - 사용자가 키 설정을 건너뛰었으므로 실제 모델 호출과 5회 평가는 보류합니다. 추후 기존 키를 사용할 수 있게 되면 접근을 검증합니다.
-- 브랜드와 라떼 분류는 확정했습니다. 메뉴 11개의 공식 상품 매핑·온도 조건·가격은 확인해야 합니다. 메가커피 실제 가격이 앞의 허용 가격 집합과 다르면 임의로 반올림하거나 잘라내지 않고 가격 정책을 먼저 조정합니다.
+- 메뉴명·분류·가격·온도·이미지는 common을 사용합니다. 맛 평가 근거 수집과 실제 평가만 후속 작업입니다.
 - 메뉴별 검색 근거 수집, 관리 API·평가·출력·추천 처리는 구현 예정입니다.
 - 유효한 5회 평가가 끝난 뒤 최종 데이터프레임을 생성합니다. 문서의 예시 점수를 실제 결과로 사용하지 않습니다.
+
+## 메뉴 조회 구현 위치 및 검증
+
+- backend/app/routers/menus.py: GET /api/menus 라우터, 503 오류 변환.
+- backend/app/schemas/menus.py: 엄격한 응답 자료형과 온도/이미지 일치 검증.
+- backend/app/repositories/menus.py: 일관된 DB 스냅샷, 고정 정렬, 이미지/카테고리 조립.
+- backend/tests/test_menus_api.py: 실제 ASGI 앱과 별도 PostgreSQL 스키마를 사용하는 응답·판매 상태·동점 정렬·빈 목록·503 검사.
+
+판매 중지나 is_featured 플래그는 응답 포함 여부와 전체 메뉴 정렬을 바꾸지 않는다. 프론트가 is_available로 선택 가능 여부를 결정하고, is_featured로 간편 목록을 구성한다. 대표 이미지는 COLD 우선이고 온도별 이미지는 variants에 모두 반환한다. GET은 읽기만 하며 seed나 파일 수집을 실행하지 않는다.
+
+현재 실행 중인 백엔드 HTTP 200과 메뉴 11개·온도 16개·간편 표시 4개 및 OpenAPI 등록을 확인했다. DB/메뉴 API 통합 테스트 10개를 통과했다. 프론트의 HTTP 어댑터 전환과 주문 API 구현은 후속이다.
