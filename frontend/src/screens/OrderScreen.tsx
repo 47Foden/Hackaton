@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { KioskLayout } from '../components/layout/KioskLayout';
 import { MicrophoneButton } from '../components/voice/MicrophoneButton';
 import { MenuBoard, type MenuBoardView } from '../components/menu/MenuBoard';
@@ -26,6 +26,9 @@ export function OrderScreen({ onHome }: { onHome: () => void }) {
   const { order, dispatch, confirm } = useOrderFlow(kioskApi);
   const { state: catalog, reload } = useMenus(kioskApi);
   const [menuView, setMenuView] = useState<MenuBoardView>({ mode: 'simplified', enlarged: false });
+
+  useEffect(() => () => window.speechSynthesis?.cancel(), []);
+
   const reviewError = order.stage === 'review' ? order.error : undefined;
   const guide = order.stage === 'complete'
     ? { title: isMockOrderApi ? '개발용 주문 흐름을 완료했어요.' : '주문이 접수되었어요.',

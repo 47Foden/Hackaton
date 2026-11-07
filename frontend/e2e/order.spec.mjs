@@ -13,11 +13,15 @@ const result = {
   created_at: '2026-11-07T00:00:00Z',
 };
 
-async function openReview(page) {
+async function startOrder(page) {
   const catalogue = await createMockApi({ delayMs: 0 }).getMenus();
   await page.route('**/api/menus', route => route.fulfill({ json: catalogue }));
   await page.goto('/');
   await page.getByRole('button', { name: '주문하기' }).click();
+}
+
+async function openReview(page) {
+  await startOrder(page);
   await page.getByRole('button', { name: /아이스아메리카노/ }).click();
   await page.getByRole('button', { name: /포장해서/ }).click();
   const confirm = page.getByRole('button', { name: '주문 확정', exact: true });
@@ -90,4 +94,44 @@ test('an uncertain storage response keeps resubmission locked', async ({ page })
   await expect(page.getByRole('button', { name: '다시 시도', exact: true })).toHaveCount(0);
   await expect(page.getByRole('region', { name: '주문 완료' })).toHaveCount(0);
   expect(calls).toBe(1);
+
+  await page.getByRole('button', { name: '처음으로', exact: true }).click();
+  await page.getByRole('button', { name: '주문하기' }).click();
+  await expect(page.getByRole('heading', { name: '간편 메뉴판' })).toBeVisible();
+  await expect(page.getByRole('alert')).toHaveCount(0);
+  await expect(page.getByRole('button', { name: '접수 여부 확인 필요' })).toHaveCount(0);
+  expect(calls).toBe(1);
+});
+
+test('returning home from completion releases speech and starts a fresh order', async ({ page }) => {
+  await page.route('**/api/orders', route => route.fulfill({ status: 201, json: result }));
+  await startOrder(page);
+  await page.evaluate(() => {
+    window.speechCancelCount = 0;
+    window.speechSynthesis.cancel = () => { window.speechCancelCount += 1; };
+  });
+
+  await page.getByRole('button', { name: '전체 메뉴판 보기' }).click();
+  await page.getByRole('button', { name: '크게 보기' }).click();
+  await expect(page.getByRole('button', { name: '기본 크기로 보기' })).toHaveAttribute('aria-pressed', 'true');
+  await page.getByRole('button', { name: /아이스아메리카노/ }).click();
+  await page.getByRole('button', { name: /포장해서/ }).click();
+  await page.getByRole('button', { name: '주문 확정', exact: true }).click();
+  await expect(page.getByRole('definition')).toHaveText(orderNumber);
+  expect(await page.evaluate(() => window.speechCancelCount)).toBe(0);
+
+  await page.getByRole('button', { name: '처음으로 돌아가기' }).click();
+  await expect.poll(() => page.evaluate(() => window.speechCancelCount)).toBe(1);
+  await page.getByRole('button', { name: '주문하기' }).click();
+  await expect(page.getByRole('heading', { name: '간편 메뉴판' })).toBeVisible();
+  await expect(page.getByRole('button', { name: '크게 보기' })).toHaveAttribute('aria-pressed', 'false');
+  await expect(page.getByRole('region', { name: '주문 완료' })).toHaveCount(0);
+  await expect(page.getByText(orderNumber, { exact: true })).toHaveCount(0);
+
+  await page.getByRole('button', { name: /카페라떼/ }).click();
+  await page.getByRole('button', { name: /따뜻하게/ }).click();
+  await page.getByRole('button', { name: /매장에서/ }).click();
+  const review = page.getByRole('region', { name: '최종 주문 확인' });
+  await expect(review.getByRole('heading', { name: '카페라떼' })).toBeVisible();
+  await expect(review.getByText('따뜻하게 · 매장에서')).toBeVisible();
 });
