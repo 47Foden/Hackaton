@@ -14,7 +14,7 @@ interface MenuBoardProps {
   selectedMenu: string | null;
   view: MenuBoardView;
   onViewChange: (view: MenuBoardView) => void;
-  onSelect: (name: string) => void;
+  onSelect: (menuId: string) => void;
 }
 
 /** 목록 전환과 확대는 서로 독립적이며, 상태는 주문 화면이 유지한다. */
@@ -58,7 +58,7 @@ export function MenuBoard({
       <div id={gridId} className="menu-grid">
         {visibleMenus.map(menu => (
           <MenuCard key={menu.name} menu={menu} selected={selectedMenu === menu.name}
-            onSelect={() => onSelect(menu.name)} />
+            onSelect={() => onSelect(menu.id)} />
         ))}
       </div>
     </section>

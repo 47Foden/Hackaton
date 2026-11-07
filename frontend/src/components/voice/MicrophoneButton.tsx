@@ -20,7 +20,7 @@ export function MicrophoneButton({
         aria-describedby={helpText ? helpId : undefined} onClick={onClick}>
         <MicrophoneIcon /><span>{label}</span>
       </button>
-      {helpText && <span id={helpId}>{helpText}</span>}
+      {helpText && <span id={helpId} role="status">{helpText}</span>}
     </div>
   );
 }

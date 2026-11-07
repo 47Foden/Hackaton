@@ -20,6 +20,10 @@ export type OrderAction =
   | { type: 'submitted'; result: OrderResponse }
   | { type: 'failed'; error: OrderFailure };
 
+export type OrderSelection =
+  | { type: 'select_menu'; menuId: string }
+  | Extract<OrderAction, { type: 'set_temperature' | 'set_service_type' }>;
+
 export const initialOrderState: OrderState = { stage: 'menu' };
 
 // 화면 밖에서 들어오는 입력도 현재 단계와 제공 옵션에 맞을 때만 적용한다.

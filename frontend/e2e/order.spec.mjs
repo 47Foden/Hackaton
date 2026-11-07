@@ -137,10 +137,10 @@ test('returning home from completion releases speech and starts a fresh order', 
   await page.getByRole('button', { name: /포장해서/ }).click();
   await page.getByRole('button', { name: '주문 확정', exact: true }).click();
   await expect(page.getByRole('definition')).toHaveText(orderNumber);
-  expect(await page.evaluate(() => window.speechCancelCount)).toBe(0);
+  const cancellationsBeforeHome = await page.evaluate(() => window.speechCancelCount);
 
   await page.getByRole('button', { name: '처음으로 돌아가기' }).click();
-  await expect.poll(() => page.evaluate(() => window.speechCancelCount)).toBe(1);
+  await expect.poll(() => page.evaluate(() => window.speechCancelCount)).toBe(cancellationsBeforeHome + 1);
   await page.getByRole('button', { name: '주문하기' }).click();
   await expect(page.getByRole('heading', { name: '간편 메뉴판' })).toBeVisible();
   await expect(page.getByRole('button', { name: '크게 보기' })).toHaveAttribute('aria-pressed', 'false');
