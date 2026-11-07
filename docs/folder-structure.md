@@ -12,9 +12,10 @@ Hackaton/
 │   │   │   ├── voice/   # MicrophoneButton과 전용 CSS
 │   │   │   └── menu/    # MenuBoard와 전용 CSS
 │   │   ├── api/          # 공통 계약, HTTP/mock 어댑터, 오류, 실행 설정
-│   │   ├── hooks/        # 메뉴 로딩과 비동기 주문 제출
+│   │   ├── hooks/        # 메뉴 로딩, 주문 제출, 음성 안내 수명주기
 │   │   ├── state/        # 주문 단계와 옵션 전이 (orderReducer)
-│   │   ├── data/         # common을 참조하는 화면용 메뉴 어댑터
+│   │   ├── data/         # 화면용 메뉴 어댑터와 주문 단계별 안내 문구
+│   │   ├── voice/        # 브라우저 음성 합성 어댑터
 │   │   └── styles/       # 공통 스타일과 반응형 레이아웃
 │   ├── public/images/    # 공식 브랜드 로고와 메뉴 이미지
 │   ├── package.json       # 프론트엔드 의존성 및 실행 명령
