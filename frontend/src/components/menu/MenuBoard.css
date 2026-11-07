@@ -1,0 +1,24 @@
+.menu-board { max-width: 1200px; margin: auto; }
+
+.menu-board__heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.menu-board__heading h2 { font-size: 28px; margin-top: 6px; }
+.menu-board__controls { display: flex; flex-wrap: wrap; gap: 12px; }
+.menu-board__controls [aria-pressed='true'] { background: var(--brand-yellow); }
+.menu-board__summary { margin: 16px 0 24px; font-size: 18px; line-height: 1.6; color: #62625a; }
+.menu-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
+.menu-board--enlarged .menu-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.menu-board--enlarged .menu-card__image { height: 215px; }
+.menu-board--enlarged .menu-card__name,
+.menu-board--enlarged .menu-card__price { font-size: 24px; }
+
+@media (max-width: 760px) {
+  .menu-board__heading { align-items: flex-start; flex-direction: column; gap: 16px; }
+  .menu-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .menu-board--enlarged .menu-grid { grid-template-columns: 1fr; }
+}

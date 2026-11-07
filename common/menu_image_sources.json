@@ -1,0 +1,114 @@
+[
+  {
+    "official_name": "딸기라떼",
+    "temperature": "COLD",
+    "image_path": "/images/menus/strawberry-latte-ice.jpg",
+    "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20250116001724_1736954244791_8qDsY0gj14.jpg",
+    "source_url": "https://www.mega-mgccoffee.com/menu/menu.php?menu_category1=1&menu_category2=1&list_checkbox_all=all&page=1",
+    "checked_date": "2026-11-07"
+  },
+  {
+    "official_name": "에스프레소",
+    "temperature": "HOT",
+    "image_path": "/images/menus/espresso-hot.jpg",
+    "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610105357_1717984437294_AduuhU3VyW.jpg",
+    "source_url": "https://www.mega-mgccoffee.com/menu/menu.php?menu_category1=1&menu_category2=1&list_checkbox_all=all&page=4",
+    "checked_date": "2026-11-07"
+  },
+  {
+    "official_name": "녹차라떼",
+    "temperature": "HOT",
+    "image_path": "/images/menus/green-tea-latte-hot.jpg",
+    "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610104456_1717983896154_TxgXQHRHiM.jpg",
+    "source_url": "https://www.mega-mgccoffee.com/menu/menu.php?menu_category1=1&menu_category2=1&list_checkbox_all=all&page=5",
+    "checked_date": "2026-11-07"
+  },
+  {
+    "official_name": "녹차라떼",
+    "temperature": "COLD",
+    "image_path": "/images/menus/green-tea-latte-ice.jpg",
+    "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610112917_1717986557781__XIcwRbg0h.jpg",
+    "source_url": "https://www.mega-mgccoffee.com/menu/menu.php?menu_category1=1&menu_category2=1&list_checkbox_all=all&page=5",
+    "checked_date": "2026-11-07"
+  },
+  {
+    "official_name": "카페라떼",
+    "temperature": "HOT",
+    "image_path": "/images/menus/cafe-latte-hot.jpg",
+    "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610105821_1717984701991_RUKCqSZ_HO.jpg",
+    "source_url": "https://www.mega-mgccoffee.com/menu/menu.php?menu_category1=1&menu_category2=1&list_checkbox_all=all&page=6",
+    "checked_date": "2026-11-07"
+  },
+  {
+    "official_name": "카페라떼",
+    "temperature": "COLD",
+    "image_path": "/images/menus/cafe-latte-ice.jpg",
+    "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610132819_1717993699956_cEyZRaBZh5.jpg",
+    "source_url": "https://www.mega-mgccoffee.com/menu/menu.php?menu_category1=1&menu_category2=1&list_checkbox_all=all&page=6",
+    "checked_date": "2026-11-07"
+  },
+  {
+    "official_name": "아메리카노",
+    "temperature": "COLD",
+    "image_path": "/images/menus/iced-americano-ice.jpg",
+    "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610133007_1717993807130_nwB5CATOJJ.jpg",
+    "source_url": "https://www.mega-mgccoffee.com/menu/menu.php?menu_category1=1&menu_category2=1&list_checkbox_all=all&page=7",
+    "checked_date": "2026-11-07"
+  },
+  {
+    "official_name": "레몬에이드",
+    "temperature": "COLD",
+    "image_path": "/images/menus/lemonade-ice.jpg",
+    "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610114557_1717987557279_GKXThr0HAc.jpg",
+    "source_url": "https://www.mega-mgccoffee.com/menu/menu.php?menu_category1=1&menu_category2=1&list_checkbox_all=all&page=7",
+    "checked_date": "2026-11-07"
+  },
+  {
+    "official_name": "청포도에이드",
+    "temperature": "COLD",
+    "image_path": "/images/menus/green-grape-ade-ice.jpg",
+    "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610115123_1717987883226_DMMQB84jmS.jpg",
+    "source_url": "https://www.mega-mgccoffee.com/menu/menu.php?menu_category1=1&menu_category2=1&list_checkbox_all=all&page=8",
+    "checked_date": "2026-11-07"
+  },
+  {
+    "official_name": "복숭아아이스티",
+    "temperature": "COLD",
+    "image_path": "/images/menus/peach-iced-tea-ice.jpg",
+    "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610132446_1717993486995_hvfli27vPn.jpg",
+    "source_url": "https://www.mega-mgccoffee.com/menu/menu.php?menu_category1=1&menu_category2=1&list_checkbox_all=all&page=8",
+    "checked_date": "2026-11-07"
+  },
+  {
+    "official_name": "유자차",
+    "temperature": "HOT",
+    "image_path": "/images/menus/citron-tea-hot.jpg",
+    "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610105725_1717984645282_YfXeYsJzVV.jpg",
+    "source_url": "https://www.mega-mgccoffee.com/menu/menu.php?menu_category1=1&menu_category2=1&list_checkbox_all=all&page=8",
+    "checked_date": "2026-11-07"
+  },
+  {
+    "official_name": "레몬차",
+    "temperature": "HOT",
+    "image_path": "/images/menus/lemon-tea-hot.jpg",
+    "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610105600_1717984560889__UGBqFya7F.jpg",
+    "source_url": "https://www.mega-mgccoffee.com/menu/menu.php?menu_category1=1&menu_category2=1&list_checkbox_all=all&page=8",
+    "checked_date": "2026-11-07"
+  },
+  {
+    "official_name": "유자차",
+    "temperature": "COLD",
+    "image_path": "/images/menus/citron-tea-ice.jpg",
+    "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610115050_1717987850728_2zPgDAyVmu.jpg",
+    "source_url": "https://www.mega-mgccoffee.com/menu/menu.php?menu_category1=1&menu_category2=1&list_checkbox_all=all&page=8",
+    "checked_date": "2026-11-07"
+  },
+  {
+    "official_name": "레몬차",
+    "temperature": "COLD",
+    "image_path": "/images/menus/lemon-tea-ice.jpg",
+    "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610114530_1717987530809_R6DsXnSZN_.jpg",
+    "source_url": "https://www.mega-mgccoffee.com/menu/menu.php?menu_category1=1&menu_category2=1&list_checkbox_all=all&page=9",
+    "checked_date": "2026-11-07"
+  }
+]

@@ -1,0 +1,25 @@
+.microphone-control {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+  font-size: 15px;
+  color: #62625a;
+}
+
+.microphone-button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 0;
+  border-radius: 40px;
+  padding: 16px 24px;
+  min-height: 68px;
+  background: var(--brand-yellow);
+  color: #1c1c1b;
+  font-size: 19px;
+  font-weight: 700;
+}
+
+.microphone-button:hover:not(:disabled) { background: #ffdf43; }
+.microphone-button:disabled { background: #f1f1ec; color: #62625a; }

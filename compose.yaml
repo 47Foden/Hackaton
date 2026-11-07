@@ -1,0 +1,66 @@
+name: cafe-kiosk-dev
+
+services:
+  frontend:
+    build: ./frontend
+    environment:
+      VITE_API_MODE: ${VITE_API_MODE:-}
+      VITE_MENU_API_MODE: ${VITE_MENU_API_MODE:-}
+      VITE_ORDER_API_MODE: ${VITE_ORDER_API_MODE:-}
+      API_PROXY_TARGET: http://backend:8000
+      VITE_MOCK_SCENARIO: ${VITE_MOCK_SCENARIO:-success}
+    ports:
+      - "127.0.0.1:5173:5173"
+    volumes:
+      - ./frontend/src:/app/src
+      - ./common:/common:ro
+      - ./frontend/public:/app/public:ro
+      - ./frontend/tsconfig.json:/app/tsconfig.json:ro
+      - ./frontend/index.html:/app/index.html
+      - ./frontend/vite.config.ts:/app/vite.config.ts
+    depends_on:
+      backend:
+        condition: service_healthy
+
+  backend:
+    build: ./backend
+    env_file:
+      - path: ./backend/.env
+        required: false
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      DATABASE_URL: postgresql://kiosk:kiosk_local_only@db:5432/kiosk
+      WATCHFILES_FORCE_POLLING: "true"
+      COMMON_DIR: /common
+      FRONTEND_PUBLIC_DIR: /frontend-public
+    volumes:
+      - ./backend/app:/app/app
+      - ./common:/common:ro
+      - ./frontend/public:/frontend-public:ro
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health', timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: kiosk
+      POSTGRES_PASSWORD: kiosk_local_only
+      POSTGRES_DB: kiosk
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kiosk -d kiosk"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  postgres_data:
