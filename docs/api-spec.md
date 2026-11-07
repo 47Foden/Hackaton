@@ -40,7 +40,7 @@ common의 한글 메뉴명은 변경하지 않는다. 아래 ID는 API/DB 연결
 - 정수 가격, 불리언 상태를 사용한다. DB BIGINT 주문 ID는 JSON 문자열로 반환한다.
 - created_at은 시간대가 있는 ISO 8601 문자열이며 서버는 UTC로 반환한다. 화면에서 한국 시간으로 표시할 수 있다.
 - 알려지지 않은 주문 요청 필드, 필수 필드 누락, 자료형/enum 오류는 422다. 클라이언트가 전송한 가격·수량을 무시하고 성공시키지 않는다.
-- 판매/노출 설정은 common에 없으므로 seed 기본값을 사용한다: is_available=true, display_order=MENUS 위치(1부터), is_featured=false. 간소화 추천 목록은 아직 선정하지 않았고 전부 false이면 프론트는 전체 메뉴를 표시한다.
+- 판매/노출 설정은 common에 없으므로 seed 기본값을 사용한다: is_available=true, display_order=MENUS 위치(1부터), is_featured는 common/menu_display.json의 simplified_menu_names 포함 여부로 설정한다. 현재 간편 목록은 4종이며 공식 인기/추천 순위가 아닌 프로젝트 표시 설정이다. 간편 목록이 비어 있으면 전체 메뉴를 표시한다.
 
 ## 4. GET /api/health — 구현됨
 

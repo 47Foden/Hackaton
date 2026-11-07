@@ -7,6 +7,9 @@ services:
       - "127.0.0.1:5173:5173"
     volumes:
       - ./frontend/src:/app/src
+      - ./common:/common:ro
+      - ./frontend/public:/app/public:ro
+      - ./frontend/tsconfig.json:/app/tsconfig.json:ro
       - ./frontend/index.html:/app/index.html
       - ./frontend/vite.config.ts:/app/vite.config.ts
     depends_on:

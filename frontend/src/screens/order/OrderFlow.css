@@ -1,0 +1,27 @@
+.order-step { max-width: 900px; margin: auto; padding: 16px 0; }
+.order-summary { display: flex; align-items: center; gap: 24px; padding: 24px; border-radius: 12px; background: #fff; }
+.order-summary img { width: 120px; height: 150px; object-fit: contain; }
+.order-summary h2 { font-size: 28px; margin-bottom: 12px; word-break: keep-all; }
+.order-summary p { font-size: 22px; line-height: 1.6; }
+.order-summary__options { color: #62625a; }
+.order-choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; margin-top: 32px; }
+.order-choice { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 12px; min-height: 180px; padding: 24px; background: #fff; border: 2px solid var(--border); border-radius: 12px; color: inherit; font-size: 30px; font-weight: 800; }
+.order-choice:hover { background: #fff9d9; border-color: #1c1c1b; }
+.order-choice__code { font-size: 18px; letter-spacing: .08em; }
+.order-choice__hint { font-size: 20px; font-weight: 400; }
+.order-step__note { margin-top: 24px; font-size: 20px; line-height: 1.7; color: #62625a; }
+.order-step__total { display: flex; justify-content: space-between; margin-top: 32px; font-size: 26px; }
+.order-step__confirm { width: 100%; margin-top: 28px; font-size: 24px; }
+.order-completion { text-align: center; }
+.order-completion__badge { display: inline-block; padding: 8px 16px; margin-bottom: 20px; background: var(--brand-yellow); border-radius: 24px; font-size: 18px; font-weight: 800; }
+.order-completion > p { font-size: 22px; }
+.order-completion .order-completion__number { font-size: clamp(36px, 8vw, 64px); font-weight: 900; margin: 12px 0; overflow-wrap: anywhere; }
+.order-completion .order-summary { margin-top: 24px; text-align: left; }
+@media (max-width: 540px) {
+  .order-summary { padding: 16px; gap: 12px; }
+  .order-summary img { width: 80px; height: 110px; }
+  .order-summary h2 { font-size: 24px; }
+  .order-summary p { font-size: 20px; }
+  .order-choices { grid-template-columns: 1fr; gap: 16px; }
+  .order-choice { min-height: 120px; font-size: 26px; }
+}

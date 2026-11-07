@@ -96,7 +96,7 @@ PRICE_OPTIONS와 정확한 common 가격 일치는 seed에서 검증한다. DB�
 | menus.price_krw | menu_prices.json[name] |
 | menus.display_order | MENUS 위치 + 1 |
 | menus.is_available | 새 행은 true, 기존 운영 값은 유지 |
-| menus.is_featured | 새 행은 false, 기존 설정 유지 |
+| menus.is_featured | 새 행은 common/menu_display.json의 간편 목록 포함 여부. 기존 운영 설정 유지 |
 | menu_categories | CATEGORIES에서 해당 메뉴가 속한 모든 카테고리 |
 | menu_variants.temperature | menu_images.json[name]의 HOT/COLD 키 |
 | menu_variants.image_url | 해당 키의 이미지 경로 |

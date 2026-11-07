@@ -14,3 +14,5 @@ Pretuning의 데이터 형식을 유지하며 레몬 아이스티 → 레몬티,
 가격 정규화가 기존 3000~8000원 범위를 가정하는 Pretuning 코드와 재결합될 경우 새 PRICE_OPTIONS의 최솟값·최댓값을 사용해야 한다. 현재 브랜치에는 해당 추천 실행 코드가 없다.
 
 - 브랜드 로고·색상·글꼴과 출처는 brand_assets.json, 프론트 적용 기준은 ../docs/frontend-design.md에 기록했다. 로고는 frontend/public/images/brand에 있다.
+
+- menu_display.json: 프로젝트 초기 간편 메뉴 4종과 순서. 공식 인기/추천 자료가 아니며 가격·이미지 원본을 복제하지 않는다.
