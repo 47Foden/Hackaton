@@ -7,7 +7,10 @@ export function createHttpApi(transport: typeof fetch = fetch): KioskApi {
       const timeout = AbortSignal.timeout(15_000);
       const signal = init.signal ? AbortSignal.any([init.signal, timeout]) : timeout;
       const response = await transport(`/api/${path}`, { ...init, signal });
-      const body = await response.json();
+      const body = await response.json().catch(error => {
+        if (isOrder && !response.ok) return null;
+        throw error;
+      });
       if (!response.ok) {
         const detail = body?.detail;
         const message = typeof detail === 'string' ? detail
@@ -16,7 +19,8 @@ export function createHttpApi(transport: typeof fetch = fetch): KioskApi {
         throw new ApiError(message, response.status, detail?.code ?? 'HTTP_ERROR',
           isOrder && ![404, 409, 422].includes(response.status));
       }
-      if (isOrder && (typeof body?.order_id !== 'string' || typeof body?.order_number !== 'string'
+      if (isOrder && (response.status !== 201
+        || typeof body?.order_id !== 'string' || typeof body?.order_number !== 'string'
         || typeof body?.menu_name !== 'string' || typeof body?.menu_id !== 'string'
         || !['HOT', 'COLD'].includes(body?.temperature) || !['DINE_IN', 'TAKEOUT'].includes(body?.service_type)
         || body?.quantity !== 1 || !Number.isInteger(body?.total_price_krw) || body.total_price_krw < 0

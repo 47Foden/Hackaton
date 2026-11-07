@@ -55,6 +55,16 @@ test('HTTP errors distinguish safe rejection from uncertain storage and transpor
     const api = createHttpApi(async () => Response.json({ detail: { code: 'TEST', message: '실패' } }, { status }));
     await assert.rejects(api.createOrder(request), error => error.status === status && error.uncertain === uncertain);
   }
+  for (const [status, uncertain] of [[409, false], [503, true]]) {
+    const api = createHttpApi(async () => new Response('Service error', { status }));
+    await assert.rejects(api.createOrder(request), error => error.status === status && error.uncertain === uncertain);
+  }
   await assert.rejects(createHttpApi(async () => { throw new TypeError('offline'); }).createOrder(request), error => error.uncertain);
-  await assert.rejects(createHttpApi(async () => Response.json({})).createOrder(request), error => error.code === 'INVALID_RESPONSE' && error.uncertain);
+  await assert.rejects(createHttpApi(async () => Response.json({}, { status: 201 })).createOrder(request), error => error.code === 'INVALID_RESPONSE' && error.uncertain);
+});
+
+test('only a 201 order response can complete the order', async () => {
+  const order = await createMockApi({ delayMs: 0 }).createOrder(request);
+  const api = createHttpApi(async () => Response.json(order, { status: 202 }));
+  await assert.rejects(api.createOrder(request), error => error.code === 'INVALID_RESPONSE' && error.uncertain);
 });

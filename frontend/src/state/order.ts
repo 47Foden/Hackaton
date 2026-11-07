@@ -3,11 +3,12 @@ import type { OrderResponse, ServiceType } from '../api/contracts';
 
 export type { ServiceType } from '../api/contracts';
 export interface OrderDraft { menu: Menu; temperature: Temperature; serviceType: ServiceType; }
+export interface OrderFailure { message: string; uncertain: boolean; }
 export type OrderState =
   | { stage: 'menu' }
   | { stage: 'temperature'; menu: Menu }
   | { stage: 'service_type'; menu: Menu; temperature: Temperature }
-  | { stage: 'review'; draft: OrderDraft; error?: { message: string; uncertain: boolean } }
+  | { stage: 'review'; draft: OrderDraft; error?: OrderFailure }
   | { stage: 'submitting'; draft: OrderDraft }
   | { stage: 'complete'; draft: OrderDraft; result: OrderResponse };
 
@@ -17,7 +18,7 @@ export type OrderAction =
   | { type: 'set_service_type'; serviceType: ServiceType }
   | { type: 'submit' }
   | { type: 'submitted'; result: OrderResponse }
-  | { type: 'failed'; error: { message: string; uncertain: boolean } };
+  | { type: 'failed'; error: OrderFailure };
 
 export const initialOrderState: OrderState = { stage: 'menu' };
 
