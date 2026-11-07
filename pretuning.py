@@ -6,7 +6,7 @@ from pathlib import Path
 from urllib.request import Request, urlopen
 from urllib.error import HTTPError
 import pandas as pd
-from common.menu_data import MENUS, CATEGORIES, BINARY_ATTRIBUTES, TASTE_ATTRIBUTES, PRICE_OPTIONS
+from common.menu_data import MENUS, CATEGORIES, BINARY_ATTRIBUTES, TASTE_ATTRIBUTES
 
 
 def binary_frame():
@@ -26,15 +26,10 @@ def validate_scores(data):
     return pd.DataFrame(rows).set_index('name').loc[MENUS, TASTE_ATTRIBUTES] / 10
 
 
-def continuous_frame(runs, prices):
+def continuous_frame(runs):
     if len(runs) != 5:
         raise ValueError('Exactly five validated evaluation runs are required')
-    if set(prices) != set(MENUS):
-        raise ValueError('Price mapping must contain exactly the 11 menu names')
-    if any(type(p) is not int or p not in PRICE_OPTIONS for p in prices.values()):
-        raise ValueError(f'Set each menu price to one of {PRICE_OPTIONS}')
-    result = sum(runs) / 5
-    result['가격'] = [(prices[m] - min(PRICE_OPTIONS)) / (max(PRICE_OPTIONS) - min(PRICE_OPTIONS)) for m in MENUS]
+    result = sum(run.loc[MENUS, TASTE_ATTRIBUTES] for run in runs) / 5
     result.index.name = '메뉴'
     return result
 
@@ -117,11 +112,7 @@ def evaluate(key, model, research_path=None, score_path=None):
     return validate_scores(json.loads(response_text(response))), response
 
 
-def generate(prices_path, output, model):
-    prices = json.loads(Path(prices_path).read_text(encoding='utf-8'))
-    # Validate prices before any paid API requests.
-    empty = pd.DataFrame(0.0, index=MENUS, columns=TASTE_ATTRIBUTES)
-    continuous_frame([empty] * 5, prices)
+def generate(output, model):
     key = os.getenv('OPENAI_API_KEY', '').strip()
     if not key:
         raise ValueError('Set OPENAI_API_KEY in backend/.env or the process environment')
@@ -135,8 +126,28 @@ def generate(prices_path, output, model):
         runs.append(scores)
         print(f'Evaluation {i + 1}/5 saved')
     binary_frame().to_csv(out / 'binary.csv', encoding='utf-8-sig')
-    continuous_frame(runs, prices).to_csv(out / 'continuous.csv', encoding='utf-8-sig')
-    (out / 'metadata.json').write_text(json.dumps({'model': model, 'runs': 5, 'prices': prices,
+    continuous_frame(runs).to_csv(out / 'continuous.csv', encoding='utf-8-sig')
+    (out / 'metadata.json').write_text(json.dumps({'model': model, 'runs': 5,
         'taste_normalization': 'score / 10; then arithmetic mean of five runs',
-        'price_normalization': f'(price - {min(PRICE_OPTIONS)}) / {max(PRICE_OPTIONS) - min(PRICE_OPTIONS)}',
         'note': 'Web-informed estimates, not measured taste or trained model weights'}, ensure_ascii=False, indent=2), encoding='utf-8')
+
+
+def rebuild(source, output):
+    """Reuse five saved responses without any model calls or price processing."""
+    source = Path(source)
+    runs = []
+    for i in range(1, 6):
+        response = json.loads((source / f'run_{i}.json').read_text(encoding='utf-8'))
+        if response.get('status') != 'completed':
+            raise ValueError(f'run_{i}.json is not a completed response')
+        runs.append(validate_scores(json.loads(response_text(response))))
+    out = Path(output)
+    out.mkdir(parents=True, exist_ok=False)
+    binary_frame().to_csv(out / 'binary.csv', encoding='utf-8-sig')
+    continuous_frame(runs).to_csv(out / 'continuous.csv', encoding='utf-8-sig')
+    save_response(out / 'metadata.json', {
+        'source_directory': str(source.resolve()), 'runs': 5,
+        'taste_normalization': 'score / 10; then arithmetic mean of five runs',
+        'note': 'Rebuilt from saved responses without API requests; prices excluded',
+    })
+    print(f'Taste-only tables saved to {out}; no API calls')

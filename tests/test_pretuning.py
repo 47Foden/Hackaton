@@ -1,5 +1,5 @@
 import unittest
-from common.menu_data import MENUS, TASTE_ATTRIBUTES, PRICE_OPTIONS
+from common.menu_data import MENUS, TASTE_ATTRIBUTES
 from pretuning import binary_frame, validate_scores, continuous_frame
 
 class FramesTest(unittest.TestCase):
@@ -11,14 +11,12 @@ class FramesTest(unittest.TestCase):
 
     def test_mean_and_normalization(self):
         runs = [validate_scores({'menus': [dict(name=m, **{a: score for a in TASTE_ATTRIBUTES}) for m in MENUS]}) for score in [0, 2, 4, 6, 8]]
-        prices = dict.fromkeys(MENUS, 3000)
-        prices[MENUS[-1]] = max(PRICE_OPTIONS)
-        frame = continuous_frame(runs, prices)
+        frame = continuous_frame(runs)
         self.assertAlmostEqual(frame.iloc[0]['단맛'], .4)
-        self.assertEqual(frame.iloc[0]['가격'], 0)
-        self.assertEqual(frame.iloc[-1]['가격'], 1)
+        self.assertEqual(list(frame.columns), TASTE_ATTRIBUTES)
+        self.assertEqual(frame.shape, (11, 3))
         with self.assertRaises(ValueError):
-            continuous_frame(runs, dict.fromkeys(MENUS))
+            continuous_frame(runs[:4])
         with self.assertRaises(ValueError):
             validate_scores({'menus': []})
         with self.assertRaises(ValueError):
