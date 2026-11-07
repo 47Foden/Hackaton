@@ -97,7 +97,7 @@ common의 한글 메뉴명은 변경하지 않는다. 아래 ID는 API/DB 연결
 
 ## 6. POST /api/orders — 구현됨
 
-최종 확인 버튼에서만 요청하는 계약이다. 화면 연결은 후속이다. 아래 세 필드만 허용한다.
+프론트는 최종 확인 화면의 주문 확정 버튼을 눌렀을 때 요청한다. 아래 세 필드만 허용한다.
 
 ```json
 {"menu_id":"peach_iced_tea","temperature":"COLD","service_type":"TAKEOUT"}

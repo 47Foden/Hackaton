@@ -13,7 +13,7 @@ interface ApiOptions {
 }
 
 /** 메뉴 조회와 주문 저장의 연결 대상을 독립적으로 선택한다. */
-export function createKioskApi({ menuMode = 'http', orderMode = 'mock', transport, mock }: ApiOptions = {}): KioskApi {
+export function createKioskApi({ menuMode = 'http', orderMode = 'http', transport, mock }: ApiOptions = {}): KioskApi {
   const http = createHttpApi(transport);
   let developmentApi = createMockApi(mock);
   let catalogueReady = menuMode === 'mock';

@@ -9,6 +9,6 @@ export default defineConfig({
     command: 'npm run dev -- --host 127.0.0.1 --port 5177',
     url: 'http://127.0.0.1:5177',
     reuseExistingServer: false,
-    env: { VITE_API_MODE: '', VITE_MENU_API_MODE: 'http', VITE_ORDER_API_MODE: 'mock' },
+    env: { VITE_API_MODE: '', VITE_MENU_API_MODE: '', VITE_ORDER_API_MODE: '' },
   },
 });

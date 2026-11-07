@@ -9,7 +9,7 @@ function mode(value: string | undefined, fallback: ApiMode): ApiMode {
 // 개별 모드가 기존 일괄 VITE_API_MODE보다 우선한다.
 const legacy = import.meta.env.VITE_API_MODE?.trim();
 const menuMode = mode(import.meta.env.VITE_MENU_API_MODE || legacy, 'http');
-const orderMode = mode(import.meta.env.VITE_ORDER_API_MODE || legacy, 'mock');
+const orderMode = mode(import.meta.env.VITE_ORDER_API_MODE || legacy, 'http');
 export const isMockMenuApi = menuMode === 'mock';
 export const isMockOrderApi = orderMode === 'mock';
 const scenario = import.meta.env.VITE_MOCK_SCENARIO ?? 'success';

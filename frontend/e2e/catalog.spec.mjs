@@ -73,7 +73,7 @@ test('404 images preserve card selection, prices, options and the order summary'
   await expect(page.locator('.order-summary')).toContainText('사진 준비 중');
   await expect(page.locator('.order-summary')).toContainText('아이스아메리카노');
   await page.getByRole('button', { name: /매장에서/ }).click();
-  await expect(page.getByRole('button', { name: '주문 확정 (개발용)' })).toBeEnabled();
+  await expect(page.getByRole('button', { name: '주문 확정', exact: true })).toBeEnabled();
 });
 
 test('an empty image path has a placeholder and can still be ordered', async ({ page }) => {
