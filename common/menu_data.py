@@ -10,4 +10,4 @@ MENUS = ['복숭아 아이스티', '레몬 아이스티', '아이스아메리카
 BINARY_ATTRIBUTES = ['커피', '티', '에이드', '라떼', '논커피라떼']
 TASTE_ATTRIBUTES = ['단맛', '신맛', '쓴맛']
 ATTRIBUTES = BINARY_ATTRIBUTES + TASTE_ATTRIBUTES + ['가격']
-PRICE_OPTIONS = list(range(3000, 7501, 500))
+PRICE_OPTIONS = list(range(3000, 8001, 500))
