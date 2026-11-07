@@ -14,8 +14,9 @@
 .order-step__confirm { width: 100%; margin-top: 28px; font-size: 24px; }
 .order-completion { text-align: center; }
 .order-completion__badge { display: inline-block; padding: 8px 16px; margin-bottom: 20px; background: var(--brand-yellow); border-radius: 24px; font-size: 18px; font-weight: 800; }
-.order-completion > p { font-size: 22px; }
-.order-completion .order-completion__number { font-size: clamp(36px, 8vw, 64px); font-weight: 900; margin: 12px 0; overflow-wrap: anywhere; }
+.order-completion__number-group { margin: 0; }
+.order-completion > p, .order-completion__number-group dt { font-size: 22px; }
+.order-completion__number { font-size: clamp(36px, 8vw, 64px); font-weight: 900; margin: 12px 0; overflow-wrap: anywhere; }
 .order-completion .order-summary { margin-top: 24px; text-align: left; }
 @media (max-width: 540px) {
   .order-summary { padding: 16px; gap: 12px; }

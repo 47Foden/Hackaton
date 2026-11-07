@@ -19,6 +19,7 @@ export interface CreateOrderRequest {
   service_type: ServiceType;
 }
 export interface OrderResponse extends CreateOrderRequest {
+  // DB BIGINT 주문번호는 정밀도를 유지하기 위해 문자열로 전달한다.
   order_id: string;
   order_number: string;
   menu_name: string;

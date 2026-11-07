@@ -20,7 +20,8 @@ export function createHttpApi(transport: typeof fetch = fetch): KioskApi {
           isOrder && ![404, 409, 422].includes(response.status));
       }
       if (isOrder && (response.status !== 201
-        || typeof body?.order_id !== 'string' || typeof body?.order_number !== 'string'
+        || typeof body?.order_number !== 'string' || !/^[1-9][0-9]*$/.test(body.order_number)
+        || body.order_id !== body.order_number
         || typeof body?.menu_name !== 'string' || typeof body?.menu_id !== 'string'
         || !['HOT', 'COLD'].includes(body?.temperature) || !['DINE_IN', 'TAKEOUT'].includes(body?.service_type)
         || body?.quantity !== 1 || !Number.isInteger(body?.total_price_krw) || body.total_price_krw < 0

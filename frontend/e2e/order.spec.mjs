@@ -2,10 +2,11 @@ import { test, expect } from '@playwright/test';
 import { createMockApi } from '../src/api/mock/createMockApi.ts';
 
 const draft = { menu_id: 'iced_americano', temperature: 'COLD', service_type: 'TAKEOUT' };
+const orderNumber = '9007199254740993';
 const result = {
   ...draft,
-  order_id: '42',
-  order_number: '42',
+  order_id: orderNumber,
+  order_number: orderNumber,
   menu_name: '아이스아메리카노',
   quantity: 1,
   total_price_krw: 2300,
@@ -50,7 +51,10 @@ test('final confirmation submits once and locks the buttons while waiting', asyn
   }
   const completion = page.getByRole('region', { name: '주문 완료' });
   await expect(completion).toBeVisible();
-  await expect(completion.getByText('42', { exact: true })).toBeVisible();
+  await expect(completion.getByRole('term')).toHaveText('주문번호');
+  const displayedNumber = completion.getByRole('definition');
+  await expect(displayedNumber).toBeVisible();
+  await expect(displayedNumber).toHaveText(orderNumber);
   await expect(completion).toContainText('2,300원');
   expect(requests).toEqual([{ method: 'POST', body: draft }]);
 });

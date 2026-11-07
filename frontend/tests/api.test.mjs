@@ -4,6 +4,15 @@ import { createMockApi } from '../src/api/mock/createMockApi.ts';
 import { createHttpApi } from '../src/api/http.ts';
 
 const request = { menu_id: 'iced_americano', temperature: 'COLD', service_type: 'TAKEOUT' };
+const storedOrder = {
+  ...request,
+  order_id: '9007199254740993',
+  order_number: '9007199254740993',
+  menu_name: '아이스아메리카노',
+  quantity: 1,
+  total_price_krw: 2000,
+  created_at: '2026-11-07T00:00:00Z',
+};
 
 test('mock uses the API catalogue and computes server-side order fields', async () => {
   const api = createMockApi({ delayMs: 0 });
@@ -38,16 +47,26 @@ test('mock supports empty menus, failure, and cancellation without returning suc
   await assert.rejects(pending, error => error.name === 'AbortError');
 });
 
-test('HTTP adapter sends the same request and receives the mock contract without fallback', async () => {
-  const mock = createMockApi({ delayMs: 0 });
-  const expected = await mock.createOrder(request);
+test('HTTP adapter preserves the exact DB order number string', async () => {
   const api = createHttpApi(async (url, init) => {
     assert.equal(url, '/api/orders');
     assert.equal(init.method, 'POST');
     assert.deepEqual(JSON.parse(init.body), request);
-    return Response.json(expected, { status: 201 });
+    return Response.json(storedOrder, { status: 201 });
   });
-  assert.deepEqual(await api.createOrder(request), expected);
+  assert.deepEqual(await api.createOrder(request), storedOrder);
+});
+
+test('HTTP orders require matching DB order ID and number strings', async () => {
+  for (const identifiers of [
+    { order_id: '', order_number: '' },
+    { order_id: 42, order_number: 42 },
+    { order_id: '42', order_number: '43' },
+    { order_id: 'DEV-0001', order_number: 'DEV-0001' },
+  ]) {
+    const api = createHttpApi(async () => Response.json({ ...storedOrder, ...identifiers }, { status: 201 }));
+    await assert.rejects(api.createOrder(request), error => error.code === 'INVALID_RESPONSE' && error.uncertain);
+  }
 });
 
 test('HTTP errors distinguish safe rejection from uncertain storage and transport outcomes', async () => {
@@ -64,7 +83,6 @@ test('HTTP errors distinguish safe rejection from uncertain storage and transpor
 });
 
 test('only a 201 order response can complete the order', async () => {
-  const order = await createMockApi({ delayMs: 0 }).createOrder(request);
-  const api = createHttpApi(async () => Response.json(order, { status: 202 }));
+  const api = createHttpApi(async () => Response.json(storedOrder, { status: 202 }));
   await assert.rejects(api.createOrder(request), error => error.code === 'INVALID_RESPONSE' && error.uncertain);
 });
