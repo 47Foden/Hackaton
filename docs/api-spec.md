@@ -161,11 +161,48 @@ multipart 요청 전체는 오디오 제한에 헤더 여유 16 KiB를 더해 �
 | 503 | `AUDIO_BUSY`, `AUDIO_TOOLS_UNAVAILABLE` | 다른 요청 처리 중이거나 FFmpeg 또는 ffprobe가 설치되지 않음 |
 | 504 | `AUDIO_TIMEOUT` | 검사 또는 변환 도구 타임아웃 |
 
-### 7.2 `POST /api/voice/interpret` — 전사와 주문 단계 해석 제안
+### 7.2 `POST /api/voice/interpret` — 전사와 주문 단계 해석
 
-음성 전사와 해석 연결은 후속이다. multipart `audio`와 `stage`, 필요한 경우 `selected_menu_id`와 `candidate_menu_ids`를 받아 `transcript` 및 `select_menu`, `set_temperature`, `set_service_type`, `recommend`, `retry` 행동을 반환하는 계약을 제안한다. 최종 주문 확정은 화면의 주문 확정 버튼에서 수행한다.
+`multipart/form-data`로 전송한다. `audio`는 필수 파일이며 7.1의 WebM/Opus 형식과 크기·길이 제한을 적용한다. `stage`는 아래 값 중 하나인 필수 문자열이다. `candidate_menu_ids`는 같은 이름의 폼 필드를 후보 표시 순서대로 반복한다. JSON 배열, 쉼표 구분 문자열, `candidate_menu_ids[]` 키는 사용하지 않는다.
 
-공용 서버에서는 Whisper를 미리 로드하고, 전사 초기 예산 25초와 전체 클라이언트 요청 예산 40초를 사용한다. 공용 서버 실측 후 조정한다.
+| `stage` | 필수 맥락 | 허용 응답 행동 |
+| --- | --- | --- |
+| `menu` | `audio`, `stage` | `select_menu`, `recommend`, `retry` |
+| `temperature` | `audio`, `stage`, `selected_menu_id` | `set_temperature`, `retry` |
+| `service_type` | `audio`, `stage`, `selected_menu_id` | `set_service_type`, `retry` |
+| `recommendations` | `audio`, `stage`, `candidate_menu_ids` 1~4개 | `select_menu`, `recommend`, `retry` |
+
+메뉴 ID는 등록된 고정 ID를 사용한다. 단계에 해당하지 않는 맥락 필드와 중복 후보는 거부한다. 추천 화면의 메뉴 선택은 현재 후보 안에서만 가능하다. 판매 여부와 제공 온도는 DB 카탈로그를 기준으로 확인한다.
+
+```sh
+curl -F 'audio=@recording.webm;type=audio/webm' -F 'stage=recommendations' \
+  -F 'candidate_menu_ids=cafe_latte' -F 'candidate_menu_ids=green_tea_latte' \
+  http://localhost:8000/api/voice/interpret
+```
+
+성공은 `200`과 `{ "transcript": "카페라떼 주세요.", "action": { "type": "select_menu", "menu_id": "cafe_latte" } }` 형식으로 반환한다. `action.type`별 필드는 다음과 같다.
+
+| `type` | 필드 |
+| --- | --- |
+| `select_menu` | `menu_id` |
+| `set_temperature` | `temperature` (`HOT` 또는 `COLD`) |
+| `set_service_type` | `service_type` (`DINE_IN` 또는 `TAKEOUT`) |
+| `recommend` | `filters`와 `targets`. 예를 들어 ‘달지 않은 차’는 `filters: {"tea": 1}`, `targets: {"sweetness": 0.2}`를 반환한다. |
+| `retry` | `reason` (`EMPTY_TRANSCRIPT`, `UNRECOGNIZED`, `MENU_UNAVAILABLE`, `INVALID_OPTION`, `OUTSIDE_CANDIDATES`) |
+
+빈 전사와 모호한 발화는 `200`의 `retry`로 안내한다. 단일 발화는 현재 단계의 행동 하나만 반환한다. `recommend`는 추천 API에 전달할 조건이며, 주문 확정은 화면의 주문 확정 버튼에서 수행한다.
+
+7.1의 오디오 오류와 처리량 제한을 공유하며, 다음 오류를 추가한다.
+
+| HTTP | code | 조건 |
+| --- | --- | --- |
+| 422 | FastAPI 기본 `detail` 배열 | 필수 폼 필드 누락, `stage` 값 오류 또는 메뉴 ID 형식 오류 |
+| 422 | `INVALID_VOICE_CONTEXT` | 단계에 필요한 메뉴 ID 누락, 미등록 ID, 중복 후보 또는 단계와 맥락 불일치 |
+| 502 | `TRANSCRIPTION_FAILED` | 전사 워커가 실패했거나 유효한 응답을 반환하지 않음 |
+| 503 | `TRANSCRIPTION_UNAVAILABLE`, `CATALOG_UNAVAILABLE` | 워커 미설정·연결 불가·사용 중, 또는 DB 카탈로그 조회 실패 |
+| 504 | `TRANSCRIPTION_TIMEOUT` | 전사 워커 응답 대기 시간이 25초 초과 |
+
+Whisper는 공용 서버의 전사 워커에서 미리 로드한다. FastAPI는 내부 `VOICE_TRANSCRIPTION_URL`로 변환된 PCM을 보내고 전사 텍스트를 받는다. 브라우저 전체 요청 예산은 40초로 잡고 공용 서버 실측 후 조정한다.
 
 기존 Pretuning·추천 설계는 아래에 보존한다. 데이터와 충돌할 경우 위 common 매핑이 우선하며, 관리 작업의 request_id 정책을 기본 주문 API에 적용하지 않는다.
 

@@ -80,7 +80,7 @@ def _run_audio_tool(*args: str, deadline: float) -> bytes:
         raise VoiceAudioError(422, "INVALID_AUDIO", "녹음 파일을 읽을 수 없어요.") from None
 
 
-def prepare_voice_audio(data: bytes, filename: str, mime_type: str) -> PreparedVoiceAudio:
+def validate_voice_upload(data: bytes, filename: str, mime_type: str) -> None:
     if len(data) > MAX_AUDIO_BYTES:
         raise VoiceAudioError(413, "AUDIO_TOO_LARGE", AUDIO_TOO_LARGE_MESSAGE)
     if not data:
@@ -91,6 +91,19 @@ def prepare_voice_audio(data: bytes, filename: str, mime_type: str) -> PreparedV
     if not _has_webm_header(data):
         raise VoiceAudioError(415, "AUDIO_FORMAT_MISMATCH", "파일 이름과 실제 녹음 형식이 일치하지 않아요.")
 
+
+def normalize_voice_audio(source: Path, deadline: float) -> bytes:
+    # Chrome recordings can omit container duration. Decode one extra second to enforce the limit.
+    return _run_audio_tool(
+        "ffmpeg", "-nostdin", "-v", "error", "-xerror", "-protocol_whitelist", "file,pipe",
+        "-i", str(source), "-map", "0:a:0", "-t", str(MAX_AUDIO_SECONDS + 1),
+        "-ac", "1", "-ar", str(SAMPLE_RATE_HZ), "-c:a", "pcm_s16le", "-f", "s16le", "pipe:1",
+        deadline=deadline,
+    )
+
+
+def prepare_voice_audio(data: bytes, filename: str, mime_type: str) -> PreparedVoiceAudio:
+    validate_voice_upload(data, filename, mime_type)
     with TemporaryDirectory(prefix="kiosk-voice-") as temp:
         deadline = monotonic() + AUDIO_PREPARATION_TIMEOUT_SECONDS
         source = Path(temp) / "source.webm"
@@ -109,13 +122,7 @@ def prepare_voice_audio(data: bytes, filename: str, mime_type: str) -> PreparedV
         if not stream.get("sample_rate") or not stream.get("channels"):
             raise VoiceAudioError(422, "INVALID_AUDIO", "녹음의 오디오 정보를 확인하지 못했어요.")
 
-        # Chrome recordings can omit container duration. Decode one extra second to enforce the limit.
-        pcm = _run_audio_tool(
-            "ffmpeg", "-nostdin", "-v", "error", "-xerror", "-protocol_whitelist", "file,pipe",
-            "-i", str(source), "-map", "0:a:0", "-t", str(MAX_AUDIO_SECONDS + 1),
-            "-ac", "1", "-ar", str(SAMPLE_RATE_HZ), "-c:a", "pcm_s16le", "-f", "s16le", "pipe:1",
-            deadline=deadline,
-        )
+        pcm = normalize_voice_audio(source, deadline)
 
     result = PreparedVoiceAudio(pcm, int(stream["sample_rate"]), stream["channels"])
     if not pcm:

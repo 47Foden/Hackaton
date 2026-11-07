@@ -36,8 +36,8 @@
 ### 5.2 녹음 전송과 단계별 해석
 
 - [x] 사용자가 **녹음 종료**를 누르면 마지막 `dataavailable`까지 모아 실제 MIME의 Blob을 만든다. 트랙을 해제한 뒤 비어 있지 않은 녹음만 `/api/voice/audio`로 보낸다. 단계 이동과 홈 이동은 업로드를 취소한다.
-- [ ] `POST /api/voice/interpret`에서 multipart `audio`, `stage`, 필요한 경우 `selected_menu_id`와 `candidate_menu_ids`를 받는다. 배열 인코딩과 필수 필드, 성공·오류 응답은 구현 전에 [API 명세](../api-spec.md)에 확정한다. 업로드 검증·변환·Whisper 전사·텍스트 해석을 각각 분리해 테스트할 수 있게 한다.
-- [ ] 한국어 전사 텍스트를 현재 단계에서 허용되는 행동으로 변환한다. 등록 메뉴명이 하나로 명확히 일치하면 고정 `menu_id`를 사용하고, 구분되는 메뉴명을 합치지 않는다. 명확한 메뉴명은 없지만 지원되는 취향 표현이 있으면 추천 조건을 반환한다. 무음, 빈 전사, 모호한 메뉴명과 선택지 불일치는 `retry`로 처리한다.
+- [x] `POST /api/voice/interpret`의 multipart 필드, 반복 키 배열 인코딩, 성공·오류 응답을 [API 명세](../api-spec.md)에 확정했다. 오디오 검증·변환, 전사 워커 호출, 단계별 텍스트 해석을 분리했다.
+- [x] 등록 메뉴명과 옵션을 현재 단계의 행동으로 변환한다. 등록 메뉴명 또는 현재 후보 순서가 명확하면 `select_menu`, 지원하는 취향 표현은 `recommend`, 빈 전사와 모호한 표현은 `retry`를 반환한다.
 
 | 현재 단계 | 허용 행동과 검증 |
 | --- | --- |
@@ -48,6 +48,17 @@
 | 최종 확인·전송·완료 | 주문 확정은 기존 버튼에서 수행한다. 음성 해석에서 이 단계의 주문 상태를 변경하는 행동은 정의하지 않는다. |
 
 - [ ] 유효한 `select_menu`, `set_temperature`, `set_service_type` 결과는 터치 입력과 같은 선택 함수에 연결한다. 서버의 행동 검증에 더해 프론트에서도 현재 단계와 최신 메뉴·옵션을 확인한 뒤 기존 reducer를 호출한다.
+
+#### 전사 워커 실행
+
+기존 Whisper 벤치마크 가상 환경과 로컬 가중치를 사용한다. 저장소 루트에서 PowerShell을 열어 다음 명령으로 모델을 올린다. [벤치마크 환경 준비](whisper-benchmark.md)
+
+```powershell
+$env:PYTHONPATH = (Resolve-Path backend).Path
+& ./backend/scripts/voice/.venv/Scripts/python.exe -m app.services.voice.whisper_worker --model-dir models/whisper-large-v3-turbo --port 8765
+```
+
+FastAPI에는 `VOICE_TRANSCRIPTION_URL`을 지정한다. 같은 호스트에서 직접 실행할 때는 `http://127.0.0.1:8765/transcribe`, 로컬 Docker Desktop에서는 `http://host.docker.internal:8765/transcribe`를 사용한다. 공용 서버에서는 전사 워커를 사설 인터페이스에 둔다. `--model-dir`과 `--device`로 배포 모델과 CPU/CUDA를 선택한다. API에서 25초를 넘겨 연결을 종료해도 워커는 진행 중인 전사를 마칠 때까지 다음 전사를 받지 않는다.
 
 ### 5.3 추천 데이터와 후보 화면
 

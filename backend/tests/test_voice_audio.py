@@ -18,10 +18,13 @@ def webm_audio(duration=1, codec="libopus", container="webm"):
     ], check=True, capture_output=True).stdout
 
 
-async def post_audio(audio, filename, mime_type, before_upload=None):
+async def post_audio(audio, filename, mime_type, before_upload=None, *, path="/api/voice/audio", fields=()):
     boundary = "voice-audio-test-boundary"
     body = (f'--{boundary}\r\nContent-Disposition: form-data; name="audio"; filename="{filename}"\r\n'
-            f"Content-Type: {mime_type}\r\n\r\n").encode() + audio + f"\r\n--{boundary}--\r\n".encode()
+            f"Content-Type: {mime_type}\r\n\r\n").encode() + audio
+    for name, value in fields:
+        body += f'\r\n--{boundary}\r\nContent-Disposition: form-data; name="{name}"\r\n\r\n{value}'.encode()
+    body += f"\r\n--{boundary}--\r\n".encode()
     messages = []
 
     async def receive():
@@ -34,7 +37,7 @@ async def post_audio(audio, filename, mime_type, before_upload=None):
 
     await app({
         "type": "http", "asgi": {"version": "3.0"}, "http_version": "1.1",
-        "method": "POST", "scheme": "http", "path": "/api/voice/audio", "raw_path": b"/api/voice/audio",
+        "method": "POST", "scheme": "http", "path": path, "raw_path": path.encode(),
         "query_string": b"", "root_path": "",
         "headers": [(b"content-type", f"multipart/form-data; boundary={boundary}".encode())],
         "server": ("testserver", 80), "client": ("127.0.0.1", 12345),

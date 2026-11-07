@@ -2,14 +2,19 @@ from asyncio import timeout
 from threading import BoundedSemaphore
 from typing import Annotated
 
-from fastapi import APIRouter, File, HTTPException, Request, UploadFile
+import psycopg
+from fastapi import APIRouter, File, Form, HTTPException, Request, UploadFile
 from fastapi.routing import APIRoute
 from starlette.requests import ClientDisconnect
 
-from app.schemas.voice import VoiceAudioResponse
+from app.db.connection import DatabaseConfigurationError
+from app.repositories.menus import CatalogReadError, list_menus
+from app.schemas.voice import MenuId, VoiceAudioResponse, VoiceInterpretResponse, VoiceStage
 from app.services.voice.audio import (
-    AUDIO_TOO_LARGE_MESSAGE, MAX_AUDIO_BYTES, SAMPLE_RATE_HZ, VoiceAudioError, prepare_voice_audio,
+    AUDIO_TOO_LARGE_MESSAGE, MAX_AUDIO_BYTES, SAMPLE_RATE_HZ, PreparedVoiceAudio, VoiceAudioError, prepare_voice_audio,
 )
+from app.services.voice.interpretation import interpret_transcript
+from app.services.voice.transcription import TranscriptionError, transcribe_voice
 
 MAX_MULTIPART_BYTES = MAX_AUDIO_BYTES + 16 * 1024
 UPLOAD_TIMEOUT_SECONDS = 5
@@ -64,22 +69,66 @@ class VoiceUploadRoute(APIRoute):
 router = APIRouter(prefix="/api/voice", tags=["voice"], route_class=VoiceUploadRoute)
 
 
-@router.post("/audio", response_model=VoiceAudioResponse)
-def inspect_audio(audio: Annotated[UploadFile, File()]) -> VoiceAudioResponse:
+def _prepare_upload(audio: UploadFile) -> tuple[PreparedVoiceAudio, int]:
     data = audio.file.read(MAX_AUDIO_BYTES + 1)
     mime_type = audio.content_type or ""
     try:
         prepared = prepare_voice_audio(data, audio.filename or "", mime_type)
     except VoiceAudioError as error:
         raise HTTPException(error.status, detail={"code": error.code, "message": str(error)}) from None
+    return prepared, len(data)
+
+
+@router.post("/audio", response_model=VoiceAudioResponse)
+def inspect_audio(audio: Annotated[UploadFile, File()]) -> VoiceAudioResponse:
+    prepared, size_bytes = _prepare_upload(audio)
     return VoiceAudioResponse(
-        mime_type=mime_type,
+        mime_type=audio.content_type or "",
         container="webm",
         codec="opus",
         duration_seconds=prepared.duration_seconds,
-        size_bytes=len(data),
+        size_bytes=size_bytes,
         source_sample_rate_hz=prepared.source_sample_rate_hz,
         source_channels=prepared.source_channels,
         sample_rate_hz=SAMPLE_RATE_HZ,
         channels=1,
     )
+
+
+def _invalid_context() -> HTTPException:
+    return HTTPException(422, detail={
+        "code": "INVALID_VOICE_CONTEXT", "message": "현재 주문 단계의 메뉴와 후보를 확인해 주세요.",
+    })
+
+
+@router.post("/interpret", response_model=VoiceInterpretResponse)
+def interpret_audio(
+    audio: Annotated[UploadFile, File()],
+    stage: Annotated[VoiceStage, Form()],
+    selected_menu_id: Annotated[MenuId | None, Form()] = None,
+    candidate_menu_ids: Annotated[list[MenuId] | None, Form()] = None,
+) -> VoiceInterpretResponse:
+    candidates = tuple(candidate_menu_ids or ())
+    requires_selection = stage in {"temperature", "service_type"}
+    if (requires_selection != (selected_menu_id is not None)
+            or (stage == "recommendations") != bool(candidates)
+            or len(candidates) > 4 or len(set(candidates)) != len(candidates)):
+        raise _invalid_context()
+
+    try:
+        menus = {menu["menu_id"]: menu for menu in list_menus()}
+    except (psycopg.Error, DatabaseConfigurationError, CatalogReadError):
+        raise HTTPException(503, detail={
+            "code": "CATALOG_UNAVAILABLE", "message": "메뉴를 불러오지 못했어요. 잠시 후 다시 시도해 주세요.",
+        }) from None
+    if (selected_menu_id is not None and selected_menu_id not in menus) or any(menu_id not in menus for menu_id in candidates):
+        raise _invalid_context()
+
+    prepared, _ = _prepare_upload(audio)
+    try:
+        transcript = transcribe_voice(prepared.pcm_s16le)
+    except TranscriptionError as error:
+        raise HTTPException(error.status, detail={"code": error.code, "message": str(error)}) from None
+
+    action = interpret_transcript(transcript, stage, menus, selected_menu_id=selected_menu_id, candidate_menu_ids=candidates)
+    return VoiceInterpretResponse(transcript=transcript, action=action)
