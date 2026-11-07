@@ -2,7 +2,7 @@
 
 ## 1. 기준과 범위
 
-테이블 migration, 사전 검증을 포함한 seed, DB 연결과 메뉴 조회 함수는 구현했다. HTTP 메뉴 조회 라우터도 구현했다. 주문 저장 서비스는 후속이다. PostgreSQL 17과 현재 psycopg를 사용하고 ORM 추가를 필수로 하지 않는다.
+테이블 migration, 사전 검증을 포함한 seed, DB 연결, 메뉴 조회 및 주문 저장 API를 구현했다. PostgreSQL 17과 현재 psycopg를 사용하고 ORM 추가를 필수로 하지 않는다.
 
 우선순위: **common → [API 명세](api-spec.md)와 이 DB 명세 → [기본 주문 계획](plan/basic-order-flow.md)**. common 자체는 변경하지 않는다. API 명세 2절의 고정 ID 매핑을 사용한다.
 

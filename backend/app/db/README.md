@@ -39,4 +39,4 @@ docker compose run --rm -T --no-deps -v "$PWD/backend/tests:/tests:ro" backend p
 
 검증 대상: migration 신규/반복 적용, 변경된 체크섬 거부, SQL 실패의 DDL/ledger 롤백, seed 반복과 기존 설정/주문 유지, common 가격/카테고리 매핑, 미등록 메뉴/누락 이미지/불리언 가격 거부, DB 제약과 연결 컨텍스트의 rollback. SQL 실행을 흉내 내는 mock 대신 실제 PostgreSQL을 사용한다.
 
-GET /api/menus는 구현됐으며 schemas/menus.py로 응답을 검증한다. 조회 API/DB 통합 테스트는 총 10개다. 주문 저장 서비스와 프론트 HTTP 전환은 후속이다.
+API 통합 테스트는 메뉴 조회와 주문 저장을 검증한다. 주문 테스트는 요청 거부, 현재 DB 가격과 주문 스냅샷, COMMIT 실패 시 롤백과 연결 해제를 확인한다. 주문 화면의 HTTP 연결은 후속이다.
