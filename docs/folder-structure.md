@@ -44,3 +44,5 @@ Hackaton/
 - components/order/OrderSummary는 선택 메뉴·온도별 이미지·가격·옵션을 표시합니다. screens/order/OrderFlow.css에서 단계별 화면 스타일을 관리합니다. frontend/tests/order.test.mjs는 주문 상태 전이를 검증합니다.
 
 - backend/app/routers/menus.py는 메뉴 조회 HTTP 처리, schemas/menus.py는 응답 계약, repositories/menus.py는 DB 조회를 담당합니다. 판매 중지 상태도 반환하며 표시 순서와 ID로 정렬합니다.
+
+- 메뉴 조회 기본값은 HTTP이며 주문은 개발용 mock입니다. api/createKioskApi.ts가 두 연결을 조합하고 api/index.ts에서 환경 설정을 해석합니다. 로컬 Vite 프록시는 127.0.0.1:8000, Compose는 backend:8000을 사용합니다.

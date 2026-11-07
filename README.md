@@ -2,7 +2,7 @@
 
 구현을 시작할 때: [3인 구현 첫날 계획 — 순서·분업·완료 기준](docs/plans/implementation-day1.md)
 
-메뉴 DB 준비: [migration·seed 실행과 PostgreSQL 테스트](backend/app/db/README.md). 메뉴 조회 HTTP API와 주문 저장은 후속 구현이며, 현재 화면은 기본 mock 모드를 사용합니다.
+메뉴 DB 준비: [migration·seed 실행과 PostgreSQL 테스트](backend/app/db/README.md). 메뉴 조회 HTTP API와 주문 저장은 후속 구현이며, 현재 화면은 실제 메뉴 API를 조회하고 주문 확정만 개발용 mock을 사용합니다. 설정은 [프론트 API 안내](frontend/src/api/README.md)를 따릅니다.
 
 처음 사용하는 팀원은 **1번부터 순서대로** 따라 하면 됩니다.
 이미 설치와 첫 실행을 마쳤다면 **5번 ‘매일 개발할 때’**만 보면 됩니다.

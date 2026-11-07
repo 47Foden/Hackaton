@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { KioskLayout } from '../components/layout/KioskLayout';
 import { MicrophoneButton } from '../components/voice/MicrophoneButton';
 import { MenuBoard, type MenuBoardView } from '../components/menu/MenuBoard';
-import { kioskApi, isMockApi } from '../api';
+import { CatalogStatus } from '../components/menu/CatalogStatus';
+import { kioskApi, isMockOrderApi } from '../api';
 import { useMenus } from '../hooks/useMenus';
 import { useOrderFlow } from '../hooks/useOrderFlow';
 import { TemperatureScreen } from './order/TemperatureScreen';
@@ -24,23 +25,21 @@ export function OrderScreen({ onHome }: { onHome: () => void }) {
   const { state: catalog, reload } = useMenus(kioskApi);
   const [menuView, setMenuView] = useState<MenuBoardView>({ mode: 'simplified', enlarged: false });
   const guide = order.stage === 'complete'
-    ? { title: isMockApi ? '개발용 주문 흐름을 완료했어요.' : '주문이 접수되었어요.',
-      description: isMockApi ? '실제 주문 접수와 결제는 진행되지 않았어요.' : '주문번호를 확인해 주세요.' }
+    ? { title: isMockOrderApi ? '개발용 주문 흐름을 완료했어요.' : '주문이 접수되었어요.',
+      description: isMockOrderApi ? '실제 주문 접수와 결제는 진행되지 않았어요.' : '주문번호를 확인해 주세요.' }
     : guidance[order.stage];
 
   return (
     <KioskLayout {...guide}
       voiceDescription="마이크를 통한 음성 주문과 추천은 준비 중이에요."
-      status={isMockApi ? '개발용 화면 · 실제 주문은 저장되지 않아요.' : '메뉴와 주문 내용을 확인해 주세요.'}
+      status={isMockOrderApi ? '개발용 화면 · 실제 주문은 저장되지 않아요.' : '메뉴와 주문 내용을 확인해 주세요.'}
       microphone={<MicrophoneButton disabled helpText="준비 중" />}
       onHome={order.stage === 'submitting' ? undefined : onHome}
     >
-      {order.stage === 'menu' && catalog.status === 'loading' && <p role="status">메뉴를 불러오는 중이에요…</p>}
-      {order.stage === 'menu' && catalog.status === 'error' && <div role="alert">
-        <p>{catalog.message}</p><button type="button" className="outline-button" onClick={reload}>다시 불러오기</button>
-      </div>}
+      {order.stage === 'menu' && catalog.status === 'loading' && <CatalogStatus status="loading" />}
+      {order.stage === 'menu' && catalog.status === 'error' && <CatalogStatus status="error" message={catalog.message} onReload={reload} />}
       {order.stage === 'menu' && catalog.status === 'ready' && (catalog.menus.length === 0
-        ? <p role="status">표시할 메뉴가 없어요.</p>
+        ? <CatalogStatus status="empty" onReload={reload} />
         : <MenuBoard menus={catalog.menus} simplifiedMenus={catalog.menus.filter(menu => menu.featured)}
           selectedMenu={null} view={menuView} onViewChange={setMenuView}
           onSelect={name => {
@@ -52,10 +51,10 @@ export function OrderScreen({ onHome }: { onHome: () => void }) {
       {order.stage === 'service_type' && <ServiceTypeScreen menu={order.menu} temperature={order.temperature}
         onSelect={serviceType => dispatch({ type: 'set_service_type', serviceType })} />}
       {(order.stage === 'review' || order.stage === 'submitting') && <ReviewScreen draft={order.draft}
-        isMock={isMockApi} pending={order.stage === 'submitting'}
+        isMock={isMockOrderApi} pending={order.stage === 'submitting'}
         error={order.stage === 'review' ? order.error : undefined} onConfirm={confirm} />}
       {order.stage === 'complete' && <CompletionScreen draft={order.draft} result={order.result}
-        isMock={isMockApi} onHome={onHome} />}
+        isMock={isMockOrderApi} onHome={onHome} />}
     </KioskLayout>
   );
 }

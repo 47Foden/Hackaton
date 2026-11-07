@@ -21,5 +21,8 @@ export function useMenus(api: KioskApi) {
     });
     return () => controller.abort();
   }, [api, attempt]);
-  return { state, reload: () => setAttempt(value => value + 1) };
+  return { state, reload: () => {
+    setState({ status: 'loading' });
+    setAttempt(value => value + 1);
+  } };
 }

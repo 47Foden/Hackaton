@@ -1,0 +1,6 @@
+.menu-image-placeholder { display: grid; place-items: center; background: #f5f4ef; color: #62625a; border-radius: 8px; font-size: 16px; }
+.order-summary .menu-image-placeholder { width: 120px; height: 150px; flex-shrink: 0; }
+@media (max-width: 540px) {
+  .catalog-status { margin: 20px auto; padding: 24px 16px; }
+  .order-summary .menu-image-placeholder { width: 80px; height: 110px; }
+}

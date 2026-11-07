@@ -4,7 +4,10 @@ services:
   frontend:
     build: ./frontend
     environment:
-      VITE_API_MODE: ${VITE_API_MODE:-mock}
+      VITE_API_MODE: ${VITE_API_MODE:-}
+      VITE_MENU_API_MODE: ${VITE_MENU_API_MODE:-}
+      VITE_ORDER_API_MODE: ${VITE_ORDER_API_MODE:-}
+      API_PROXY_TARGET: http://backend:8000
       VITE_MOCK_SCENARIO: ${VITE_MOCK_SCENARIO:-success}
     ports:
       - "127.0.0.1:5173:5173"

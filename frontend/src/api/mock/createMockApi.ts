@@ -2,7 +2,7 @@ import type { ApiMenu, KioskApi } from '../contracts.ts';
 import { ApiError } from '../errors.ts';
 import { mockCatalog } from './catalog.ts';
 
-interface MockOptions {
+export interface MockOptions {
   delayMs?: number;
   menus?: ApiMenu[];
   menuError?: boolean;
