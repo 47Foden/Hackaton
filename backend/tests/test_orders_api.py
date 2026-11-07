@@ -15,7 +15,8 @@ from app.db.migrate import migrate
 from app.db.seed import seed
 from app.main import app
 
-ORDER = {"menu_id": "espresso", "temperature": "HOT", "service_type": "TAKEOUT"}
+SELECTION = {"menu_id": "espresso", "temperature": "HOT", "service_type": "TAKEOUT"}
+ORDER = {**SELECTION, "request_id": "550e8400-e29b-41d4-a716-446655440000"}
 
 
 async def asgi_post_order(payload):
@@ -77,7 +78,7 @@ class OrdersApiTests(unittest.TestCase):
         self.assertEqual(stored["menu_name_snapshot"], "에스프레소")
         self.assertEqual(stored["created_at"], created_at)
         self.assertEqual(body, {
-            **ORDER, "order_id": str(stored["id"]), "order_number": str(stored["id"]),
+            **SELECTION, "order_id": str(stored["id"]), "order_number": str(stored["id"]),
             "menu_name": "에스프레소", "quantity": 1, "total_price_krw": 1700,
         })
 
@@ -86,13 +87,38 @@ class OrdersApiTests(unittest.TestCase):
             {**ORDER, "price_krw": 1}, {**ORDER, "quantity": 1}, {**ORDER, "menu_id": 1},
             {**ORDER, "menu_id": ""}, {**ORDER, "menu_id": "espresso\x00"},
             {**ORDER, "temperature": "ICE"}, {**ORDER, "service_type": "DELIVERY"},
-            {"menu_id": "espresso", "temperature": "HOT"},
+            {**ORDER, "request_id": "invalid"}, {**ORDER, "request_id": 1}, SELECTION,
+            {"request_id": ORDER["request_id"], "menu_id": "espresso", "temperature": "HOT"},
         ):
             with self.subTest(payload=payload):
                 status, body = self.post(payload)
                 self.assertEqual(status, 422)
                 self.assertIsInstance(body["detail"], list)
         self.assert_no_orders()
+
+    def test_replay_keeps_snapshot_and_rejects_changed_payload(self):
+        status, created = self.post(ORDER)
+        self.assertEqual(status, 201)
+        with connect(self.url) as connection:
+            connection.execute("UPDATE menus SET price_krw = 1900, is_available = false WHERE menu_id = 'espresso'")
+        self.assertEqual(self.post({**ORDER, "request_id": ORDER["request_id"].upper()}), (200, created))
+        for changed in ({"menu_id": "unknown"}, {"temperature": "COLD"}, {"service_type": "DINE_IN"}):
+            status, body = self.post({**ORDER, **changed})
+            self.assertEqual(status, 409)
+            self.assertEqual(body["detail"]["code"], "IDEMPOTENCY_CONFLICT")
+        with connect(self.url) as connection:
+            self.assertEqual(connection.execute("SELECT count(*) AS count FROM orders").fetchone()["count"], 1)
+
+    def test_concurrent_retries_create_one_order(self):
+        async def post_concurrently():
+            return await asyncio.gather(*(asgi_post_order(ORDER) for _ in range(5)))
+
+        with patch.dict(os.environ, {"DATABASE_URL": self.url}):
+            responses = asyncio.run(post_concurrently())
+        self.assertEqual(sorted(status for status, _ in responses), [200, 200, 200, 200, 201])
+        self.assertTrue(all(body == responses[0][1] for _, body in responses))
+        with connect(self.url) as connection:
+            self.assertEqual(connection.execute("SELECT count(*) AS count FROM orders").fetchone()["count"], 1)
 
     def test_rejects_unregistered_unsold_and_unsupported_options(self):
         with connect(self.url) as connection:

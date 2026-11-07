@@ -13,12 +13,15 @@ export interface ApiMenu {
   is_featured: boolean;
 }
 export interface MenusResponse { menus: ApiMenu[]; }
-export interface CreateOrderRequest {
+interface OrderSelection {
   menu_id: string;
   temperature: Temperature;
   service_type: ServiceType;
 }
-export interface OrderResponse extends CreateOrderRequest {
+export interface CreateOrderRequest extends OrderSelection {
+  request_id: string;
+}
+export interface OrderResponse extends OrderSelection {
   // DB BIGINT 주문번호는 정밀도를 유지하기 위해 문자열로 전달한다.
   order_id: string;
   order_number: string;

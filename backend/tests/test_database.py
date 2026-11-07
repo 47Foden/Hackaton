@@ -37,14 +37,19 @@ class DatabaseTests(unittest.TestCase):
         seed(self.url)
 
     def test_new_database_and_repeated_seed_preserve_settings_and_orders(self):
-        self.assertEqual(migrate(self.url), ['0001_menu_orders'])
-        self.assertEqual(migrate(self.url), [])
+        with tempfile.TemporaryDirectory() as temp:
+            directory = Path(temp)
+            shutil.copyfile(MIGRATIONS_DIR / '0001_menu_orders.sql', directory / '0001_menu_orders.sql')
+            self.assertEqual(migrate(self.url, directory), ['0001_menu_orders'])
         self.assertEqual(seed(self.url), 11)
         with connect(self.url) as conn:
             conn.execute("UPDATE menus SET is_available=false, is_featured=false WHERE menu_id='iced_americano'")
-            conn.execute("""INSERT INTO orders(menu_id, menu_name_snapshot, unit_price_krw,
+            legacy_order = conn.execute("""INSERT INTO orders(menu_id, menu_name_snapshot, unit_price_krw,
                 temperature, service_type, total_price_krw)
-                VALUES ('iced_americano', '기존 주문명', 2000, 'COLD', 'TAKEOUT', 2000)""")
+                VALUES ('iced_americano', '기존 주문명', 2000, 'COLD', 'TAKEOUT', 2000)
+                RETURNING *""").fetchone()
+        self.assertEqual(migrate(self.url), ['0002_order_request_id'])
+        self.assertEqual(migrate(self.url), [])
         seed(self.url)
         menus = list_menus(self.url)
         self.assertEqual(len(menus), 11)
@@ -59,8 +64,8 @@ class DatabaseTests(unittest.TestCase):
         self.assertNotEqual(actual['레몬티']['menu_id'], actual['레몬차']['menu_id'])
         with connect(self.url) as conn:
             order = conn.execute('SELECT * FROM orders').fetchone()
-            self.assertEqual(order['menu_name_snapshot'], '기존 주문명')
-            self.assertEqual(order['total_price_krw'], 2000)
+            self.assertIsInstance(order.pop('request_id'), uuid.UUID)
+            self.assertEqual(order, legacy_order)
             self.assertEqual(conn.execute('SELECT count(*) AS count FROM menu_categories').fetchone()['count'], 14)
 
     def test_validation_failure_writes_nothing(self):
@@ -97,12 +102,12 @@ class DatabaseTests(unittest.TestCase):
             with self.assertRaises(MigrationError):
                 migrate(self.url, directory)
             shutil.copyfile(MIGRATIONS_DIR / first.name, first)
-            (directory / '0002_invalid.sql').write_text('CREATE TABLE rollback_probe(id INTEGER); SELECT missing_column;')
+            (directory / '0003_invalid.sql').write_text('CREATE TABLE rollback_probe(id INTEGER); SELECT missing_column;')
             with self.assertRaises(psycopg.Error):
                 migrate(self.url, directory)
         with connect(self.url) as conn:
             self.assertIsNone(conn.execute("SELECT to_regclass('rollback_probe') AS name").fetchone()['name'])
-            self.assertEqual(conn.execute('SELECT count(*) AS count FROM schema_migrations').fetchone()['count'], 1)
+            self.assertEqual(conn.execute('SELECT count(*) AS count FROM schema_migrations').fetchone()['count'], 2)
 
     def test_database_constraints_and_connection_rollback(self):
         self.prepare()

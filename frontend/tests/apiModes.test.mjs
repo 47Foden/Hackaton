@@ -3,7 +3,10 @@ import assert from 'node:assert/strict';
 import { createKioskApi } from '../src/api/createKioskApi.ts';
 import { createMockApi } from '../src/api/mock/createMockApi.ts';
 
-const request = { menu_id: 'iced_americano', temperature: 'COLD', service_type: 'TAKEOUT' };
+const request = {
+  request_id: '550e8400-e29b-41d4-a716-446655440000',
+  menu_id: 'iced_americano', temperature: 'COLD', service_type: 'TAKEOUT',
+};
 
 test('default configuration uses HTTP for menus and orders', async () => {
   const mock = createMockApi({ delayMs: 0 });

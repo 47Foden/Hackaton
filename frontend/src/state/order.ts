@@ -3,7 +3,7 @@ import type { OrderResponse, ServiceType } from '../api/contracts';
 
 export type { ServiceType } from '../api/contracts';
 export interface OrderDraft { menu: Menu; temperature: Temperature; serviceType: ServiceType; }
-export interface OrderFailure { message: string; uncertain: boolean; }
+export interface OrderFailure { message: string; kind: 'rejected' | 'uncertain' | 'conflict'; }
 export type OrderState =
   | { stage: 'menu' }
   | { stage: 'temperature'; menu: Menu }
@@ -41,7 +41,7 @@ export function orderReducer(state: OrderState, action: OrderAction): OrderState
         ? { stage: 'review', draft: { menu: state.menu, temperature: state.temperature, serviceType: action.serviceType } }
         : state;
     case 'submit':
-      return state.stage === 'review' && !state.error?.uncertain ? { stage: 'submitting', draft: state.draft } : state;
+      return state.stage === 'review' && state.error?.kind !== 'conflict' ? { stage: 'submitting', draft: state.draft } : state;
     case 'submitted':
       return state.stage === 'submitting' ? { stage: 'complete', draft: state.draft, result: action.result } : state;
     case 'failed':

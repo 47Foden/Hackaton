@@ -9,7 +9,7 @@ interface ReviewScreenProps {
   onConfirm: () => void;
 }
 export function ReviewScreen({ draft, isMock, pending, error, onConfirm }: ReviewScreenProps) {
-  const confirmLabel = error ? '다시 시도' : '주문 확정';
+  const confirmLabel = error?.kind === 'uncertain' ? '같은 주문 다시 시도' : error ? '다시 시도' : '주문 확정';
   return (
     <section className="order-step" aria-label="최종 주문 확인" aria-busy={pending}>
       <OrderSummary {...draft} />
@@ -17,8 +17,8 @@ export function ReviewScreen({ draft, isMock, pending, error, onConfirm }: Revie
       {isMock && <p className="order-step__note">개발 모드예요. 실제 주문 접수와 결제는 진행되지 않아요.</p>}
       {error && <p role="alert" className="order-step__note">{error.message}</p>}
       <button type="button" className="primary-button order-step__confirm"
-        disabled={pending || error?.uncertain} onClick={onConfirm}>
-        {pending ? '주문 처리 중…' : error?.uncertain ? '접수 여부 확인 필요' : `${confirmLabel}${isMock ? ' (개발용)' : ''}`}
+        disabled={pending || error?.kind === 'conflict'} onClick={onConfirm}>
+        {pending ? '주문 처리 중…' : error?.kind === 'conflict' ? '요청 정보 확인 필요' : `${confirmLabel}${isMock ? ' (개발용)' : ''}`}
       </button>
     </section>
   );

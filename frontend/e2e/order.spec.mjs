@@ -60,7 +60,7 @@ test('final confirmation submits once and locks the buttons while waiting', asyn
   await expect(displayedNumber).toBeVisible();
   await expect(displayedNumber).toHaveText(orderNumber);
   await expect(completion).toContainText('2,300원');
-  expect(requests).toEqual([{ method: 'POST', body: draft }]);
+  expect(requests).toEqual([{ method: 'POST', body: { ...draft, request_id: expect.stringMatching(/^[0-9a-f-]{36}$/) } }]);
 });
 
 test('a definite rejection displays the reason and permits a manual retry', async ({ page }) => {
@@ -80,27 +80,46 @@ test('a definite rejection displays the reason and permits a manual retry', asyn
   expect(calls).toBe(2);
 });
 
-test('an uncertain storage response keeps resubmission locked', async ({ page }) => {
-  let calls = 0;
+test('a lost response can be recovered by retrying the same order request', async ({ page }) => {
+  const requests = [];
   await page.route('**/api/orders', route => {
-    calls += 1;
-    return route.fulfill({ status: 503, json: { detail: { code: 'ORDER_STORAGE_UNAVAILABLE', message: '주문 응답을 확인할 수 없어요.' } } });
+    requests.push(route.request().postDataJSON());
+    return requests.length === 1
+      ? route.abort('failed')
+      : route.fulfill({ status: 200, json: result });
   });
 
   await (await openReview(page)).click();
   await expect(page.getByRole('heading', { name: '주문 접수 여부를 확인해 주세요.' })).toBeVisible();
-  await expect(page.getByText('이미 접수됐을 수 있어요. 새 주문을 넣기 전에 직원에게 확인해 주세요.')).toBeVisible();
-  await expect(page.getByRole('button', { name: '접수 여부 확인 필요' })).toBeDisabled();
-  await expect(page.getByRole('button', { name: '다시 시도', exact: true })).toHaveCount(0);
   await expect(page.getByRole('region', { name: '주문 완료' })).toHaveCount(0);
-  expect(calls).toBe(1);
+  expect(requests).toHaveLength(1);
 
+  await page.getByRole('button', { name: '같은 주문 다시 시도', exact: true }).click();
+  await expect(page.getByRole('definition')).toHaveText(orderNumber);
+  expect(requests).toEqual([requests[0], requests[0]]);
+});
+
+test('an ID conflict locks retry until the customer starts a fresh order', async ({ page }) => {
+  const requests = [];
+  await page.route('**/api/orders', route => {
+    requests.push(route.request().postDataJSON());
+    return requests.length === 1
+      ? route.fulfill({ status: 409, json: { detail: { code: 'IDEMPOTENCY_CONFLICT', message: '같은 요청 ID로 접수된 주문의 내용이 다릅니다.' } } })
+      : route.fulfill({ status: 201, json: result });
+  });
+  await (await openReview(page)).click();
+  await expect(page.getByRole('heading', { name: '주문 요청을 확인해 주세요.' })).toBeVisible();
+  await expect(page.getByRole('button', { name: '요청 정보 확인 필요' })).toBeDisabled();
   await page.getByRole('button', { name: '처음으로', exact: true }).click();
   await page.getByRole('button', { name: '주문하기' }).click();
   await expect(page.getByRole('heading', { name: '간편 메뉴판' })).toBeVisible();
   await expect(page.getByRole('alert')).toHaveCount(0);
-  await expect(page.getByRole('button', { name: '접수 여부 확인 필요' })).toHaveCount(0);
-  expect(calls).toBe(1);
+  await page.getByRole('button', { name: /아이스아메리카노/ }).click();
+  await page.getByRole('button', { name: /포장해서/ }).click();
+  await page.getByRole('button', { name: '주문 확정', exact: true }).click();
+  await expect(page.getByRole('definition')).toHaveText(orderNumber);
+  expect(requests).toHaveLength(2);
+  expect(requests[0].request_id).not.toBe(requests[1].request_id);
 });
 
 test('returning home from completion releases speech and starts a fresh order', async ({ page }) => {

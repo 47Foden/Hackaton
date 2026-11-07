@@ -1,6 +1,6 @@
 # API 어댑터
 
-기본 실행에서 GET /api/menus와 POST /api/orders는 Vite 프록시 → FastAPI → PostgreSQL을 사용한다. 주문 확정 버튼이 선택한 메뉴 ID·온도·이용 방식을 전송한다.
+기본 실행에서 GET /api/menus와 POST /api/orders는 Vite 프록시 → FastAPI → PostgreSQL을 사용한다. 주문 확정 버튼이 UUID 요청 ID와 선택한 메뉴 ID·온도·이용 방식을 전송한다.
 
 - contracts.ts: 공통 요청·응답 계약.
 - http.ts: HTTP 요청, 15초 제한, 오류 변환.
@@ -42,9 +42,9 @@ docker compose exec -T backend python -m app.db.seed
 | empty | 메뉴 모드 mock일 때 빈 목록 |
 | menu-error | 메뉴 모드 mock일 때 조회 실패 |
 | order-rejected | 주문 모드 mock일 때 명확한 거부 |
-| order-uncertain | 주문 모드 mock일 때 접수 불명 |
+| order-uncertain | 주문 모드 mock에서 최초 응답 유실을 재현하고 같은 UUID 재시도 시 저장 결과를 반환 |
 
-실제 조회 모드에서는 menu-error/empty로 서버 응답을 덮어쓰지 않는다. HTTP 오류는 오류/재조회 UI로 표시한다. 지연·취소·불명확한 주문 결과를 처리하고, 접수 불명 상태에서는 자동 재전송하지 않는다.
+실제 조회 모드에서는 menu-error/empty로 서버 응답을 덮어쓰지 않는다. 접수 불명 화면의 수동 재시도는 최초 주문 내용과 UUID를 재사용한다. 새 주문 세션은 새 UUID를 생성한다.
 
 단위 테스트는 `npm --prefix frontend test`, 타입 검사와 빌드는 `npm --prefix frontend run build`로 실행한다. 어댑터 테스트는 HTTP 응답을 주입해 실행한다.
 

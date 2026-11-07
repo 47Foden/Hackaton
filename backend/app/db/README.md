@@ -12,7 +12,7 @@ docker compose exec -T backend python -m app.db.seed
 `--check`는 파일 검증만 하며 DB를 연결하거나 변경하지 않는다. migration과 seed는 명시적으로 실행한다. 앱 시작/health 요청에서 자동 실행하지 않는다. seed 실패가 테이블 미적용 때문이면 migration을 먼저 실행한다. 기존 볼륨을 삭제할 필요가 없다.
 
 - connection.py: DATABASE_URL 연결. with 블록 성공 시 commit, 오류 시 rollback, 종료 시 close.
-- migrations/: 순서가 고정된 SQL. 0001은 메뉴·카테고리·온도·주문 테이블이다.
+- migrations/: 순서가 고정된 SQL. 0001은 메뉴·카테고리·온도·주문 테이블이며, 0002는 기존 주문에 UUID를 채우고 `request_id` 유일 제약을 추가한다.
 - migrate.py: ledger 생성, 체크섬 검증, advisory lock, 한 트랜잭션에서 미적용 migration 실행. 적용된 파일은 수정하지 않고 새 번호를 추가한다.
 - catalog.py: common의 리터럴 메뉴 정의/JSON, ID 매핑, 가격·출처·이미지 파일 사전 검증. common Python 코드는 실행하지 않는다.
 - seed.py: 검증 완료 후 한 트랜잭션으로 UPSERT. 같은 seed는 중복을 만들지 않으며 기존 판매/간편 목록 설정·주문을 유지한다. common에서 사라진 기존 메뉴는 자동 삭제하지 않고 중단한다.
@@ -39,4 +39,4 @@ docker compose run --rm -T --no-deps -v "$PWD/backend/tests:/tests:ro" backend p
 
 검증 대상: migration 신규/반복 적용, 변경된 체크섬 거부, SQL 실패의 DDL/ledger 롤백, seed 반복과 기존 설정/주문 유지, common 가격/카테고리 매핑, 미등록 메뉴/누락 이미지/불리언 가격 거부, DB 제약과 연결 컨텍스트의 rollback. SQL 실행을 흉내 내는 mock 대신 실제 PostgreSQL을 사용한다.
 
-API 통합 테스트는 메뉴 조회와 주문 저장을 검증한다. 주문 테스트는 요청 거부, 현재 DB 가격과 주문 스냅샷, COMMIT 실패 시 롤백과 연결 해제를 확인한다.
+API 통합 테스트는 메뉴 조회와 주문 저장을 검증한다. 주문 테스트는 요청 거부, 주문 스냅샷, 커밋 실패 시 롤백과 연결 해제, 동일 UUID 동시 요청과 내용 충돌을 확인한다.

@@ -1,7 +1,7 @@
 import logging
 
 import psycopg
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, Response, status
 
 from app.db.connection import DatabaseConfigurationError
 from app.schemas.orders import CreateOrderRequest, OrderResponse
@@ -13,14 +13,16 @@ logger = logging.getLogger(__name__)
 ORDER_REJECTIONS = {
     "MENU_NOT_FOUND": (404, "등록되지 않은 메뉴입니다."),
     "MENU_UNAVAILABLE": (409, "현재 판매하지 않는 메뉴입니다."),
+    "IDEMPOTENCY_CONFLICT": (409, "같은 요청 ID로 접수된 주문의 내용이 다릅니다."),
     "INVALID_OPTION": (422, "선택할 수 없는 온도입니다."),
 }
 
 
-@router.post("", status_code=status.HTTP_201_CREATED, response_model=OrderResponse)
-def post_order(request: CreateOrderRequest) -> OrderResponse:
+@router.post("", status_code=status.HTTP_201_CREATED, response_model=OrderResponse,
+             responses={200: {"model": OrderResponse, "description": "Previously saved order"}})
+def post_order(request: CreateOrderRequest, response: Response) -> OrderResponse:
     try:
-        return create_order(request)
+        order, created = create_order(request)
     except OrderRejected as error:
         status_code, message = ORDER_REJECTIONS[error.code]
         raise HTTPException(status_code=status_code, detail={"code": error.code, "message": message}) from None
@@ -30,3 +32,6 @@ def post_order(request: CreateOrderRequest) -> OrderResponse:
             "code": "ORDER_STORAGE_UNAVAILABLE",
             "message": "주문 접수 여부를 확인할 수 없어요.",
         }) from None
+    if not created:
+        response.status_code = status.HTTP_200_OK
+    return order

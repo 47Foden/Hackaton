@@ -3,9 +3,10 @@ import assert from 'node:assert/strict';
 import { createMockApi } from '../src/api/mock/createMockApi.ts';
 import { createHttpApi } from '../src/api/http.ts';
 
-const request = { menu_id: 'iced_americano', temperature: 'COLD', service_type: 'TAKEOUT' };
+const selection = { menu_id: 'iced_americano', temperature: 'COLD', service_type: 'TAKEOUT' };
+const request = { ...selection, request_id: '550e8400-e29b-41d4-a716-446655440000' };
 const storedOrder = {
-  ...request,
+  ...selection,
   order_id: '9007199254740993',
   order_number: '9007199254740993',
   menu_name: '아이스아메리카노',
@@ -31,10 +32,21 @@ test('mock uses the API catalogue and computes server-side order fields', async 
 test('mock rejects unknown menus, unsupported options, and client prices', async () => {
   const api = createMockApi({ delayMs: 0 });
   for (const [payload, status] of [
+    [selection, 422],
+    [{ ...request, request_id: 'invalid' }, 422],
     [{ ...request, menu_id: 'missing' }, 404],
     [{ ...request, temperature: 'HOT' }, 422],
     [{ ...request, price_krw: 1 }, 422],
   ]) await assert.rejects(api.createOrder(payload), error => error.status === status && !error.uncertain);
+});
+
+test('mock recovers a saved response after an uncertain failure and rejects a changed payload', async () => {
+  const api = createMockApi({ orderError: 'uncertain', delayMs: 0 });
+  await assert.rejects(api.createOrder(request), error => error.uncertain);
+  const saved = await api.createOrder(request);
+  assert.equal(saved.order_number, 'DEV-0001');
+  assert.deepEqual(await api.createOrder(request), saved);
+  await assert.rejects(api.createOrder({ ...request, service_type: 'DINE_IN' }), error => error.code === 'IDEMPOTENCY_CONFLICT');
 });
 
 test('mock supports empty menus, failure, and cancellation without returning success', async () => {
@@ -82,7 +94,11 @@ test('HTTP errors distinguish safe rejection from uncertain storage and transpor
   await assert.rejects(createHttpApi(async () => Response.json({}, { status: 201 })).createOrder(request), error => error.code === 'INVALID_RESPONSE' && error.uncertain);
 });
 
-test('only a 201 order response can complete the order', async () => {
+test('order creation and replay accept 201 and 200 but not 202', async () => {
+  for (const status of [200, 201]) {
+    const api = createHttpApi(async () => Response.json(storedOrder, { status }));
+    assert.deepEqual(await api.createOrder(request), storedOrder);
+  }
   const api = createHttpApi(async () => Response.json(storedOrder, { status: 202 }));
   await assert.rejects(api.createOrder(request), error => error.code === 'INVALID_RESPONSE' && error.uncertain);
 });

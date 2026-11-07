@@ -124,18 +124,19 @@ API의 categories는 CATEGORIES 순서로, 온도는 HOT/COLD 순서로 정렬�
 
 READ COMMITTED에서 같은 연결·트랜잭션으로 처리하며 SQL은 바인드 파라미터를 사용한다.
 
-1. 필수 값·자료형·enum을 검증한다. 가격·수량 등 추가 요청 필드는 422로 거부한다.
-2. menus를 menu_id로 SELECT ... FOR SHARE한다. 없으면 404 MENU_NOT_FOUND.
-3. 판매 중지가 설정되어 있으면 409 MENU_UNAVAILABLE.
-4. menu_variants에 해당 menu_id/temperature가 없으면 422 INVALID_OPTION.
-5. 잠근 menus의 이름·가격을 주문 스냅샷으로 저장한다. quantity=1, total_price_krw=price_krw로 INSERT ... RETURNING한다.
-6. COMMIT 완료를 확인한 후에만 API 성공 응답 201을 반환한다.
+1. UUID 요청 ID와 필수 선택값을 검증한다. 가격·수량 등 추가 요청 필드는 422로 거부한다.
+2. UUID 기준의 트랜잭션 advisory lock을 얻은 뒤 별도 SELECT로 주문을 조회한다. 같은 UUID로 앞선 요청이 끝날 때까지 대기했다면 SELECT는 커밋된 최신 행을 읽는다.
+3. 이미 저장된 주문의 메뉴·온도·이용 방식이 일치하면 기존 스냅샷을 `200`으로 반환한다. 내용이 다르면 `409 IDEMPOTENCY_CONFLICT`다.
+4. 새 주문은 `menus` 행을 `FOR SHARE`로 잠그고 메뉴 존재, 판매 여부, 제공 온도를 검증한다.
+5. UUID와 메뉴 이름·가격을 저장한다. 수량은 1, 합계는 DB 단가와 같다. 커밋 확인 후에만 `201`을 반환한다.
+
+`0002_order_request_id`는 `orders.request_id UUID NOT NULL UNIQUE`를 추가한다. 기존 행에는 UUID를 채우고 주문번호와 스냅샷을 보존한다.
 
 seed와 향후 관리 기능은 자식 테이블 수정 전에 부모 menus를 FOR UPDATE로 잠근다. 이 규칙을 통해 주문 중 가격·판매 여부·온도 변경과 충돌하지 않게 한다. 직접 SQL로 잠금 규약을 우회하지 않는다.
 
 orders.id가 주문번호를 겸하며 문자열로 order_id/order_number에 반환된다. 번호 초기화·별도 카운터·무결번은 지원하지 않는다. 롤백에 따른 번호 누락을 허용하고 시퀀스를 되돌리지 않는다.
 
-검증 오류 시 INSERT하지 않는다. DB 오류는 가능한 경우 ROLLBACK하고 503으로 변환한다. COMMIT 중 연결 단절은 실제 저장 여부가 불명확할 수 있으므로 반드시 미저장이라고 설명하지 않는다. 프론트는 불명확한 결과를 자동 재전송하지 않는다.
+검증 오류 시 INSERT하지 않는다. DB 오류는 가능한 경우 ROLLBACK하고 503으로 변환한다. COMMIT 중 연결이 끊겼다면 같은 UUID와 주문 내용으로 수동 재시도해 저장 결과를 확인할 수 있다.
 
 ## 6. 주문 스냅샷과 API 대응
 
@@ -166,5 +167,5 @@ orders.id가 주문번호를 겸하며 문자열로 order_id/order_number에 반
 - 터치 주문 번호가 DB 행과 일치하며 잘못된 메뉴·온도·판매 중지 요청으로 주문이 생성되지 않는다.
 - 카탈로그 갱신과 주문이 동시에 발생해도 잠금 시점의 일관된 이름·가격·온도로 저장한다.
 - 카탈로그 변경 후에도 과거 주문 스냅샷이 유지된다.
-- DB 실패·응답 불명확을 성공으로 표시하지 않는다. 동일 POST 중복 방지는 미지원이다.
-- 추천·관리·음성 테이블과 request_id UNIQUE 제약은 후속 migration에서 별도로 설계한다.
+- DB 실패·응답 불명확을 성공으로 표시하지 않는다. 같은 UUID의 동시 요청과 재전송은 주문 한 건과 같은 번호를 반환한다.
+- 추천·관리·음성 테이블은 후속 migration에서 별도로 설계한다.

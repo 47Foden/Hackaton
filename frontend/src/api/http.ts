@@ -19,7 +19,7 @@ export function createHttpApi(transport: typeof fetch = fetch): KioskApi {
         throw new ApiError(message, response.status, detail?.code ?? 'HTTP_ERROR',
           isOrder && ![404, 409, 422].includes(response.status));
       }
-      if (isOrder && (response.status !== 201
+      if (isOrder && (![200, 201].includes(response.status)
         || typeof body?.order_number !== 'string' || !/^[1-9][0-9]*$/.test(body.order_number)
         || body.order_id !== body.order_number
         || typeof body?.menu_name !== 'string' || typeof body?.menu_id !== 'string'

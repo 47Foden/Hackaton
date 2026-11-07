@@ -7,7 +7,7 @@ from app.schemas.menus import Temperature
 ServiceType = Literal["DINE_IN", "TAKEOUT"]
 
 
-class CreateOrderRequest(BaseModel):
+class OrderSelection(BaseModel):
     model_config = ConfigDict(strict=True, extra="forbid")
 
     menu_id: str = Field(pattern=r"^[^\x00]+$")
@@ -15,7 +15,11 @@ class CreateOrderRequest(BaseModel):
     service_type: ServiceType
 
 
-class OrderResponse(CreateOrderRequest):
+class CreateOrderRequest(OrderSelection):
+    request_id: str = Field(pattern=r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
+
+
+class OrderResponse(OrderSelection):
     order_id: str
     order_number: str
     menu_name: str

@@ -45,12 +45,16 @@ test('invalid stage, unsupported temperature, and empty menu options cannot adva
 });
 
 
-test('submission failure never completes and uncertain outcomes block resubmission', () => {
+test('uncertain outcomes allow a retry but an ID conflict blocks resubmission', () => {
   let state = orderReducer(initialOrderState, { type: 'select_menu', menu: menu(['COLD']) });
   state = orderReducer(state, { type: 'set_service_type', serviceType: 'TAKEOUT' });
   state = orderReducer(state, { type: 'submit' });
-  state = orderReducer(state, { type: 'failed', error: { message: '불명확', uncertain: true } });
+  state = orderReducer(state, { type: 'failed', error: { message: '불명확', kind: 'uncertain' } });
+  assert.equal(state.stage, 'review');
+  assert.strictEqual(orderReducer(state, { type: 'submitted', result: {} }), state);
+  state = orderReducer(state, { type: 'submit' });
+  assert.equal(state.stage, 'submitting');
+  state = orderReducer(state, { type: 'failed', error: { message: '충돌', kind: 'conflict' } });
   assert.equal(state.stage, 'review');
   assert.strictEqual(orderReducer(state, { type: 'submit' }), state);
-  assert.strictEqual(orderReducer(state, { type: 'submitted', result: {} }), state);
 });
