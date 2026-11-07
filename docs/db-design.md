@@ -2,7 +2,7 @@
 
 ## 1. 기준과 범위
 
-이 문서는 구현 전 설계다. 현재 PostgreSQL 연결 확인만 있으며 아래 테이블·migration·seed는 아직 구현하지 않았다. PostgreSQL 17과 현재 psycopg를 사용하고 ORM 추가를 필수로 하지 않는다.
+테이블 migration, 사전 검증을 포함한 seed, DB 연결과 메뉴 조회 함수는 구현했다. HTTP 메뉴 조회 라우터도 구현했다. 주문 저장 서비스는 후속이다. PostgreSQL 17과 현재 psycopg를 사용하고 ORM 추가를 필수로 하지 않는다.
 
 우선순위: **common → [API 명세](api-spec.md)와 이 DB 명세 → [기본 주문 계획](plan/basic-order-flow.md)**. common 자체는 변경하지 않는다. API 명세 2절의 고정 ID 매핑을 사용한다.
 
@@ -35,7 +35,7 @@ menus ──< menu_categories
 
 ## 3. 목표 DDL
 
-아래 SQL은 설계이며 자동 실행하지 않는다. migration에서 새 DB와 기존 볼륨에 동일하게 적용한다.
+아래 DDL은 구현된 목표 스키마다. schema_migrations는 실행기가 생성하며 나머지는 backend/app/db/migrations/0001_menu_orders.sql로 적용한다. 웹 앱 시작 시 자동 적용하지 않는다.
 
 ```sql
 CREATE TABLE schema_migrations (
@@ -152,12 +152,12 @@ orders.id가 주문번호를 겸하며 문자열로 order_id/order_number에 반
 
 ## 7. migration과 실행 환경
 
-- 순서가 있는 SQL과 실행 스크립트는 backend/app/db 아래에 구현할 예정이다. schema_migrations의 version/checksum으로 중복 적용과 적용된 파일의 변경을 감지한다.
+- 순서가 있는 SQL과 실행 스크립트는 backend/app/db에 구현되어 있다. schema_migrations의 version/checksum으로 중복 적용과 적용된 파일의 변경을 감지한다.
 - migration도 전용 advisory lock으로 직렬화한다. 적용과 버전 기록을 같은 트랜잭션으로 처리하며 실패한 버전은 기록하지 않는다.
 - 새 DB에서는 migration → seed → API 검증을 수행한다. 기존 Docker 볼륨에도 migration을 적용하며 볼륨 삭제로 대체하지 않는다.
-- 현재 backend의 빌드 컨텍스트와 마운트에 루트 common은 포함되지 않는다. 구현 시 읽기 전용 마운트나 빌드 단계 복사로 전달하고 README에 경로를 명시한다. 별도 수작업 카탈로그를 만들지 않는다.
+- Compose는 common과 frontend/public을 읽기 전용으로 연결하고 COMMON_DIR와 FRONTEND_PUBLIC_DIR을 전달한다. backend 단독 이미지에서는 별도 마운트가 필요하다.
 - 이미지는 frontend/public에서 제공한다. seed의 실제 파일 검증은 리포지토리의 사전 검증 또는 읽기 전용 경로를 통해 수행한다. 백엔드는 이미지를 직접 배포할 필요가 없다.
-- migration/seed 명령은 아직 미구현이다. 문서의 SQL을 실행된 상태로 간주하지 않는다.
+- 명령과 테스트 방법은 [DB 실행 안내](../backend/app/db/README.md)를 따른다. 현재 개발 DB에 migration/seed를 적용했으며 별도 테스트 스키마에서 PostgreSQL 통합 테스트 5개를 통과했다.
 
 ## 8. 완료 조건
 

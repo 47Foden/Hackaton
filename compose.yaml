@@ -26,8 +26,12 @@ services:
     environment:
       DATABASE_URL: postgresql://kiosk:kiosk_local_only@db:5432/kiosk
       WATCHFILES_FORCE_POLLING: "true"
+      COMMON_DIR: /common
+      FRONTEND_PUBLIC_DIR: /frontend-public
     volumes:
       - ./backend/app:/app/app
+      - ./common:/common:ro
+      - ./frontend/public:/frontend-public:ro
     depends_on:
       db:
         condition: service_healthy

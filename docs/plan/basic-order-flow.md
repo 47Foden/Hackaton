@@ -227,8 +227,8 @@
 
 ### 단계 2 — 메뉴 DB와 조회 연결
 
-- [ ] migration, 재실행 가능한 seed, DB 접근 함수를 만든다.
-- [ ] `GET /api/menus`와 판매/표시 순서 규칙을 구현한다.
+- [x] migration, 재실행 가능한 seed, DB 접근 함수를 만든다. (backend/app/db, repositories/menus, PostgreSQL 통합 테스트 완료)
+- [x] `GET /api/menus`와 판매/표시 순서 규칙을 구현한다. (라우터·응답 스키마 분리, HTTP 200 및 PostgreSQL/ASGI 통합 테스트 완료)
 - [ ] 프론트 mock 메뉴 조회를 실제 API로 전환한다.
 - [ ] 로딩·실패·빈 목록·이미지 없음 상태를 확인한다.
 
@@ -375,3 +375,8 @@ DB 저장·유효성·롤백·서버 가격 계산은 자동 통합 검사로 �
 기본 모드는 mock이고 실제 저장되지 않는 DEV- 번호를 반환한다. VITE_API_MODE=http로 변경하면 같은 계약의 HTTP 어댑터를 사용한다. 실제 백엔드 메뉴/주문 구현 완료를 뜻하지 않는다. 시나리오와 실행 설정은 frontend/src/api/README.md를 따른다. 기존 고정 DEV-DEMO는 mock 응답의 DEV- 번호로 대체했다.
 
 메뉴 로딩·오류·빈 목록, 주문 진행·명확한 거부·접수 불명 상태를 제공한다. 성공 응답 전 완료 화면으로 이동하지 않으며 접수 불명 오류는 자동 재시도하지 않는다. 실제 서버 연동과 mock 계약/오류 검증은 구분한다.
+
+
+## 16. 메뉴 DB 기반 구현 완료
+
+명시적 migration/seed CLI, common 사전 검증, 연결 컨텍스트, 메뉴 조회 repository를 구현했다. 현재 개발 DB에 메뉴 11개를 seed했고, PostgreSQL의 별도 테스트 스키마에서 신규/재실행·보존·제약·롤백 테스트 5개를 통과했다. 실행법은 backend/app/db/README.md를 따른다. GET /api/menus 및 프론트 HTTP 전환은 아직 후속 체크리스트다.

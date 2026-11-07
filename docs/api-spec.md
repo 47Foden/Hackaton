@@ -4,7 +4,7 @@
 
 우선순위는 **common 데이터 → 이 문서와 DB 명세의 구체화된 계약 → [기본 주문 계획](plan/basic-order-flow.md)의 제안 → 이전 기획**이다. 사용자가 언급한 docs/basic-order-flow.md의 실제 경로는 docs/plan/basic-order-flow.md다.
 
-현재 구현된 API는 GET /api/health뿐이다. 아래 메뉴·주문 API는 이번 브랜치의 구현 계약이며 아직 구현되지 않았다. 음성·추천·Pretuning 관리 API는 후속 설계다.
+GET /api/health와 GET /api/menus는 구현됐다. POST /api/orders는 이번 브랜치의 구현 계약이며 아직 구현되지 않았다. 음성·추천·Pretuning 관리 API는 후속 설계다.
 
 - 메뉴명·순서·분류: [menu_data.py](../common/menu_data.py)의 MENUS/CATEGORIES.
 - 가격: [menu_prices.json](../common/menu_prices.json). 메뉴 단위 정수 원화이며 온도별 가산금은 없다.
@@ -52,9 +52,9 @@ common의 한글 메뉴명은 변경하지 않는다. 아래 ID는 API/DB 연결
 
 현재 DB 오류는 503과 `{"detail":"Database unavailable"}`다. 이 API는 SELECT 1만 확인하며 메뉴 테이블·seed·이미지·음성 모델 준비 여부를 보장하지 않는다.
 
-## 5. GET /api/menus — 이번 구현 대상
+## 5. GET /api/menus — 구현됨
 
-쿼리/본문 없음. 성공 200, display_order와 menu_id 순으로 정렬한 menus 배열. 아래 예시는 한 건이며 정상 seed는 11건이다. 판매 중지 메뉴도 is_available=false로 반환한다.
+쿼리/본문 없음. 성공 200, display_order 오름차순, 동점은 menu_id COLLATE "C" 오름차순으로 정렬한 menus 배열. 아래 예시는 한 건이며 정상 seed는 11건이다. 판매 중지 메뉴도 is_available=false로 반환한다.
 
 ```json
 {
@@ -93,7 +93,7 @@ common의 한글 메뉴명은 변경하지 않는다. 아래 ID는 API/DB 연결
 
 온도가 한 가지면 프론트가 자동 선택해 이용 방식 단계로 이동한다. 두 가지면 선택 화면을 표시한다. 자동 선택한 온도도 최종 확인과 주문 요청에 반드시 담는다.
 
-메뉴가 없으면 200과 `{"menus":[]}`를 반환한다. DB 조회 실패/테이블 미적용은 503 CATALOG_UNAVAILABLE이다. seed 검증은 빈 온도나 누락 이미지를 가진 메뉴의 게시를 막아야 한다.
+메뉴가 없으면 200과 `{"menus":[]}`를 반환한다. DB 조회 실패/테이블 미적용과 카탈로그 응답 무결성 오류는 503 CATALOG_UNAVAILABLE이다. seed 검증은 빈 온도나 누락 이미지를 가진 메뉴의 게시를 막아야 한다.
 
 ## 6. POST /api/orders — 이번 구현 대상
 
@@ -157,7 +157,7 @@ order_id와 order_number는 같은 orders.id를 문자열로 표현한다. 일�
 
 여기서 **Pretuning은 프로젝트 내부 명칭**입니다. 이번 작업은 모델 가중치를 학습하거나 파인튜닝하는 것이 아니라, 기존 모델로 추천용 메뉴 속성표를 생성하는 작업입니다. 단맛·신맛·쓴맛은 서로 배타적인 다중분류 확률이 아닌 **각각 독립적인 연속 점수**이며, 합이 1일 필요가 없습니다.
 
-현재 실제 구현된 API는 `GET /api/health`뿐입니다. 아래 생성·조회·추천 API와 필드명은 이번 요구사항을 반영한 설계 초안이며 아직 구현하지 않았습니다. 실제 5회 평가 결과도 아직 생성하지 않았습니다.
+현재 실제 구현된 API는 `GET /api/health`, `GET /api/menus`입니다. 아래 생성·조회·추천 API와 필드명은 이번 요구사항을 반영한 설계 초안이며 아직 구현하지 않았습니다. 실제 5회 평가 결과도 아직 생성하지 않았습니다.
 
 ## 2. 공통 규칙
 
@@ -392,3 +392,14 @@ score = 1 - sum(weight[j] * abs(menu[j] - target[j])) / sum(weight[j])
 - 메뉴명·분류·가격·온도·이미지는 common을 사용합니다. 맛 평가 근거 수집과 실제 평가만 후속 작업입니다.
 - 메뉴별 검색 근거 수집, 관리 API·평가·출력·추천 처리는 구현 예정입니다.
 - 유효한 5회 평가가 끝난 뒤 최종 데이터프레임을 생성합니다. 문서의 예시 점수를 실제 결과로 사용하지 않습니다.
+
+## 메뉴 조회 구현 위치 및 검증
+
+- backend/app/routers/menus.py: GET /api/menus 라우터, 503 오류 변환.
+- backend/app/schemas/menus.py: 엄격한 응답 자료형과 온도/이미지 일치 검증.
+- backend/app/repositories/menus.py: 일관된 DB 스냅샷, 고정 정렬, 이미지/카테고리 조립.
+- backend/tests/test_menus_api.py: 실제 ASGI 앱과 별도 PostgreSQL 스키마를 사용하는 응답·판매 상태·동점 정렬·빈 목록·503 검사.
+
+판매 중지나 is_featured 플래그는 응답 포함 여부와 전체 메뉴 정렬을 바꾸지 않는다. 프론트가 is_available로 선택 가능 여부를 결정하고, is_featured로 간편 목록을 구성한다. 대표 이미지는 COLD 우선이고 온도별 이미지는 variants에 모두 반환한다. GET은 읽기만 하며 seed나 파일 수집을 실행하지 않는다.
+
+현재 실행 중인 백엔드 HTTP 200과 메뉴 11개·온도 16개·간편 표시 4개 및 OpenAPI 등록을 확인했다. DB/메뉴 API 통합 테스트 10개를 통과했다. 프론트의 HTTP 어댑터 전환과 주문 API 구현은 후속이다.
