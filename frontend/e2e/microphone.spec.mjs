@@ -12,7 +12,13 @@ async function showMenu(page, path = '/', updateCatalogue) {
   await expect(page.getByRole('heading', { name: '간편 메뉴판' })).toBeVisible();
 }
 
-test('cancels the guide before requesting the microphone, then records and releases tracks', async ({ page }) => {
+test('cancels the guide, records WebM/Opus and uploads only when stopped explicitly', async ({ page }) => {
+  const uploads = [];
+  await page.route('**/api/voice/audio', route => {
+    const request = route.request();
+    uploads.push(request.postDataBuffer());
+    return route.fulfill({ json: { duration_seconds: 1 } });
+  });
   await page.addInitScript(() => {
     window.microphoneEvents = [];
     window.recordedBytes = 0;
@@ -45,6 +51,11 @@ test('cancels the guide before requesting the microphone, then records and relea
   await expect.poll(() => page.evaluate(() => window.recordedBytes)).toBeGreaterThan(0);
 
   await page.getByRole('button', { name: '녹음 종료' }).click();
+  await expect(page.getByText('녹음 파일을 확인했어요.')).toBeVisible();
+  expect(uploads).toHaveLength(1);
+  expect(uploads[0].includes('filename="recording.webm"')).toBe(true);
+  expect(uploads[0].includes('Content-Type: audio/webm;codecs=opus')).toBe(true);
+  expect(uploads[0].includes(Buffer.from([0x1a, 0x45, 0xdf, 0xa3]))).toBe(true);
   await expect(page.getByRole('button', { name: '음성 녹음' })).toBeEnabled();
   await expect.poll(() => page.evaluate(() => window.microphoneStream.getAudioTracks().map(track => track.readyState)))
     .toEqual(['ended']);
@@ -57,6 +68,7 @@ test('cancels the guide before requesting the microphone, then records and relea
   await expect(page.getByRole('heading', { name: '어디에서 드시겠어요?' })).toBeVisible();
   await expect.poll(() => page.evaluate(() => window.microphoneStream.getAudioTracks().map(track => track.readyState)))
     .toEqual(['ended']);
+  expect(uploads).toHaveLength(1);
 });
 
 async function useMockRecording(page) {
@@ -133,4 +145,28 @@ test('a denied microphone permission preserves touch ordering', async ({ page })
   await page.getByRole('button', { name: /아이스아메리카노/ }).click();
   await page.getByRole('button', { name: /포장해서/ }).click();
   await expect(page.getByRole('button', { name: '주문 확정', exact: true })).toBeEnabled();
+});
+
+test('the recording deadline releases the mic and asks for a shorter recording', async ({ page }) => {
+  const uploads = [];
+  await page.route('**/api/voice/audio', route => {
+    uploads.push(route.request());
+    return route.abort();
+  });
+  await page.addInitScript(() => {
+    const setTimeout = window.setTimeout.bind(window);
+    window.setTimeout = (callback, delay, ...args) => setTimeout(callback, delay === 30_000 ? 150 : delay, ...args);
+    const getUserMedia = navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
+    navigator.mediaDevices.getUserMedia = async constraints => {
+      window.microphoneStream = await getUserMedia(constraints);
+      return window.microphoneStream;
+    };
+  });
+  await showMenu(page);
+  await page.getByRole('button', { name: '음성 녹음' }).click();
+  await expect(page.getByText('녹음이 30초를 넘었어요. 30초 이내로 다시 녹음해 주세요.')).toBeVisible();
+  await expect(page.getByRole('button', { name: '다시 녹음' })).toBeEnabled();
+  await expect.poll(() => page.evaluate(() => window.microphoneStream.getAudioTracks().map(track => track.readyState)))
+    .toEqual(['ended']);
+  expect(uploads).toHaveLength(0);
 });

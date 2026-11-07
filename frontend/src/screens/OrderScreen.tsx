@@ -4,6 +4,7 @@ import { OrderMicrophone } from '../components/voice/OrderMicrophone';
 import { MenuBoard, type MenuBoardView } from '../components/menu/MenuBoard';
 import { CatalogStatus } from '../components/menu/CatalogStatus';
 import { kioskApi, isMockOrderApi } from '../api';
+import { prepareVoiceAudio } from '../api/voice';
 import { getOrderGuidance } from '../data/orderGuidance';
 import { useMenus } from '../hooks/useMenus';
 import { useOrderFlow } from '../hooks/useOrderFlow';
@@ -45,7 +46,7 @@ export function OrderScreen({ onHome }: { onHome: () => void }) {
         : canRecord ? '마이크를 누르면 음성 안내가 멈추고 녹음이 시작돼요.' : undefined}
       status={isMockOrderApi ? '개발용 화면 · 실제 주문은 저장되지 않아요.' : '메뉴와 주문 내용을 확인해 주세요.'}
       microphone={<OrderMicrophone key={order.stage} disabledReason={canRecord ? undefined : '현재 단계에서는 녹음할 수 없어요.'}
-        onRecordingComplete={mockSelection ? () => applySelection(mockSelection) : undefined} />}
+        onRecordingComplete={isMockVoiceEnabled ? () => { if (mockSelection) applySelection(mockSelection); } : prepareVoiceAudio} />}
       onHome={order.stage === 'submitting' ? undefined : onHome}
     >
       {order.stage === 'menu' && catalog.status === 'loading' && <CatalogStatus status="loading" />}
