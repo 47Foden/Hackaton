@@ -15,6 +15,9 @@ services:
 
   backend:
     build: ./backend
+    env_file:
+      - path: ./backend/.env
+        required: false
     ports:
       - "127.0.0.1:8000:8000"
     environment:
