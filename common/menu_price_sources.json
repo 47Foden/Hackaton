@@ -1,0 +1,79 @@
+{
+  "복숭아 아이스티": {
+    "price_krw": 3000,
+    "source_url": "https://app.passorder.co.kr/normal/5c94c944-e062-4b61-b5b5-a89104f26d0f/menus",
+    "source_label": "메가MGC커피 정자엠코점 패스오더 표시 가격",
+    "checked_date": "2026-11-07",
+    "official_name": "복숭아아이스티"
+  },
+  "레몬티": {
+    "price_krw": 3300,
+    "source_url": "https://app.passorder.co.kr/normal/5c94c944-e062-4b61-b5b5-a89104f26d0f/menus",
+    "source_label": "메가MGC커피 정자엠코점 패스오더 표시 가격",
+    "checked_date": "2026-11-07",
+    "official_name": "레몬차"
+  },
+  "아이스아메리카노": {
+    "price_krw": 2000,
+    "source_url": "https://app.passorder.co.kr/normal/5c94c944-e062-4b61-b5b5-a89104f26d0f/menus",
+    "source_label": "메가MGC커피 정자엠코점 패스오더 표시 가격",
+    "checked_date": "2026-11-07",
+    "official_name": "아메리카노"
+  },
+  "레몬에이드": {
+    "price_krw": 3500,
+    "source_url": "https://app.passorder.co.kr/normal/5c94c944-e062-4b61-b5b5-a89104f26d0f/menus",
+    "source_label": "메가MGC커피 정자엠코점 패스오더 표시 가격",
+    "checked_date": "2026-11-07",
+    "official_name": "레몬에이드"
+  },
+  "딸기라떼": {
+    "price_krw": 3700,
+    "source_url": "https://app.passorder.co.kr/normal/5c94c944-e062-4b61-b5b5-a89104f26d0f/menus",
+    "source_label": "메가MGC커피 정자엠코점 패스오더 표시 가격",
+    "checked_date": "2026-11-07",
+    "official_name": "딸기라떼"
+  },
+  "청포도에이드": {
+    "price_krw": 3500,
+    "source_url": "https://app.passorder.co.kr/normal/5c94c944-e062-4b61-b5b5-a89104f26d0f/menus",
+    "source_label": "메가MGC커피 정자엠코점 패스오더 표시 가격",
+    "checked_date": "2026-11-07",
+    "official_name": "청포도에이드"
+  },
+  "카페라떼": {
+    "price_krw": 2900,
+    "source_url": "https://app.passorder.co.kr/normal/5c94c944-e062-4b61-b5b5-a89104f26d0f/menus",
+    "source_label": "메가MGC커피 정자엠코점 패스오더 표시 가격",
+    "checked_date": "2026-11-07",
+    "official_name": "카페라떼"
+  },
+  "레몬차": {
+    "price_krw": 3300,
+    "source_url": "https://app.passorder.co.kr/normal/5c94c944-e062-4b61-b5b5-a89104f26d0f/menus",
+    "source_label": "메가MGC커피 정자엠코점 패스오더 표시 가격",
+    "checked_date": "2026-11-07",
+    "official_name": "레몬차"
+  },
+  "유자차": {
+    "price_krw": 3300,
+    "source_url": "https://app.passorder.co.kr/normal/5c94c944-e062-4b61-b5b5-a89104f26d0f/menus",
+    "source_label": "메가MGC커피 정자엠코점 패스오더 표시 가격",
+    "checked_date": "2026-11-07",
+    "official_name": "유자차"
+  },
+  "에스프레소": {
+    "price_krw": 1500,
+    "source_url": "https://shinsegaemall.ssg.com/disp/brandShop.ssg?brandId=3000064579",
+    "source_label": "SSG 메가MGC커피 에스프레소 모바일쿠폰 판매가격 (매장 가격 별도 확인 필요)",
+    "checked_date": "2026-11-07",
+    "official_name": "에스프레소"
+  },
+  "녹차라떼": {
+    "price_krw": 3500,
+    "source_url": "https://app.passorder.co.kr/normal/5c94c944-e062-4b61-b5b5-a89104f26d0f/menus",
+    "source_label": "메가MGC커피 정자엠코점 패스오더 표시 가격",
+    "checked_date": "2026-11-07",
+    "official_name": "녹차라떼"
+  }
+}
