@@ -1,27 +1,23 @@
-import prices from '../../../common/menu_prices.json';
-import images from '../../../common/menu_images.json';
-import display from '../../../common/menu_display.json';
-
-export type Temperature = 'HOT' | 'COLD';
+import type { ApiMenu, Temperature } from '../api/contracts';
+export type { Temperature } from '../api/contracts';
 
 export interface Menu {
+  id: string;
   name: string;
   price: number;
   imageUrl: string;
   temperatures: Temperature[];
   imageUrls: Partial<Record<Temperature, string>>;
+  available: boolean;
+  featured: boolean;
 }
 
-// API 연결 전에는 common을 직접 참조해 가격과 이미지 사본을 만들지 않는다.
-export const menuCatalog: Menu[] = Object.entries(prices).map(([name, price]) => {
-  const variants: Partial<Record<'HOT' | 'COLD', string>> = images[name as keyof typeof images];
-  return { name, price, imageUrl: (variants.COLD ?? variants.HOT)!,
-    temperatures: Object.keys(variants) as Temperature[], imageUrls: variants };
-});
-
-// 설정 순서를 유지하고 알 수 없는 이름과 중복은 제외한다. 빈 목록이면 전체를 표시한다.
-export const simplifiedMenuCatalog: Menu[] = [...new Set(display.simplified_menu_names)]
-  .flatMap(name => {
-    const menu = menuCatalog.find(item => item.name === name);
-    return menu ? [menu] : [];
-  });
+// API JSON을 화면 모델로 변환한다. 여기서는 요청하거나 common을 직접 읽지 않는다.
+export function toMenu(menu: ApiMenu): Menu {
+  return {
+    id: menu.menu_id, name: menu.name, price: menu.price_krw,
+    imageUrl: menu.image_url, temperatures: menu.available_temperatures,
+    imageUrls: Object.fromEntries(menu.variants.map(item => [item.temperature, item.image_url])),
+    available: menu.is_available, featured: menu.is_featured,
+  };
+}

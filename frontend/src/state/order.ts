@@ -1,19 +1,23 @@
 import type { Menu, Temperature } from '../data/menuCatalog';
+import type { OrderResponse, ServiceType } from '../api/contracts';
 
-export type ServiceType = 'DINE_IN' | 'TAKEOUT';
+export type { ServiceType } from '../api/contracts';
 export interface OrderDraft { menu: Menu; temperature: Temperature; serviceType: ServiceType; }
 export type OrderState =
   | { stage: 'menu' }
   | { stage: 'temperature'; menu: Menu }
   | { stage: 'service_type'; menu: Menu; temperature: Temperature }
-  | { stage: 'review'; draft: OrderDraft }
-  | { stage: 'complete'; draft: OrderDraft };
+  | { stage: 'review'; draft: OrderDraft; error?: { message: string; uncertain: boolean } }
+  | { stage: 'submitting'; draft: OrderDraft }
+  | { stage: 'complete'; draft: OrderDraft; result: OrderResponse };
 
 export type OrderAction =
   | { type: 'select_menu'; menu: Menu }
   | { type: 'set_temperature'; temperature: Temperature }
   | { type: 'set_service_type'; serviceType: ServiceType }
-  | { type: 'confirm' };
+  | { type: 'submit' }
+  | { type: 'submitted'; result: OrderResponse }
+  | { type: 'failed'; error: { message: string; uncertain: boolean } };
 
 export const initialOrderState: OrderState = { stage: 'menu' };
 
@@ -21,7 +25,7 @@ export const initialOrderState: OrderState = { stage: 'menu' };
 export function orderReducer(state: OrderState, action: OrderAction): OrderState {
   switch (action.type) {
     case 'select_menu': {
-      if (state.stage !== 'menu' || action.menu.temperatures.length === 0) return state;
+      if (state.stage !== 'menu' || !action.menu.available || action.menu.temperatures.length === 0) return state;
       const [temperature] = action.menu.temperatures;
       return action.menu.temperatures.length === 1
         ? { stage: 'service_type', menu: action.menu, temperature }
@@ -35,8 +39,12 @@ export function orderReducer(state: OrderState, action: OrderAction): OrderState
       return state.stage === 'service_type' && ['DINE_IN', 'TAKEOUT'].includes(action.serviceType)
         ? { stage: 'review', draft: { menu: state.menu, temperature: state.temperature, serviceType: action.serviceType } }
         : state;
-    case 'confirm':
-      return state.stage === 'review' ? { stage: 'complete', draft: state.draft } : state;
+    case 'submit':
+      return state.stage === 'review' && !state.error?.uncertain ? { stage: 'submitting', draft: state.draft } : state;
+    case 'submitted':
+      return state.stage === 'submitting' ? { stage: 'complete', draft: state.draft, result: action.result } : state;
+    case 'failed':
+      return state.stage === 'submitting' ? { stage: 'review', draft: state.draft, error: action.error } : state;
   }
 }
 

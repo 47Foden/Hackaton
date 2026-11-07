@@ -5,7 +5,7 @@ interface OrderGuideProps {
   title: string;
   description: string;
   voiceDescription?: string;
-  onHome: () => void;
+  onHome?: () => void;
 }
 
 export function OrderGuide({ title, description, voiceDescription, onHome }: OrderGuideProps) {
@@ -18,7 +18,7 @@ export function OrderGuide({ title, description, voiceDescription, onHome }: Ord
     <header className="order-guide">
       <div className="order-guide__brand">
         <BrandLogo compact />
-        <button type="button" className="text-button" onClick={onHome}>처음으로</button>
+        <button type="button" className="text-button" disabled={!onHome} onClick={onHome}>처음으로</button>
       </div>
       <div className="order-guide__text">
         <span className="eyebrow">MAKE YOUR DAY, MEGA</span>

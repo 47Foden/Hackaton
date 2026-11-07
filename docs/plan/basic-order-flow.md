@@ -221,7 +221,7 @@
 - [x] 상단 안내·중앙 콘텐츠·하단 마이크의 공통 레이아웃을 만든다. (KioskLayout, OrderGuide, OrderFooter, MicrophoneButton)
 - [x] 간소화/전체 메뉴판 전환과 확대 상태 유지를 구현한다. (MenuBoard, common/menu_display.json)
 - [x] 온도 → 매장/포장 → 최종 확인 → 개발용 완료 화면을 연결한다. (orderReducer, screens/order)
-- [ ] 화면 상태와 API 호출을 분리하고 같은 계약의 mock 어댑터를 만든다.
+- [x] 화면 상태와 API 호출을 분리하고 같은 계약의 mock 어댑터를 만든다. (api/contracts, http, mock, hooks)
 
 완료 기준: API 없이도 사용자가 터치로 전체 흐름을 확인할 수 있다. 개발용 주문번호는 실제 발급 번호로 표시하지 않는다.
 
@@ -367,3 +367,11 @@ DB 저장·유효성·롤백·서버 가격 계산은 자동 통합 검사로 �
 사용자가 개발용 확정 버튼을 누를 때만 완료 화면으로 진행한다. DEV-DEMO는 고정 예시이며 실제 주문번호가 아니다. API 호출·DB 저장·결제를 수행하지 않는다. 처음으로 돌아가 새 주문을 시작하면 주문 초안과 메뉴판 표시 상태가 초기화된다. 이전 단계 이동·옵션 변경은 기존 범위대로 후속이다.
 
 검증: npm --prefix frontend run build, npm --prefix frontend test. 두 온도 선택, HOT/COLD 전용 자동 선택, 조기 확정 및 단계에 맞지 않는 옵션 거부를 확인한다. Node 22.18 이상 또는 프로젝트 Docker의 Node 24에서 테스트를 실행한다.
+
+## 15. API 어댑터 분리 완료
+
+메뉴·주문 요청은 KioskApi 인터페이스로 통일하고 화면은 useMenus/useOrderFlow를 통해 사용한다. common 참조는 mock 카탈로그로 이동했다. 주문 전이는 submitting → 성공 응답 → complete이며 오류는 review로 돌아간다. 완료 화면은 응답 번호·이름·가격·옵션을 사용한다.
+
+기본 모드는 mock이고 실제 저장되지 않는 DEV- 번호를 반환한다. VITE_API_MODE=http로 변경하면 같은 계약의 HTTP 어댑터를 사용한다. 실제 백엔드 메뉴/주문 구현 완료를 뜻하지 않는다. 시나리오와 실행 설정은 frontend/src/api/README.md를 따른다. 기존 고정 DEV-DEMO는 mock 응답의 DEV- 번호로 대체했다.
+
+메뉴 로딩·오류·빈 목록, 주문 진행·명확한 거부·접수 불명 상태를 제공한다. 성공 응답 전 완료 화면으로 이동하지 않으며 접수 불명 오류는 자동 재시도하지 않는다. 실제 서버 연동과 mock 계약/오류 검증은 구분한다.

@@ -10,7 +10,7 @@ interface KioskLayoutProps {
   status: string;
   microphone: ReactNode;
   children: ReactNode;
-  onHome: () => void;
+  onHome?: () => void;
 }
 
 /** 화면별 콘텐츠만 교체하고 안내와 하단 조작 영역은 유지한다. */
