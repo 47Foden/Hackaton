@@ -1,0 +1,11 @@
+[
+  {"id":"iced-americano","kind":"menu","reference":"아이스 아메리카노 주세요","keyword":"아이스 아메리카노"},
+  {"id":"cafe-latte","kind":"menu","reference":"카페라떼 주세요","keyword":"카페라떼"},
+  {"id":"lemon-tea-alias","kind":"menu","reference":"레몬티 주세요","keyword":"레몬티"},
+  {"id":"lemon-tea","kind":"menu","reference":"레몬차 주세요","keyword":"레몬차"},
+  {"id":"green-tea-latte","kind":"menu","reference":"녹차라떼 주세요","keyword":"녹차라떼"},
+  {"id":"hot","kind":"option","reference":"따뜻하게 해 주세요","keyword":"따뜻하게"},
+  {"id":"cold","kind":"option","reference":"차갑게 해 주세요","keyword":"차갑게"},
+  {"id":"dine-in","kind":"option","reference":"매장에서 마실게요","keyword":"매장에서"},
+  {"id":"takeout","kind":"option","reference":"포장해 주세요","keyword":"포장"}
+]

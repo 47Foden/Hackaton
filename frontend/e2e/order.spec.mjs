@@ -17,7 +17,7 @@ async function startOrder(page) {
   const catalogue = await createMockApi({ delayMs: 0 }).getMenus();
   await page.route('**/api/menus', route => route.fulfill({ json: catalogue }));
   await page.goto('/');
-  await page.getByRole('button', { name: '주문하기' }).click();
+  await page.getByRole('button', { name: '주문하기', exact: true }).click();
 }
 
 async function openReview(page) {
@@ -111,7 +111,7 @@ test('an ID conflict locks retry until the customer starts a fresh order', async
   await expect(page.getByRole('heading', { name: '주문 요청을 확인해 주세요.' })).toBeVisible();
   await expect(page.getByRole('button', { name: '요청 정보 확인 필요' })).toBeDisabled();
   await page.getByRole('button', { name: '처음으로', exact: true }).click();
-  await page.getByRole('button', { name: '주문하기' }).click();
+  await page.getByRole('button', { name: '주문하기', exact: true }).click();
   await expect(page.getByRole('heading', { name: '간편 메뉴판' })).toBeVisible();
   await expect(page.getByRole('alert')).toHaveCount(0);
   await page.getByRole('button', { name: /아이스아메리카노/ }).click();
@@ -141,7 +141,7 @@ test('returning home from completion releases speech and starts a fresh order', 
 
   await page.getByRole('button', { name: '처음으로 돌아가기' }).click();
   await expect.poll(() => page.evaluate(() => window.speechCancelCount)).toBe(cancellationsBeforeHome + 1);
-  await page.getByRole('button', { name: '주문하기' }).click();
+  await page.getByRole('button', { name: '주문하기', exact: true }).click();
   await expect(page.getByRole('heading', { name: '간편 메뉴판' })).toBeVisible();
   await expect(page.getByRole('button', { name: '크게 보기' })).toHaveAttribute('aria-pressed', 'false');
   await expect(page.getByRole('region', { name: '주문 완료' })).toHaveCount(0);

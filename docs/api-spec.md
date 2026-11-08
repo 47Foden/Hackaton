@@ -144,7 +144,65 @@ order_id와 order_number는 같은 orders.id를 문자열로 표현한다. 일�
 
 ## 7. 후속 음성·추천 계약
 
-이번 브랜치에서 구현하지 않는다. 음성은 POST /api/voice/interpret의 multipart audio와 stage/selected_menu_id/candidate_menu_ids를 제안한다. 응답은 transcript와 select_menu/set_temperature/set_service_type/recommend/retry 행동이다. MIME·파일 제한·직렬화·모델 환경은 후속 확정 대상이다. 음성은 최종 주문을 자동 확정하지 않는다.
+### 7.1 `POST /api/voice/audio` — 오디오 검사·변환
+
+multipart `audio` 필드로 `.webm` 파일을 받는다. 브라우저 MIME인 `audio/webm;codecs=opus`를 유지하며 `audio/webm`도 허용한다. 파일 이름, EBML DocType, `ffprobe`가 확인한 오디오 트랙 하나와 Opus 코덱이 일치해야 한다. 최대 크기는 2 MiB, 변환 후 재생 길이는 최대 30초다. FFmpeg로 16 kHz 모노 PCM16을 만들고, 입력에 길이 메타데이터가 없어도 PCM 샘플 수로 길이를 계산한다.
+
+성공 `200`은 `mime_type`, `container`, `codec`, `duration_seconds`, `size_bytes`, `source_sample_rate_hz`, `source_channels`, `sample_rate_hz`, `channels`를 반환한다. 원본과 변환 데이터는 요청 종료 시 정리한다. Docker 백엔드 이미지가 FFmpeg와 ffprobe를 제공한다.
+
+multipart 요청 전체는 오디오 제한에 헤더 여유 16 KiB를 더해 파싱 전에 제한한다. 프로세스당 음성 요청 한 건을 업로드부터 변환 완료까지 처리한다. 업로드 수신은 5초, ffprobe와 FFmpeg에는 합쳐서 5초, 브라우저 요청에는 15초를 적용한다. 초과 시 화면은 **다시 녹음**을 제공한다.
+
+| HTTP | code | 조건 |
+| --- | --- | --- |
+| 408 | `AUDIO_UPLOAD_TIMEOUT` | 업로드 수신 타임아웃 |
+| 413 | `AUDIO_TOO_LARGE`, `AUDIO_TOO_LONG` | 파일 크기 또는 변환된 길이 초과 |
+| 415 | `UNSUPPORTED_AUDIO`, `AUDIO_FORMAT_MISMATCH` | 확장자·MIME 오류 또는 실제 컨테이너·코덱 불일치 |
+| 422 | `EMPTY_AUDIO`, `INVALID_AUDIO` | 빈 파일 또는 디코딩 실패 |
+| 503 | `AUDIO_BUSY`, `AUDIO_TOOLS_UNAVAILABLE` | 다른 요청 처리 중이거나 FFmpeg 또는 ffprobe가 설치되지 않음 |
+| 504 | `AUDIO_TIMEOUT` | 검사 또는 변환 도구 타임아웃 |
+
+### 7.2 `POST /api/voice/interpret` — 전사와 주문 단계 해석
+
+`multipart/form-data`로 전송한다. `audio`는 필수 파일이며 7.1의 WebM/Opus 형식과 크기·길이 제한을 적용한다. `stage`는 아래 값 중 하나인 필수 문자열이다. `candidate_menu_ids`는 같은 이름의 폼 필드를 후보 표시 순서대로 반복한다. JSON 배열, 쉼표 구분 문자열, `candidate_menu_ids[]` 키는 사용하지 않는다.
+
+| `stage` | 필수 맥락 | 허용 응답 행동 |
+| --- | --- | --- |
+| `menu` | `audio`, `stage` | `select_menu`, `recommend`, `retry` |
+| `temperature` | `audio`, `stage`, `selected_menu_id` | `set_temperature`, `retry` |
+| `service_type` | `audio`, `stage`, `selected_menu_id` | `set_service_type`, `retry` |
+| `recommendations` | `audio`, `stage`, `candidate_menu_ids` 1~4개 | `select_menu`, `recommend`, `retry` |
+
+메뉴 ID는 등록된 고정 ID를 사용한다. 단계에 해당하지 않는 맥락 필드와 중복 후보는 거부한다. 추천 화면의 메뉴 선택은 현재 후보 안에서만 가능하다. 판매 여부와 제공 온도는 DB 카탈로그를 기준으로 확인한다.
+
+```sh
+curl -F 'audio=@recording.webm;type=audio/webm' -F 'stage=recommendations' \
+  -F 'candidate_menu_ids=cafe_latte' -F 'candidate_menu_ids=green_tea_latte' \
+  http://localhost:8000/api/voice/interpret
+```
+
+성공은 `200`과 `{ "transcript": "카페라떼 주세요.", "action": { "type": "select_menu", "menu_id": "cafe_latte" } }` 형식으로 반환한다. `action.type`별 필드는 다음과 같다.
+
+| `type` | 필드 |
+| --- | --- |
+| `select_menu` | `menu_id` |
+| `set_temperature` | `temperature` (`HOT` 또는 `COLD`) |
+| `set_service_type` | `service_type` (`DINE_IN` 또는 `TAKEOUT`) |
+| `recommend` | `filters`와 `targets`. 예를 들어 ‘달지 않은 차’는 `filters: {"tea": 1}`, `targets: {"sweetness": 0.2}`를 반환한다. |
+| `retry` | `reason` (`EMPTY_TRANSCRIPT`, `UNRECOGNIZED`, `MENU_UNAVAILABLE`, `INVALID_OPTION`, `OUTSIDE_CANDIDATES`) |
+
+빈 전사와 모호한 발화는 `200`의 `retry`로 안내한다. 단일 발화는 현재 단계의 행동 하나만 반환한다. `recommend`는 추천 API에 전달할 조건이며, 주문 확정은 화면의 주문 확정 버튼에서 수행한다.
+
+7.1의 오디오 오류와 처리량 제한을 공유하며, 다음 오류를 추가한다.
+
+| HTTP | code | 조건 |
+| --- | --- | --- |
+| 422 | FastAPI 기본 `detail` 배열 | 필수 폼 필드 누락, `stage` 값 오류 또는 메뉴 ID 형식 오류 |
+| 422 | `INVALID_VOICE_CONTEXT` | 단계에 필요한 메뉴 ID 누락, 미등록 ID, 중복 후보 또는 단계와 맥락 불일치 |
+| 502 | `TRANSCRIPTION_FAILED` | 전사 워커가 실패했거나 유효한 응답을 반환하지 않음 |
+| 503 | `TRANSCRIPTION_UNAVAILABLE`, `CATALOG_UNAVAILABLE` | 워커 미설정·연결 불가·사용 중, 또는 DB 카탈로그 조회 실패 |
+| 504 | `TRANSCRIPTION_TIMEOUT` | 전사 워커 응답 대기 시간이 25초 초과 |
+
+Whisper는 공용 서버의 전사 워커에서 미리 로드한다. FastAPI는 내부 `VOICE_TRANSCRIPTION_URL`로 변환된 PCM을 보내고 전사 텍스트를 받는다. 브라우저 전체 요청 예산은 40초로 잡고 공용 서버 실측 후 조정한다.
 
 기존 Pretuning·추천 설계는 아래에 보존한다. 데이터와 충돌할 경우 위 common 매핑이 우선하며, 관리 작업의 request_id 정책을 기본 주문 API에 적용하지 않는다.
 
@@ -404,3 +462,7 @@ score = 1 - sum(weight[j] * abs(menu[j] - target[j])) / sum(weight[j])
 판매 중지나 is_featured 플래그는 응답 포함 여부와 전체 메뉴 정렬을 바꾸지 않는다. 프론트가 is_available로 선택 가능 여부를 결정하고, is_featured로 간편 목록을 구성한다. 대표 이미지는 COLD 우선이고 온도별 이미지는 variants에 모두 반환한다. GET은 읽기만 하며 seed나 파일 수집을 실행하지 않는다.
 
 현재 실행 중인 백엔드 HTTP 200과 메뉴 11개·온도 16개·간편 표시 4개 및 OpenAPI 등록을 확인했다. DB/메뉴 API 통합 테스트 10개를 통과했다. 프론트의 HTTP 어댑터 전환과 주문 API 구현은 후속이다.
+
+### 독립 음성 주문 확인 단계
+
+`POST /api/voice/interpret`의 `stage`에 `menu_confirmation`, `review`를 추가한다. 두 단계에는 `selected_menu_id` 및 후보 목록을 보내지 않는다. `네`, `예`, `맞아요`, `주문`, `주문할게요`, `주문 확정`, `확정`은 `{"type":"confirm"}`으로, 나머지는 `retry`로 반환한다. 메뉴 확인 단계는 옵션 선택으로만 이동하며, 최종 `review`에서만 화면이 기존 `POST /api/orders`를 호출한다. 음성 해석 API 자체에는 주문 저장 부작용이 없다. 일반 터치 주문의 확정 버튼도 유지한다.
