@@ -28,7 +28,7 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
   const revision = useRef(0);
   const stage = selected ? 'menu_confirmation' : order.stage === 'menu' && candidates?.length ? 'recommendations' : order.stage;
   const guide = selected ? { title: selected.name, description: '이 메뉴로 주문하시겠습니까? 네라고 말씀하시거나 버튼을 눌러 주세요.' }
-    : candidates !== null && order.stage === 'menu' ? { title: candidates.length ? '추천 메뉴' : '조건에 맞는 메뉴가 없어요.', description: `${catalog.status === 'ready' ? candidates.map((id, index) => `${index + 1}번 ${catalog.menus.find(m => m.id === id)?.name ?? ''}`).join(', ') : ''}. 이 메뉴로 주문하시겠습니까? 메뉴를 누르거나 메뉴 이름 또는 첫 번째, 두 번째처럼 순서를 말씀해 주세요. 재추천을 원하시면 다시 추천이라고 말씀하시거나 버튼을 누르면 초기 음성 입력 화면으로 돌아갑니다.` }
+    : candidates !== null && order.stage === 'menu' ? { title: candidates.length ? '추천 메뉴' : '조건에 맞는 메뉴가 없어요.', description: '추천 메뉴를 확인해 주세요. 재추천을 원하시면 다시 추천이라고 말씀하시거나 버튼을 누르면 초기 음성 입력 화면으로 돌아갑니다.' }
     : order.stage === 'menu' ? { title: '음성 주문', description: '아래 마이크 버튼을 누르시면 음성 주문이 가능합니다. 메뉴 이름이나 원하는 맛과 음료 종류를 말씀해 주세요.' }
     : order.stage === 'review' ? { title: '주문 내용을 확인해 주세요.', description: '주문 확정이라고 말씀하시거나 주문 확정 버튼을 눌러 주세요.' }
     : order.stage === 'complete' ? { title: '주문이 접수되었어요.', description: `주문번호는 ${order.result.order_number}번입니다.` }
