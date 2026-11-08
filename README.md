@@ -101,6 +101,40 @@ docker compose up -d --build --wait
 
 ## 5. 매일 개발할 때
 
+### OpenAI API 키 설정
+
+OpenAI 연동 개발 시 `backend/.env.example`을 같은 폴더의 `.env`로 복사하고 본인의 키를 입력합니다. VS Code에서 파일을 복사해 이름을 `.env`로 바꾸거나, 프로젝트 루트에서 실행하세요. 기존 `.env`가 있다면 덮어쓰지 않고 편집합니다.
+
+```sh
+# macOS / Linux / Git Bash (기존 파일을 덮어쓰지 않음)
+cp -n backend/.env.example backend/.env
+```
+
+```powershell
+# Windows PowerShell (기존 파일을 덮어쓰지 않음)
+if (-not (Test-Path backend/.env)) { Copy-Item backend/.env.example backend/.env }
+```
+
+`backend/.env`를 열고 다음 변수에 키를 입력한 뒤 저장합니다.
+
+```dotenv
+OPENAI_API_KEY=여기에_본인의_API_키_입력
+```
+
+Docker Compose 2.24.0 이상에서는 `backend/.env`가 있으면 백엔드 컨테이너에 자동으로 전달합니다. 파일이 없어도 기본 연결 확인 기능은 실행됩니다. 키를 추가하거나 바꾼 뒤에는 백엔드를 다시 생성하세요.
+
+```sh
+docker compose up -d --force-recreate backend
+```
+
+키 값 대신 설정 여부만 확인하려면 다음 명령을 실행합니다.
+
+```sh
+docker compose exec backend python -c "import os; print('OPENAI_API_KEY 설정됨' if os.getenv('OPENAI_API_KEY') else 'OPENAI_API_KEY 미설정')"
+```
+
+`.env`는 Git에서 제외되며 Docker 이미지에도 복사하지 않습니다. 실제 키를 `.env.example`, 프론트 코드, `VITE_` 변수에 넣지 마세요. 현재 백엔드는 DB 연결 확인 API만 제공하므로, 이 설정은 키 전달을 준비하며 OpenAI API 호출 기능은 별도로 구현해야 합니다.
+
 ### 개발 시작
 
 1. Docker Desktop을 켭니다.
