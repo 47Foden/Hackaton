@@ -466,3 +466,7 @@ score = 1 - sum(weight[j] * abs(menu[j] - target[j])) / sum(weight[j])
 ### 독립 음성 주문 확인 단계
 
 `POST /api/voice/interpret`의 `stage`에 `menu_confirmation`, `review`를 추가한다. 두 단계에는 `selected_menu_id` 및 후보 목록을 보내지 않는다. `네`, `예`, `맞아요`, `주문`, `주문할게요`, `주문 확정`, `확정`은 `{"type":"confirm"}`으로, 나머지는 `retry`로 반환한다. 메뉴 확인 단계는 옵션 선택으로만 이동하며, 최종 `review`에서만 화면이 기존 `POST /api/orders`를 호출한다. 음성 해석 API 자체에는 주문 저장 부작용이 없다. 일반 터치 주문의 확정 버튼도 유지한다.
+
+### 음성 추천 결과
+
+`/api/voice/interpret`의 메뉴·추천 단계에서 취향을 해석하면 `{"type":"recommendation_results","menu_ids":[...]}`를 반환한다. 메뉴 ID는 표시 순서대로 최대 4개이며 빈 배열도 허용한다. 추천 단계 요청에는 기존 계약대로 현재 후보 `candidate_menu_ids`를 반복 필드로 보낸다. 재추천 발화는 `{"type":"restart_recommendation"}`을 반환하며 화면은 후보를 지우고 초기 음성 입력으로 돌아간다. 추천·선택은 주문을 저장하지 않는다. 순위 정책과 데이터 범위는 README의 음성 추천 절을 따른다.

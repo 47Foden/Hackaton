@@ -4,7 +4,7 @@ import { MicrophoneIcon } from '../components/MicrophoneIcon';
 import { BrandLogo } from '../components/BrandLogo';
 
 export function StartScreen({ onStart, onVoice }: { onStart: () => void; onVoice: () => void }) {
-  const message = '음성으로 주문 안내를 받고 싶거나, 메뉴를 골라 터치하는 방식이 불편하신 분들은 음성 주문 기능을 사용해 주세요. 추천 기능은 준비 중입니다.';
+  const message = '음성으로 주문 안내나 메뉴 추천을 받고 싶거나, 메뉴를 골라 터치하는 방식이 불편하신 분들은 음성 주문 기능을 사용해 주세요.';
   useVoiceGuidance(message);
   return (
     <main className="start-screen" aria-label="주문 시작">

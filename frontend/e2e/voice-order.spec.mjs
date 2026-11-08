@@ -54,7 +54,7 @@ test('voice menu uses kiosk cards, enlargement and matching centered confirmatio
   const api = createMockApi({ delayMs: 0 });
   await page.route('**/api/menus', async route => route.fulfill({ json: await api.getMenus() }));
   await page.goto('/');
-  await expect(page.getByText(/음성으로 주문 안내를 받고 싶거나/)).toBeVisible();
+  await expect(page.getByText(/음성으로 주문 안내나 메뉴 추천을 받고 싶거나/)).toBeVisible();
   const entry = page.getByRole('button', { name: '음성으로 주문하기' });
   await expect(entry.locator('svg')).toBeVisible();
   await entry.click();
@@ -74,4 +74,49 @@ test('voice menu uses kiosk cards, enlargement and matching centered confirmatio
   await page.screenshot({ path: '/tmp/voice-confirmation.png' });
   await confirmation.getByRole('button', { name: '다른 메뉴 선택' }).click();
   await expect(page.getByRole('heading', { name: '전체 메뉴판' })).toBeVisible();
+});
+
+test('voice recommendation, spoken restart, candidate selection and order completion', async ({ page }) => {
+  const api = createMockApi({ delayMs: 0 });
+  await page.route('**/api/menus', async route => route.fulfill({ json: await api.getMenus() }));
+  let orders = 0;
+  await page.route('**/api/orders', route => {
+    orders++;
+    return route.fulfill({ status: 201, json: { ...route.request().postDataJSON(), order_id:'52', order_number:'52', menu_name:'카페라떼', quantity:1, total_price_krw:2900, created_at:new Date().toISOString() } });
+  });
+  const actions = [
+    { type:'recommendation_results', menu_ids:['cafe_latte','iced_americano'] },
+    { type:'restart_recommendation' },
+    { type:'recommendation_results', menu_ids:['cafe_latte','iced_americano'] },
+    { type:'select_menu', menu_id:'cafe_latte' },
+    { type:'confirm' }, { type:'set_temperature', temperature:'HOT' },
+    { type:'set_service_type', service_type:'TAKEOUT' }, { type:'confirm' },
+  ];
+  await page.route('**/api/voice/interpret', route => route.fulfill({ json: { transcript:'test', action:actions.shift() } }));
+  await page.addInitScript(() => { window.speechSynthesis.speak=()=>{}; window.speechSynthesis.cancel=()=>{}; });
+  await page.goto('/');
+  await page.getByRole('button',{name:'음성으로 주문하기'}).click();
+  async function say() {
+    await page.getByRole('button',{name:'음성 녹음',exact:true}).click();
+    await page.getByRole('button',{name:'녹음 종료'}).click();
+  }
+  await say();
+  await expect(page.getByRole('heading',{name:'추천 메뉴',exact:true})).toBeVisible();
+  await expect(page.getByRole('region',{name:'추천 결과'}).locator('.menu-card')).toHaveCount(2);
+  await say();
+  await expect(page.getByRole('heading',{name:'음성 주문',exact:true})).toBeVisible();
+  await say();
+  await expect(page.getByRole('heading',{name:'추천 메뉴',exact:true})).toBeVisible();
+  await say();
+  await expect(page.getByRole('button',{name:'네, 이 메뉴로 주문'})).toBeVisible();
+  await say();
+  await expect(page.getByRole('heading',{name:'따뜻하게, 차갑게?'})).toBeVisible();
+  await say();
+  await expect(page.getByRole('heading',{name:'어디에서 드시겠어요?'})).toBeVisible();
+  await say();
+  await expect(page.getByRole('button',{name:'주문 확정',exact:true})).toBeVisible();
+  expect(orders).toBe(0);
+  await say();
+  await expect(page.getByText('52',{exact:true})).toBeVisible();
+  expect(orders).toBe(1);
 });

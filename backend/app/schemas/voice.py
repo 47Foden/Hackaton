@@ -50,11 +50,20 @@ class Retry(BaseModel):
     reason: RetryReason
 
 
+class RecommendationResults(BaseModel):
+    type: Literal["recommendation_results"] = "recommendation_results"
+    menu_ids: list[MenuId] = Field(max_length=4)
+
+
+class RestartRecommendation(BaseModel):
+    type: Literal["restart_recommendation"] = "restart_recommendation"
+
+
 class Confirm(BaseModel):
     type: Literal["confirm"] = "confirm"
 
 
-VoiceAction = Annotated[Confirm | SelectMenu | SetTemperature | SetServiceType | Recommend | Retry, Field(discriminator="type")]
+VoiceAction = Annotated[RecommendationResults | RestartRecommendation | Confirm | SelectMenu | SetTemperature | SetServiceType | Recommend | Retry, Field(discriminator="type")]
 
 
 class VoiceInterpretResponse(BaseModel):
