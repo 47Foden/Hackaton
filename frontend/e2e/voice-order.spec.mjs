@@ -54,7 +54,7 @@ test('voice menu uses kiosk cards, enlargement and matching centered confirmatio
   const api = createMockApi({ delayMs: 0 });
   await page.route('**/api/menus', async route => route.fulfill({ json: await api.getMenus() }));
   await page.goto('/');
-  await expect(page.getByText('터치뿐 아니라 음성으로도 주문할 수 있어요.')).toBeVisible();
+  await expect(page.getByText(/음성으로 주문 안내를 받고 싶거나/)).toBeVisible();
   const entry = page.getByRole('button', { name: '음성으로 주문하기' });
   await expect(entry.locator('svg')).toBeVisible();
   await entry.click();

@@ -23,6 +23,7 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
   const [selected, setSelected] = useState<Menu | null>(null);
   const [menuView, setMenuView] = useState<MenuBoardView>({ mode: 'simplified', enlarged: false });
   const [error, setError] = useState('');
+  const [transcript, setTranscript] = useState('');
   const revision = useRef(0);
   const stage = selected ? 'menu_confirmation' : order.stage;
   const guide = selected ? { title: selected.name, description: '이 메뉴로 주문하시겠습니까? 네라고 말씀하시거나 버튼을 눌러 주세요.' }
@@ -41,6 +42,8 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
   }
   async function record(audio: Blob, signal: AbortSignal) {
     const id = ++revision.current;
+    setTranscript('');
+    setError('');
     try {
       const body = new FormData();
       body.set('audio', audio, 'recording.webm'); body.set('stage', stage);
@@ -49,7 +52,8 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
         signal: AbortSignal.any([signal, AbortSignal.timeout(40_000)]) });
       const data = await response.json();
       if (signal.aborted || id !== revision.current) return;
-      if (!response.ok) throw new Error(data?.detail?.message ?? '음성을 처리하지 못했어요. 다시 시도해 주세요.');
+      if (!response.ok) throw new Error(`${data?.detail?.message ?? '음성을 처리하지 못했어요. 다시 시도해 주세요.'}${data?.detail?.code ? ` (${data.detail.code})` : ''}`);
+      setTranscript(typeof data.transcript === 'string' ? data.transcript : '');
       voice.cancel();
       const action = data.action;
       if (stage === 'menu_confirmation' && action?.type === 'confirm') { accept(); return; }
@@ -74,6 +78,8 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
   return <KioskLayout {...guide} status={isMockOrderApi ? '개발용 주문입니다.' : '음성 또는 터치로 주문해 주세요.'}
     onHome={order.stage === 'submitting' ? undefined : () => { interrupt(); onHome(); }}
     microphone={<OrderMicrophone key={stage} disabledReason={enabled ? undefined : '현재 단계에서는 녹음할 수 없어요.'} onRecordingComplete={record} />}>
+    <p className="order-step__note">마이크를 누르고 말씀하신 뒤 ‘녹음 종료’를 눌러 주세요. 종료 후 음성을 분석합니다.</p>
+    {transcript && <p role="status" className="order-step__note">인식한 말: {transcript}</p>}
     {error && <p role="alert">{error}</p>}
     {selected && <section className="voice-menu-confirmation" aria-label="선택 메뉴 확인">
       <div className="voice-menu-confirmation__card">

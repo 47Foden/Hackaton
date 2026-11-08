@@ -265,3 +265,25 @@ docker compose exec db psql -U kiosk -d kiosk
 ### 로컬 전사 서버 기본 주소
 
 Compose는 `backend/voice.env`의 `VOICE_TRANSCRIPTION_URL=http://host.docker.internal:8765/transcribe`를 기본으로 읽습니다. `backend/.env`가 있으면 그 값이 우선합니다. 실제 `.env`와 키는 Git에 올리지 않으며 `.env.example`만 공유합니다. 설정 변경 후 `docker compose up -d --force-recreate backend frontend`로 컨테이너를 다시 생성하세요. 주소 설정만으로 Whisper 워커가 시작되지는 않으므로 전사 워커도 별도로 실행해야 합니다.
+
+### 음성 전사 서버에 연결하지 못하는 경우 (Windows + Docker Desktop)
+
+이 메시지는 음성 정확도 문제가 아니라 백엔드에서 전사 워커에 접속하지 못했다는 뜻입니다. 모델 가중치·벤치마크 가상환경 설치 후 프로젝트 루트의 PowerShell에서 다음 두 명령을 각각 실행하고 워커 터미널을 유지하세요.
+
+```powershell
+$env:PYTHONPATH = (Resolve-Path backend).Path
+```
+
+```powershell
+& ./backend/scripts/voice/.venv/Scripts/python.exe -m app.services.voice.whisper_worker --model-dir models/whisper-large-v3-turbo --host 0.0.0.0 --port 8765
+```
+
+`Whisper worker ready`가 표시돼야 합니다. `0.0.0.0` 바인딩은 Docker에서 Windows 호스트로 접근하기 위한 설정입니다. 인증 없는 개발용 워커이므로 공용 네트워크에 노출하지 말고 방화벽에서 필요한 개발 네트워크만 허용하세요.
+
+새 터미널에서 컨테이너→워커의 TCP 연결을 확인합니다. 이 검사는 음성 인식 결과까지 검증하지는 않습니다.
+
+```powershell
+docker compose exec backend python -c "import socket; s=socket.create_connection(('host.docker.internal',8765),timeout=5); s.close(); print('전사 워커 연결 성공')"
+```
+
+실패하면 워커 실행 여부, 포트, Windows 방화벽을 확인하세요. 화면은 녹음 종료 후 전사를 요청하며, 성공한 텍스트는 ‘인식한 말’로 표시합니다. 전사 문장은 보이는데 메뉴 선택이 안 되면 등록 메뉴명 일치 여부를 확인하세요. 일반 주문하기는 음성 기능 없이 동작합니다. 시작 화면의 자동 음성은 브라우저 재생 정책에 따라 차단될 수 있으며 ‘안내 다시 듣기’ 버튼으로 재생할 수 있습니다.
