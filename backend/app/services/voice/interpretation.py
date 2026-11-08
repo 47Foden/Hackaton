@@ -1,6 +1,6 @@
 from unicodedata import normalize
 
-from app.schemas.voice import Recommend, Retry, SelectMenu, SetServiceType, SetTemperature, VoiceAction, VoiceStage
+from app.schemas.voice import Confirm, Recommend, Retry, SelectMenu, SetServiceType, SetTemperature, VoiceAction, VoiceStage
 
 POLITE_ENDINGS = ("으로해주세요", "로해주세요", "하나주세요", "한잔주세요", "해주실래요", "해주세요", "주세요", "부탁해요")
 TEMPERATURES = {
@@ -51,6 +51,9 @@ def interpret_transcript(
         if phrase.endswith(ending):
             phrase = phrase.removesuffix(ending)
             break
+
+    if stage in {"menu_confirmation", "review"}:
+        return Confirm() if phrase in {"네", "예", "맞아요", "주문", "주문할게요", "주문확정", "확정"} else Retry(reason="UNRECOGNIZED")
 
     if stage in {"temperature", "service_type"}:
         menu = menus.get(selected_menu_id or "")

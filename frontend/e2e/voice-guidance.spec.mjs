@@ -5,7 +5,7 @@ async function showMenu(page) {
   const catalogue = await createMockApi({ delayMs: 0 }).getMenus();
   await page.route('**/api/menus', route => route.fulfill({ json: catalogue }));
   await page.goto('/');
-  await page.getByRole('button', { name: '주문하기' }).click();
+  await page.getByRole('button', { name: '주문하기', exact: true }).click();
   await expect(page.getByRole('heading', { name: '간편 메뉴판' })).toBeVisible();
 }
 

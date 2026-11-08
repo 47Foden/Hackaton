@@ -462,3 +462,7 @@ score = 1 - sum(weight[j] * abs(menu[j] - target[j])) / sum(weight[j])
 판매 중지나 is_featured 플래그는 응답 포함 여부와 전체 메뉴 정렬을 바꾸지 않는다. 프론트가 is_available로 선택 가능 여부를 결정하고, is_featured로 간편 목록을 구성한다. 대표 이미지는 COLD 우선이고 온도별 이미지는 variants에 모두 반환한다. GET은 읽기만 하며 seed나 파일 수집을 실행하지 않는다.
 
 현재 실행 중인 백엔드 HTTP 200과 메뉴 11개·온도 16개·간편 표시 4개 및 OpenAPI 등록을 확인했다. DB/메뉴 API 통합 테스트 10개를 통과했다. 프론트의 HTTP 어댑터 전환과 주문 API 구현은 후속이다.
+
+### 독립 음성 주문 확인 단계
+
+`POST /api/voice/interpret`의 `stage`에 `menu_confirmation`, `review`를 추가한다. 두 단계에는 `selected_menu_id` 및 후보 목록을 보내지 않는다. `네`, `예`, `맞아요`, `주문`, `주문할게요`, `주문 확정`, `확정`은 `{"type":"confirm"}`으로, 나머지는 `retry`로 반환한다. 메뉴 확인 단계는 옵션 선택으로만 이동하며, 최종 `review`에서만 화면이 기존 `POST /api/orders`를 호출한다. 음성 해석 API 자체에는 주문 저장 부작용이 없다. 일반 터치 주문의 확정 버튼도 유지한다.

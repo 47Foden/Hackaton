@@ -1,14 +1,14 @@
 import { test, expect } from '@playwright/test';
 import { createMockApi } from '../src/api/mock/createMockApi.ts';
 
-test.use({ launchOptions: { args: ['--use-fake-device-for-media-stream', '--use-fake-ui-for-media-stream'] } });
+test.use({ launchOptions: { executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH, args: ['--use-fake-device-for-media-stream', '--use-fake-ui-for-media-stream'] } });
 
 async function showMenu(page, path = '/', updateCatalogue) {
   const catalogue = await createMockApi({ delayMs: 0 }).getMenus();
   updateCatalogue?.(catalogue);
   await page.route('**/api/menus', route => route.fulfill({ json: catalogue }));
   await page.goto(path);
-  await page.getByRole('button', { name: '주문하기' }).click();
+  await page.getByRole('button', { name: '주문하기', exact: true }).click();
   await expect(page.getByRole('heading', { name: '간편 메뉴판' })).toBeVisible();
 }
 
@@ -127,7 +127,7 @@ test('releases a permission result that arrives after leaving the order screen',
   await page.getByRole('button', { name: '음성 녹음' }).click();
   await expect(page.getByRole('button', { name: '권한 확인 중…' })).toBeDisabled();
   await page.getByRole('button', { name: '처음으로', exact: true }).click();
-  await expect(page.getByRole('button', { name: '주문하기' })).toBeVisible();
+  await expect(page.getByRole('button', { name: '주문하기', exact: true })).toBeVisible();
   await page.evaluate(() => window.allowMicrophone());
   await expect.poll(() => page.evaluate(() => window.trackStops)).toBe(1);
   expect(await page.evaluate(() => window.recorderStarts)).toBe(0);

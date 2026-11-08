@@ -7,7 +7,7 @@ async function catalogue() {
 
 async function start(page) {
   await page.goto('/');
-  await page.getByRole('button', { name: '주문하기' }).click();
+  await page.getByRole('button', { name: '주문하기', exact: true }).click();
 }
 
 test('loading remains visible until HTTP menus arrive', async ({ page }) => {

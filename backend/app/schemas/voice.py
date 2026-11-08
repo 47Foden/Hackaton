@@ -5,7 +5,7 @@ from pydantic import BaseModel, Field, StringConstraints
 from app.schemas.menus import Temperature
 from app.schemas.orders import ServiceType
 
-VoiceStage = Literal["menu", "temperature", "service_type", "recommendations"]
+VoiceStage = Literal["menu", "temperature", "service_type", "recommendations", "menu_confirmation", "review"]
 MenuId = Annotated[str, StringConstraints(pattern=r"^[a-z0-9_]{1,64}$")]
 Taste = Literal["sweetness", "sourness", "bitterness"]
 CategoryFilter = Literal["coffee", "tea", "ade", "latte", "non_coffee_latte"]
@@ -50,7 +50,11 @@ class Retry(BaseModel):
     reason: RetryReason
 
 
-VoiceAction = Annotated[SelectMenu | SetTemperature | SetServiceType | Recommend | Retry, Field(discriminator="type")]
+class Confirm(BaseModel):
+    type: Literal["confirm"] = "confirm"
+
+
+VoiceAction = Annotated[Confirm | SelectMenu | SetTemperature | SetServiceType | Recommend | Retry, Field(discriminator="type")]
 
 
 class VoiceInterpretResponse(BaseModel):

@@ -20,6 +20,13 @@ MENUS = {menu["menu_id"]: menu for menu in MENU_ROWS}
 
 
 class InterpretationTests(unittest.TestCase):
+    def test_confirmation_is_explicit_and_stage_scoped(self):
+        for stage in ('menu_confirmation', 'review'):
+            self.assertEqual(interpret_transcript('네', stage, MENUS).type, 'confirm')
+            self.assertEqual(interpret_transcript('주문 확정', stage, MENUS).type, 'confirm')
+            self.assertEqual(interpret_transcript('아니요', stage, MENUS).type, 'retry')
+        self.assertEqual(interpret_transcript('네', 'menu', MENUS).type, 'retry')
+
     def test_stage_options_require_valid_values_and_available_menu(self):
         def action(text, stage, menu):
             return interpret_transcript(text, stage, MENUS, selected_menu_id=menu).model_dump()
@@ -67,7 +74,7 @@ class VoiceInterpretApiTests(unittest.TestCase):
         self.assertEqual(len(transcribe.call_args.args[0]), 16000 * 2)
 
     def test_invalid_stage_and_context_rejected_before_transcription(self):
-        for fields in ([], [("stage", "review")], [("stage", "temperature")],
+        for fields in ([], [("stage", "submitting")], [("stage", "temperature")],
                        [("stage", "menu"), ("selected_menu_id", "cafe_latte")],
                        [("stage", "service_type"), ("selected_menu_id", "unknown")],
                        [("stage", "recommendations"), ("candidate_menu_ids", "cafe_latte"),

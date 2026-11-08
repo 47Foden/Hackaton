@@ -252,3 +252,11 @@ docker compose exec db psql -U kiosk -d kiosk
 컨테이너끼리는 `backend`, `db`라는 이름으로 접속합니다. 브라우저는 이 이름을 모르므로 화면 코드에서는 `/api` 경로를 사용합니다. Vite의 개발용 요청 전달 설정은 배포용 정적 파일에 포함되지 않으므로, 외부 배포 시에는 실제 백엔드 주소와 요청 전달 또는 CORS 설정이 필요합니다.
 
 참고: [Docker Compose 공식 시작 가이드](https://docs.docker.com/compose/gettingstarted/)
+
+## 독립 음성 주문 모드
+
+시작 화면의 **음성으로 주문하기**를 누르면 기존 터치 주문과 별도의 세션으로 시작합니다. 안내 → 마이크 녹음/종료 → 메뉴 확인(“네” 또는 터치) → 온도 → 매장/포장 → 최종 확인(“주문 확정” 또는 터치) → 주문번호 순서입니다. 온도가 하나인 메뉴는 기존 규칙대로 자동 선택합니다. 마이크 시작과 선택 시 기존 안내를 중단하며 단계 이동 시 진행 중인 녹음을 해제하고 늦은 응답을 무시합니다. 인식 실패 시 재입력 안내와 터치 선택을 제공합니다. 추천은 아직 준비 중입니다.
+
+실제 음성 인식을 사용하려면 [전사 워커 실행 안내](docs/plan/voice-recommendation-integration.md)를 따라 Whisper 워커를 실행해야 합니다. Docker Desktop의 `backend/.env`에는 `VOICE_TRANSCRIPTION_URL=http://host.docker.internal:8765/transcribe`를 설정하고 `docker compose up -d --build --force-recreate backend frontend`로 반영합니다. 모델 가중치와 마이크 권한이 필요합니다. 전사 서버가 없으면 안내 및 터치 주문은 가능하지만 음성 선택은 사용할 수 없습니다.
+
+`/api/voice/interpret`는 `menu_confirmation`과 `review` 단계에서 명시적인 긍정 발화를 `confirm`으로 반환합니다. 이 API 자체는 주문을 저장하지 않으며, 화면의 최종 확인 단계에서만 기존 주문 API를 호출합니다. 기존 요청 UUID 재시도 정책을 사용합니다.
