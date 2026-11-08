@@ -1,5 +1,8 @@
 import { useRef, useState } from 'react';
 import { KioskLayout } from '../components/layout/KioskLayout';
+import { MenuBoard, type MenuBoardView } from '../components/menu/MenuBoard';
+import { CatalogStatus } from '../components/menu/CatalogStatus';
+import { MenuImage } from '../components/menu/MenuImage';
 import { OrderMicrophone } from '../components/voice/OrderMicrophone';
 import { useMenus } from '../hooks/useMenus';
 import { useOrderFlow } from '../hooks/useOrderFlow';
@@ -18,6 +21,7 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
   const { order, dispatch, confirm } = useOrderFlow(kioskApi);
   const { state: catalog, reload } = useMenus(kioskApi);
   const [selected, setSelected] = useState<Menu | null>(null);
+  const [menuView, setMenuView] = useState<MenuBoardView>({ mode: 'simplified', enlarged: false });
   const [error, setError] = useState('');
   const revision = useRef(0);
   const stage = selected ? 'menu_confirmation' : order.stage;
@@ -71,12 +75,23 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
     onHome={order.stage === 'submitting' ? undefined : () => { interrupt(); onHome(); }}
     microphone={<OrderMicrophone key={stage} disabledReason={enabled ? undefined : '현재 단계에서는 녹음할 수 없어요.'} onRecordingComplete={record} />}>
     {error && <p role="alert">{error}</p>}
-    {selected && <section className="order-step"><img src={selected.imageUrl} alt={selected.name} style={{ maxWidth: 240 }} /><h2>{selected.name}</h2><p>{selected.price.toLocaleString('ko-KR')}원</p>
-      <button className="primary-button" onClick={accept}>네, 이 메뉴로 주문</button>
-      <button onClick={() => { interrupt(); setSelected(null); }}>다른 메뉴 선택</button></section>}
-    {stage === 'menu' && (catalog.status === 'ready' ? <section aria-label="음성 주문 메뉴판">
-      {catalog.menus.filter(m => m.available).map(menu => <button key={menu.id} onClick={() => choose(menu)}>{menu.name}</button>)}
-    </section> : <p>{catalog.status === 'loading' ? '메뉴를 불러오는 중이에요.' : '메뉴를 불러오지 못했어요.'}<button onClick={() => { interrupt(); reload(); }}>다시 불러오기</button></p>)}
+    {selected && <section className="voice-menu-confirmation" aria-label="선택 메뉴 확인">
+      <div className="voice-menu-confirmation__card">
+        <MenuImage src={selected.imageUrl} className="voice-menu-confirmation__image" />
+        <h2>{selected.name}</h2><p>{selected.price.toLocaleString('ko-KR')}원</p>
+      </div>
+      <div className="voice-menu-confirmation__actions">
+        <button className="primary-button" onClick={accept}>네, 이 메뉴로 주문</button>
+        <button className="primary-button" onClick={() => { interrupt(); setSelected(null); }}>다른 메뉴 선택</button>
+      </div>
+    </section>}
+    {stage === 'menu' && (catalog.status === 'ready'
+      ? catalog.menus.length === 0 ? <CatalogStatus status="empty" onReload={reload} />
+        : <MenuBoard menus={catalog.menus} simplifiedMenus={catalog.menus.filter(m => m.featured)} selectedMenu={null}
+          view={menuView} onViewChange={view => { interrupt(); setMenuView(view); }}
+          onSelect={menuId => { const menu = catalog.menus.find(m => m.id === menuId && m.available); if (menu) choose(menu); }} />
+      : catalog.status === 'loading' ? <CatalogStatus status="loading" />
+        : <CatalogStatus status="error" message={catalog.message} onReload={() => { interrupt(); reload(); }} />)}
     {order.stage === 'temperature' && <TemperatureScreen menu={order.menu} onSelect={temperature => { interrupt(); dispatch({ type: 'set_temperature', temperature }); }} />}
     {order.stage === 'service_type' && <ServiceTypeScreen menu={order.menu} temperature={order.temperature} onSelect={serviceType => { interrupt(); dispatch({ type: 'set_service_type', serviceType }); }} />}
     {(order.stage === 'review' || order.stage === 'submitting') && <ReviewScreen draft={order.draft} isMock={isMockOrderApi} pending={order.stage === 'submitting'}

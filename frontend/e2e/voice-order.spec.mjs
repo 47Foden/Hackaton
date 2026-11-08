@@ -49,3 +49,29 @@ test('independent voice session mixes speech and touch and submits only after co
   expect(stages[2]).toContain('service_type');
   expect(stages[3]).toContain('review');
 });
+
+test('voice menu uses kiosk cards, enlargement and matching centered confirmation buttons', async ({ page }) => {
+  const api = createMockApi({ delayMs: 0 });
+  await page.route('**/api/menus', async route => route.fulfill({ json: await api.getMenus() }));
+  await page.goto('/');
+  await expect(page.getByText('터치뿐 아니라 음성으로도 주문할 수 있어요.')).toBeVisible();
+  const entry = page.getByRole('button', { name: '음성으로 주문하기' });
+  await expect(entry.locator('svg')).toBeVisible();
+  await entry.click();
+  await expect(page.getByRole('heading', { name: '간편 메뉴판' })).toBeVisible();
+  await page.getByRole('button', { name: '전체 메뉴판 보기' }).click();
+  await page.getByRole('button', { name: '크게 보기' }).click();
+  await expect(page.locator('.menu-board--enlarged')).toBeVisible();
+  await page.getByRole('button', { name: /카페라떼/ }).click();
+  const confirmation = page.getByRole('region', { name: '선택 메뉴 확인' });
+  await expect(confirmation).toBeVisible();
+  const card = await page.locator('.voice-menu-confirmation__card').boundingBox();
+  const content = await page.locator('.kiosk-layout__content').evaluate(el => ({ x: el.getBoundingClientRect().x, width: el.clientWidth }));
+  expect(Math.abs(card.x + card.width / 2 - content.x - content.width / 2)).toBeLessThan(3);
+  await expect(confirmation.getByRole('button', { name: '네, 이 메뉴로 주문' })).toHaveClass('primary-button');
+  await expect(confirmation.getByRole('button', { name: '다른 메뉴 선택' })).toHaveClass('primary-button');
+  await expect(confirmation.getByRole('button', { name: '다른 메뉴 선택' })).toBeInViewport();
+  await page.screenshot({ path: '/tmp/voice-confirmation.png' });
+  await confirmation.getByRole('button', { name: '다른 메뉴 선택' }).click();
+  await expect(page.getByRole('heading', { name: '전체 메뉴판' })).toBeVisible();
+});

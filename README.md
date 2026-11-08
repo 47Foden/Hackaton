@@ -260,3 +260,8 @@ docker compose exec db psql -U kiosk -d kiosk
 실제 음성 인식을 사용하려면 [전사 워커 실행 안내](docs/plan/voice-recommendation-integration.md)를 따라 Whisper 워커를 실행해야 합니다. Docker Desktop의 `backend/.env`에는 `VOICE_TRANSCRIPTION_URL=http://host.docker.internal:8765/transcribe`를 설정하고 `docker compose up -d --build --force-recreate backend frontend`로 반영합니다. 모델 가중치와 마이크 권한이 필요합니다. 전사 서버가 없으면 안내 및 터치 주문은 가능하지만 음성 선택은 사용할 수 없습니다.
 
 `/api/voice/interpret`는 `menu_confirmation`과 `review` 단계에서 명시적인 긍정 발화를 `confirm`으로 반환합니다. 이 API 자체는 주문을 저장하지 않으며, 화면의 최종 확인 단계에서만 기존 주문 API를 호출합니다. 기존 요청 UUID 재시도 정책을 사용합니다.
+
+
+### 로컬 전사 서버 기본 주소
+
+Compose는 `backend/voice.env`의 `VOICE_TRANSCRIPTION_URL=http://host.docker.internal:8765/transcribe`를 기본으로 읽습니다. `backend/.env`가 있으면 그 값이 우선합니다. 실제 `.env`와 키는 Git에 올리지 않으며 `.env.example`만 공유합니다. 설정 변경 후 `docker compose up -d --force-recreate backend frontend`로 컨테이너를 다시 생성하세요. 주소 설정만으로 Whisper 워커가 시작되지는 않으므로 전사 워커도 별도로 실행해야 합니다.
