@@ -26,3 +26,12 @@
   .order-choices { grid-template-columns: 1fr; gap: 16px; }
   .order-choice { min-height: 120px; font-size: 26px; }
 }
+
+.voice-menu-confirmation { width: min(100%, 900px); min-height: 100%; margin: auto; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 24px; text-align: center; padding: 0; }
+.voice-menu-confirmation__card { width: min(100%, 460px); padding: 24px; border-radius: 16px; background: #fff; display: flex; flex-direction: column; align-items: center; gap: 16px; }
+.voice-menu-confirmation__image { width: min(240px, 100%); height: clamp(120px, 20vh, 200px); object-fit: contain; }
+.voice-menu-confirmation__card h2 { font-size: 30px; word-break: keep-all; }
+.voice-menu-confirmation__card p { font-size: 26px; font-weight: 700; }
+.voice-menu-confirmation__actions { width: 100%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.voice-menu-confirmation__actions button { font-size: 22px; }
+@media (max-width: 540px) { .voice-menu-confirmation__actions { grid-template-columns: 1fr; } }

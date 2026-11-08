@@ -294,3 +294,38 @@ docker compose exec db psql -U kiosk -d kiosk
 실제 음성 인식을 사용하려면 [전사 워커 실행 안내](docs/plan/voice-recommendation-integration.md)를 따라 Whisper 워커를 실행해야 합니다. Docker Desktop의 `backend/.env`에는 `VOICE_TRANSCRIPTION_URL=http://host.docker.internal:8765/transcribe`를 설정하고 `docker compose up -d --build --force-recreate backend frontend`로 반영합니다. 모델 가중치와 마이크 권한이 필요합니다. 전사 서버가 없으면 안내 및 터치 주문은 가능하지만 음성 선택은 사용할 수 없습니다.
 
 `/api/voice/interpret`는 `menu_confirmation`과 `review` 단계에서 명시적인 긍정 발화를 `confirm`으로 반환합니다. 이 API 자체는 주문을 저장하지 않으며, 화면의 최종 확인 단계에서만 기존 주문 API를 호출합니다. 기존 요청 UUID 재시도 정책을 사용합니다.
+
+
+### 로컬 전사 서버 기본 주소
+
+Compose는 `backend/voice.env`의 `VOICE_TRANSCRIPTION_URL=http://host.docker.internal:8765/transcribe`를 기본으로 읽습니다. `backend/.env`가 있으면 그 값이 우선합니다. 실제 `.env`와 키는 Git에 올리지 않으며 `.env.example`만 공유합니다. 설정 변경 후 `docker compose up -d --force-recreate backend frontend`로 컨테이너를 다시 생성하세요. 주소 설정만으로 Whisper 워커가 시작되지는 않으므로 전사 워커도 별도로 실행해야 합니다.
+
+### 음성 전사 서버에 연결하지 못하는 경우 (Windows + Docker Desktop)
+
+이 메시지는 음성 정확도 문제가 아니라 백엔드에서 전사 워커에 접속하지 못했다는 뜻입니다. 모델 가중치·벤치마크 가상환경 설치 후 프로젝트 루트의 PowerShell에서 다음 두 명령을 각각 실행하고 워커 터미널을 유지하세요.
+
+```powershell
+$env:PYTHONPATH = (Resolve-Path backend).Path
+```
+
+```powershell
+& ./backend/scripts/voice/.venv/Scripts/python.exe -m app.services.voice.whisper_worker --model-dir models/whisper-large-v3-turbo --host 0.0.0.0 --port 8765
+```
+
+`Whisper worker ready`가 표시돼야 합니다. `0.0.0.0` 바인딩은 Docker에서 Windows 호스트로 접근하기 위한 설정입니다. 인증 없는 개발용 워커이므로 공용 네트워크에 노출하지 말고 방화벽에서 필요한 개발 네트워크만 허용하세요.
+
+새 터미널에서 컨테이너→워커의 TCP 연결을 확인합니다. 이 검사는 음성 인식 결과까지 검증하지는 않습니다.
+
+```powershell
+docker compose exec backend python -c "import socket; s=socket.create_connection(('host.docker.internal',8765),timeout=5); s.close(); print('전사 워커 연결 성공')"
+```
+
+실패하면 워커 실행 여부, 포트, Windows 방화벽을 확인하세요. 화면은 녹음 종료 후 전사를 요청하며, 성공한 텍스트는 ‘인식한 말’로 표시합니다. 전사 문장은 보이는데 메뉴 선택이 안 되면 등록 메뉴명 일치 여부를 확인하세요. 일반 주문하기는 음성 기능 없이 동작합니다. 시작 화면의 자동 음성은 브라우저 재생 정책에 따라 차단될 수 있으며 ‘안내 다시 듣기’ 버튼으로 재생할 수 있습니다.
+
+## 음성 추천
+
+음성 주문 모드에서 “달달한 음료”, “차갑고 달달한 티 종류 아무거나”, “덜 단 커피”, “단맛이 적은 음료”, “달지 않고 신맛 있는 음료”처럼 말한다. 등록 메뉴명에 먼저 정확히 일치하는지 확인하고, 취향이면 Pretuning의 CSV로 최대 4개를 추천한다. 후보가 적으면 가능한 수만 표시하고 없으면 재추천을 안내한다. 메뉴 이름이나 “첫 번째”, “2번”으로 선택할 수 있고 이후 메뉴 확인·온도·매장/포장·주문 확정까지 음성과 터치를 함께 사용할 수 있다. “다시 추천”, “재추천” 또는 다시 추천받기 버튼은 초기 음성 입력 화면으로 돌아간다.
+
+명시된 맛 하나가 긍정이면 원점수 내림차순, 부정(안·덜·적·않·없·낮)이면 오름차순이다. 여러 맛은 각 부정 속성만 1-score로 반전한 뒤 동일 가중 평균을 내림차순으로 정렬한다. 맛 없이 종류나 추천만 요청하면 3가지 맛 평균을 사용하며 동점은 menu_id순이다. 종류·제공 온도·가격으로 먼저 필터링한다. 가격은 “3000원 이하/미만/이상/초과” 형태를 지원하며 학습 점수에 포함하지 않는다. 현재는 규칙 기반 한국어 해석으로 자유로운 모든 문장·이중 부정·복잡한 제외 조건을 지원하지 않는다.
+
+데이터 출처와 메뉴명 매핑 한계는 common/recommendation/README.md를 참고한다. 카페인 정보가 없어 해당 조건은 안내 후 재입력을 요청한다. 추가 모델 호출은 없으며 기존 Whisper 전사 지연 자체를 줄이는 변경은 포함하지 않는다.

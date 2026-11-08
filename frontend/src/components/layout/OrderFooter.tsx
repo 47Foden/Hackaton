@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 
 interface OrderFooterProps {
   status: string;
-  microphone: ReactNode;
+  microphone?: ReactNode;
 }
 
 export function OrderFooter({ status, microphone }: OrderFooterProps) {

@@ -9,11 +9,12 @@ from starlette.requests import ClientDisconnect
 
 from app.db.connection import DatabaseConfigurationError
 from app.repositories.menus import CatalogReadError, list_menus
-from app.schemas.voice import MenuId, VoiceAudioResponse, VoiceInterpretResponse, VoiceStage
+from app.schemas.voice import RecommendationResults, RestartRecommendation, MenuId, VoiceAudioResponse, VoiceInterpretResponse, VoiceStage
 from app.services.voice.audio import (
     AUDIO_TOO_LARGE_MESSAGE, MAX_AUDIO_BYTES, SAMPLE_RATE_HZ, PreparedVoiceAudio, VoiceAudioError, prepare_voice_audio,
 )
 from app.services.voice.interpretation import interpret_transcript
+from app.services.recommendation import recommend
 from app.services.voice.transcription import TranscriptionError, transcribe_voice
 
 MAX_MULTIPART_BYTES = MAX_AUDIO_BYTES + 16 * 1024
@@ -131,4 +132,13 @@ def interpret_audio(
         raise HTTPException(error.status, detail={"code": error.code, "message": str(error)}) from None
 
     action = interpret_transcript(transcript, stage, menus, selected_menu_id=selected_menu_id, candidate_menu_ids=candidates)
+    if stage in {"menu", "recommendations"} and any(word in transcript.replace(" ", "") for word in ("재추천", "다시추천", "다른추천")):
+        action = RestartRecommendation()
+    elif stage in {"menu", "recommendations"} and (action.type == "recommend" or (action.type == "retry" and action.reason == "UNRECOGNIZED")):
+        try:
+            action = RecommendationResults(menu_ids=recommend(transcript, list(menus.values())))
+        except ValueError as error:
+            raise HTTPException(422, detail={"code": "RECOMMENDATION_INPUT", "message": str(error)}) from None
+        except (OSError, KeyError):
+            raise HTTPException(503, detail={"code": "DATASET_NOT_READY", "message": "추천 데이터가 준비되지 않았어요."}) from None
     return VoiceInterpretResponse(transcript=transcript, action=action)

@@ -25,6 +25,7 @@ services:
   backend:
     build: ./backend
     env_file:
+      - ./backend/voice.env
       - path: ./backend/.env
         required: false
     ports:
@@ -34,7 +35,6 @@ services:
       WATCHFILES_FORCE_POLLING: "true"
       COMMON_DIR: /common
       FRONTEND_PUBLIC_DIR: /frontend-public
-      VOICE_TRANSCRIPTION_URL: ${VOICE_TRANSCRIPTION_URL:-}
     volumes:
       - ./backend/app:/app/app
       - ./common:/common:ro

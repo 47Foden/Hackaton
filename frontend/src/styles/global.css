@@ -30,3 +30,6 @@ h1, h2, p { margin: 0; }
   .menu-card__image { height: 120px; }
   .outline-button { font-size: 16px; padding: 12px; }
 }
+
+.start-screen__voice-guide { text-align: center; font-size: 22px; line-height: 1.6; word-break: keep-all; }
+.start-screen__voice-button { justify-content: center; gap: 16px; }

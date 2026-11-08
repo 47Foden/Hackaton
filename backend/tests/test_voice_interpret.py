@@ -16,6 +16,8 @@ MENU_ROWS = [
     {"menu_id": "lemon_tea", "name": "레몬차", "is_available": False, "available_temperatures": ["HOT"]},
     {"menu_id": "lemon_tea_alias", "name": "레몬티", "is_available": True, "available_temperatures": ["HOT"]},
 ]
+for menu in MENU_ROWS:
+    menu["price_krw"] = 3000
 MENUS = {menu["menu_id"]: menu for menu in MENU_ROWS}
 
 
@@ -63,6 +65,15 @@ class VoiceInterpretApiTests(unittest.TestCase):
         with patch("app.routers.voice.list_menus", return_value=MENU_ROWS):
             return asyncio.run(post_audio(self.audio, "recording.webm", MIME_TYPE,
                                           path="/api/voice/interpret", fields=fields))
+
+    def test_preference_audio_returns_ranked_candidates_and_restart(self):
+        with patch("app.routers.voice.transcribe_voice", return_value="덜 단 커피"):
+            status, body = self.post([("stage", "menu")])
+        self.assertEqual(status, 200)
+        self.assertEqual(body["action"], {"type": "recommendation_results", "menu_ids": ["iced_americano", "cafe_latte"]})
+        with patch("app.routers.voice.transcribe_voice", return_value="다시 추천"):
+            status, body = self.post([("stage", "recommendations"), ("candidate_menu_ids", "cafe_latte")])
+        self.assertEqual(body["action"]["type"], "restart_recommendation")
 
     def test_repeated_fields_keep_display_order_and_send_pcm_to_transcriber(self):
         fields = [("stage", "recommendations"), ("candidate_menu_ids", "cafe_latte"),

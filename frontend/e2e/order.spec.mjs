@@ -122,7 +122,7 @@ test('an ID conflict locks retry until the customer starts a fresh order', async
   expect(requests[0].request_id).not.toBe(requests[1].request_id);
 });
 
-test('returning home from completion releases speech and starts a fresh order', async ({ page }) => {
+test('returning home from touch completion starts a fresh order', async ({ page }) => {
   await page.route('**/api/orders', route => route.fulfill({ status: 201, json: result }));
   await startOrder(page);
   await page.evaluate(() => {
@@ -140,7 +140,7 @@ test('returning home from completion releases speech and starts a fresh order', 
   const cancellationsBeforeHome = await page.evaluate(() => window.speechCancelCount);
 
   await page.getByRole('button', { name: '처음으로 돌아가기' }).click();
-  await expect.poll(() => page.evaluate(() => window.speechCancelCount)).toBe(cancellationsBeforeHome + 1);
+  await expect.poll(() => page.evaluate(() => window.speechCancelCount)).toBe(cancellationsBeforeHome);
   await page.getByRole('button', { name: '주문하기', exact: true }).click();
   await expect(page.getByRole('heading', { name: '간편 메뉴판' })).toBeVisible();
   await expect(page.getByRole('button', { name: '크게 보기' })).toHaveAttribute('aria-pressed', 'false');
