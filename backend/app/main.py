@@ -4,11 +4,13 @@ from app.db.connection import connect
 from app.routers.menus import router as menus_router
 from app.routers.orders import router as orders_router
 from app.routers.voice import router as voice_router
+from app.routers.recommendation_text import router as recommendation_text_router
 
 app = FastAPI(title="Cafe Kiosk API")
 app.include_router(menus_router)
 app.include_router(orders_router)
 app.include_router(voice_router)
+app.include_router(recommendation_text_router)
 
 
 @app.get("/api/health")

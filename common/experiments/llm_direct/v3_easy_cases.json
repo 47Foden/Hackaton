@@ -1,0 +1,7 @@
+[
+  {"id":"easy_budget","text":"커피는 빼고, 3,000원 이하인 차가운 음료를 추천해 주세요.","evaluation":{"hard_constraints":{"max_price_krw":3000,"temperature":"COLD","excluded_categories":["커피"]},"acceptable_menu_ids":["peach_iced_tea"],"required_basis_fields":[],"rationale":"현재 스냅샷에서 해당 가격·온도·카테고리 조건을 만족하는 메뉴."}},
+  {"id":"easy_hot_coffee","text":"3,000원 이하의 따뜻한 커피를 추천해 주세요.","evaluation":{"hard_constraints":{"max_price_krw":3000,"temperature":"HOT"},"acceptable_menu_ids":["espresso","cafe_latte"],"required_basis_fields":[],"rationale":"가격과 HOT 옵션을 만족하는 커피 두 종류를 모두 허용하며 한 가지 정답을 강요하지 않음."}},
+  {"id":"easy_lemon_carbonation","text":"레몬의 산미와 탄산이 있는 차가운 음료를 3,500원 이하로 추천해 주세요.","evaluation":{"hard_constraints":{"max_price_krw":3500,"temperature":"COLD"},"acceptable_menu_ids":["lemonade"],"required_basis_fields":["description"],"rationale":"확인된 설명에 레몬 산미와 탄산이 함께 명시되어 있음."}},
+  {"id":"easy_strawberry_milk","text":"딸기 맛과 우유가 들어간 차가운 음료를 4,000원 이하로 추천해 주세요.","evaluation":{"hard_constraints":{"max_price_krw":4000,"temperature":"COLD"},"acceptable_menu_ids":["strawberry_latte"],"required_basis_fields":["description","milk"],"rationale":"확인된 설명에 딸기와 우유 조합이 명시되어 있고 해당 온도 milk=true 자료가 있음."}},
+  {"id":"easy_grape_carbonation","text":"청포도 맛이 나고 탄산이 있는 차가운 음료를 3,500원 이하로 추천해 주세요.","evaluation":{"hard_constraints":{"max_price_krw":3500,"temperature":"COLD"},"acceptable_menu_ids":["green_grape_ade"],"required_basis_fields":["description"],"rationale":"확인된 설명에 청포도 풍미와 탄산이 함께 명시되어 있음."}}
+]
