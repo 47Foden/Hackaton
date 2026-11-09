@@ -27,6 +27,6 @@ python main.py --resume --model gpt-4.1 --output outputs/catalogue-45
 
 ## 서비스 반영
 
-현재 서비스의 `common/recommendation/`은 기존 11종 점수 스냅샷을 유지한다.
-45종 맛 평가 완료 후 서비스의 메뉴 ID 매핑·점수표 검증을 함께 확장해야 한다.
-준비 단계의 이진 행렬만 복사하면 기존 추천 로더와 호환되지 않는다.
+기존 11종 점수표는 삭제했다. 서비스 로더는 45종 카탈로그와 12개 분류를 사용한다.
+생성한 `binary.csv`와 `continuous.csv`를 `common/recommendation/`으로 복사한다.
+현재 45종 맛 평가 결과가 저장소에 없으므로 추천은 점수표 미준비를 안내한다.
