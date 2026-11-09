@@ -1,18 +1,15 @@
 """Rule-based Korean preference extraction and deterministic Pretuning ranking."""
 import csv
+import json
 import math
 import os
 import re
 from pathlib import Path
-ALIASES = {'레몬 아이스티': '레몬티', '말차라떼': '녹차라떼'}
-# These names identify the frozen score snapshot. Catalog names may change.
-SCORE_MENU_IDS = {
-    "복숭아 아이스티": "peach_iced_tea", "레몬티": "lemon_tea_alias",
-    "아이스아메리카노": "iced_americano", "레몬에이드": "lemonade",
-    "딸기라떼": "strawberry_latte", "청포도에이드": "green_grape_ade",
-    "카페라떼": "cafe_latte", "레몬차": "lemon_tea", "유자차": "citron_tea",
-    "에스프레소": "espresso", "녹차라떼": "green_tea_latte",
-}
+COMMON_ROOT = Path(os.environ.get('COMMON_DIR', Path(__file__).resolve().parents[3] / 'common'))
+CATALOG = json.loads((COMMON_ROOT / 'order_catalog.json').read_text(encoding='utf-8'))
+SCORE_MENU_IDS = {menu['name']: menu['menu_id'] for menu in CATALOG}
+BINARY_ATTRIBUTES = ['커피', '디카페인', '음료', '에스프레소', '라떼', '콜드브루',
+                     '에이드', '프라페', '스무디', '주스', '논커피라떼', '티']
 TASTES = {'단맛': r'단맛|달달|달콤|달지|달게|달은|단(?=거|음료|커피|차|티|라떼)',
           '신맛': r'신맛|새콤|상큼|시지|신(?=거|음료|커피|차|티)',
           '쓴맛': r'쓴맛|쌉싸름|쓰지|쓴(?=거|음료|커피|차|티)'}
@@ -21,7 +18,7 @@ NEG = r'안|덜|적|않|없|낮|빼|말고'
 
 def parse_preferences(text):
     text = re.sub(r'\s+', '', text)
-    if '카페인' in text or '디카페인' in text:
+    if '카페인' in text.replace('디카페인', ''):
         raise ValueError('카페인 데이터는 아직 준비되지 않았어요. 맛이나 음료 종류로 말씀해 주세요.')
     tastes = {}
     matches = sorted((m.start(), m.end(), name) for name, pattern in TASTES.items() for m in re.finditer(pattern, text))
@@ -33,7 +30,7 @@ def parse_preferences(text):
         suffix = re.split(r'고|지만|면서|며|,', text[end:right])[0]
         negative = bool(re.search(NEG, prefix + suffix))
         tastes[name] = -1 if negative else 1
-    category = next((c for c in ['논커피라떼', '에이드', '라떼', '커피', '티'] if c in text), None)
+    category = next((c for c in ['디카페인', '논커피라떼', '콜드브루', '에스프레소', '프라페', '스무디', '주스', '에이드', '라떼', '커피', '티'] if c in text), None)
     if category is None and re.search(r'차(?:종류|추천|아무거나|주세요|$)', text): category = '티'
     if category and re.search(re.escape(category) + r'(?:는|가|은)?(?:말고|아닌|빼)', text):
         raise ValueError('음료 종류 제외 조건은 아직 지원하지 않아요. 원하는 종류를 말씀해 주세요.')
@@ -47,12 +44,17 @@ def parse_preferences(text):
 
 def load_scores():
     root = Path(os.environ.get('COMMON_DIR', Path(__file__).resolve().parents[3] / 'common')) / 'recommendation'
+    if not all((root / name).is_file() for name in ['binary.csv', 'continuous.csv']):
+        raise ValueError('45종 추천 점수표가 아직 준비되지 않았어요. 메뉴판에서 메뉴를 선택해 주세요.')
     tables = []
-    for file, columns, binary in [('continuous.csv', list(TASTES), False), ('binary.csv', ['커피','티','에이드','라떼','논커피라떼'], True)]:
+    for file, columns, binary in [('continuous.csv', list(TASTES), False), ('binary.csv', BINARY_ATTRIBUTES, True)]:
         table = {}
         with (root / file).open(encoding='utf-8-sig', newline='') as stream:
-            for row in csv.DictReader(stream):
-                name = ALIASES.get(row['메뉴'], row['메뉴'])
+            reader = csv.DictReader(stream)
+            if reader.fieldnames != ['메뉴', *columns]:
+                raise ValueError('45종 추천 점수표의 열 구성이 올바르지 않아요.')
+            for row in reader:
+                name = row['메뉴']
                 menu_id = SCORE_MENU_IDS.get(name)
                 if menu_id is None or menu_id in table: raise ValueError('Invalid menu mapping')
                 values = {c: float(row[c]) for c in columns}
