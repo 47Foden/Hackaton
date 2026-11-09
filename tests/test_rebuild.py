@@ -4,7 +4,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 import pandas as pd
-from common.menu_data import MENUS, TASTE_ATTRIBUTES
+from common.menu_data import MENUS, TASTE_ATTRIBUTES, BINARY_ATTRIBUTES
 from pretuning import rebuild
 
 
@@ -24,8 +24,8 @@ class RebuildTest(unittest.TestCase):
                 api.assert_not_called()
             frame = pd.read_csv(out / 'continuous.csv', index_col=0)
             self.assertEqual(list(frame.columns), TASTE_ATTRIBUTES)
-            self.assertEqual(frame.shape, (11, 3))
+            self.assertEqual(frame.shape, (len(MENUS), 3))
             self.assertAlmostEqual(frame.iloc[0]['단맛'], .4)
-            self.assertEqual(pd.read_csv(out / 'binary.csv', index_col=0).shape, (11, 5))
+            self.assertEqual(pd.read_csv(out / 'binary.csv', index_col=0).shape, (len(MENUS), len(BINARY_ATTRIBUTES)))
             with self.assertRaises(FileExistsError):
                 rebuild(source, out)
