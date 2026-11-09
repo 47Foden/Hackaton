@@ -18,7 +18,7 @@ import './order/OrderFlow.css';
 export function OrderScreen({ onHome }: { onHome: () => void }) {
   const { order, dispatch, confirm } = useOrderFlow(kioskApi);
   const { state: catalog, reload } = useMenus(kioskApi);
-  const [menuView, setMenuView] = useState<MenuBoardView>({ mode: 'simplified', enlarged: false });
+  const [menuView, setMenuView] = useState<MenuBoardView>({ enlarged: false });
 
   const guide = getOrderGuidance(order, isMockOrderApi);
   const reviewError = order.stage === 'review' ? order.error : undefined;
@@ -42,7 +42,7 @@ export function OrderScreen({ onHome }: { onHome: () => void }) {
       {order.stage === 'menu' && catalog.status === 'error' && <CatalogStatus status="error" message={catalog.message} onReload={reload} />}
       {order.stage === 'menu' && catalog.status === 'ready' && (catalog.menus.length === 0
         ? <CatalogStatus status="empty" onReload={reload} />
-        : <MenuBoard groupByCategory menus={catalog.menus} simplifiedMenus={catalog.menus.filter(menu => menu.featured)}
+        : <MenuBoard groupByCategory menus={catalog.menus}
           selectedMenu={null} view={menuView} onViewChange={setMenuView}
           onSelect={menuId => applySelection({ type: 'select_menu', menuId })} />)}
       {order.stage === 'temperature' && <TemperatureScreen menu={order.menu}
