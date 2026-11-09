@@ -1,15 +1,9 @@
 {
   "reference_url": "https://www.mega-mgccoffee.com/menu/",
   "checked_date": "2026-11-07",
-  "logos": {
-    "default": {
-      "path": "/images/brand/mega-logo.png",
-      "source_url": "https://img.mega-mgccoffee.com/megahp/common/img/new_logo.png"
-    },
-    "dark": {
-      "path": "/images/brand/mega-logo-dark.png",
-      "source_url": "https://img.mega-mgccoffee.com/megahp/common/img/new_logo_b.png"
-    }
+  "logo": {
+    "path": "/images/brand/technica61.svg",
+    "alt": "Technica6.1 coffee"
   },
   "style_source_url": "https://img.mega-mgccoffee.com/megahp/common/css/style.css?ver=202608271042",
   "colors": {

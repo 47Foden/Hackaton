@@ -23,7 +23,7 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
   const { state: catalog, reload } = useMenus(kioskApi);
   const [candidates, setCandidates] = useState<string[] | null>(null);
   const [selected, setSelected] = useState<Menu | null>(null);
-  const [menuView, setMenuView] = useState<MenuBoardView>({ mode: 'simplified', enlarged: false });
+  const [menuView, setMenuView] = useState<MenuBoardView>({ enlarged: false });
   const [error, setError] = useState('');
   const [transcript, setTranscript] = useState('');
   const revision = useRef(0);
@@ -103,12 +103,12 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
       </div>
     </section>}
     {candidates !== null && !selected && order.stage === 'menu' && <section aria-label="추천 결과">
-      {catalog.status === 'ready' && candidates.length > 0 && <MenuBoard menus={candidates.flatMap(id => catalog.menus.filter(m => m.id === id))} simplifiedMenus={[]} selectedMenu={null} view={menuView} onViewChange={view => { interrupt(); setMenuView(view); }} onSelect={id => { const menu = catalog.menus.find(m => m.id === id && m.available); if(menu) choose(menu); }} />}
+      {catalog.status === 'ready' && candidates.length > 0 && <MenuBoard menus={candidates.flatMap(id => catalog.menus.filter(m => m.id === id))} selectedMenu={null} view={menuView} onViewChange={view => { interrupt(); setMenuView(view); }} onSelect={id => { const menu = catalog.menus.find(m => m.id === id && m.available); if(menu) choose(menu); }} />}
       <button className="primary-button" onClick={() => { interrupt(); setCandidates(null); setTranscript(''); }}>다시 추천받기</button>
     </section>}
     {stage === 'menu' && candidates === null && (catalog.status === 'ready'
       ? catalog.menus.length === 0 ? <CatalogStatus status="empty" onReload={reload} />
-        : <MenuBoard groupByCategory menus={catalog.menus} simplifiedMenus={catalog.menus.filter(m => m.featured)} selectedMenu={null}
+        : <MenuBoard groupByCategory menus={catalog.menus} selectedMenu={null}
           view={menuView} onViewChange={view => { interrupt(); setMenuView(view); }}
           onSelect={menuId => { const menu = catalog.menus.find(m => m.id === menuId && m.available); if (menu) choose(menu); }} />
       : catalog.status === 'loading' ? <CatalogStatus status="loading" />

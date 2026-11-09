@@ -13,7 +13,7 @@ test('start announces voice ordering, touch session remains silent without micro
   await expect.poll(() => page.evaluate(() => window.prompts.length)).toBe(1);
   await expect(page.getByRole('button', { name: '안내 다시 듣기' })).toBeVisible();
   await page.getByRole('button', { name: '주문하기', exact: true }).click();
-  await expect(page.getByRole('heading', { name: '간편 메뉴판' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: '전체 메뉴판' })).toBeVisible();
   await expect(page.locator('.microphone-control')).toHaveCount(0);
   await page.getByRole('button', { name: /카페라떼/ }).click();
   await page.getByRole('button', { name: /따뜻하게/ }).click();
@@ -30,7 +30,7 @@ test('voice ordering remains accessible when speech synthesis is unavailable', a
   await page.route('**/api/menus', async route => route.fulfill({ json: await api.getMenus() }));
   await page.goto('/');
   await page.getByRole('button', { name: '음성으로 주문하기' }).click();
-  await expect(page.getByRole('heading', { name: '간편 메뉴판' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: '전체 메뉴판' })).toBeVisible();
   await page.getByRole('button', { name: /카페라떼/ }).click();
   await expect(page.getByRole('button', { name: '네, 이 메뉴로 주문' })).toBeVisible();
 });

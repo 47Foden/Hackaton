@@ -60,8 +60,8 @@ test('voice menu uses kiosk cards, enlargement and matching centered confirmatio
   const entry = page.getByRole('button', { name: '음성으로 주문하기' });
   await expect(entry.locator('svg')).toBeVisible();
   await entry.click();
-  await expect(page.getByRole('heading', { name: '간편 메뉴판' })).toBeVisible();
-  await page.getByRole('button', { name: '전체 메뉴판 보기' }).click();
+  await expect(page.getByRole('heading', { name: '전체 메뉴판' })).toBeVisible();
+  await expect(page.getByRole('button', { name: /간편 메뉴판 보기|전체 메뉴판 보기/ })).toHaveCount(0);
   await page.getByRole('button', { name: '크게 보기' }).click();
   await expect(page.locator('.menu-board--enlarged')).toBeVisible();
   await page.getByRole('group', { name: '커피 세부 분류' }).getByRole('button', { name: '라떼', exact: true }).click();

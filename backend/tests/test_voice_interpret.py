@@ -67,13 +67,21 @@ class VoiceInterpretApiTests(unittest.TestCase):
                                           path="/api/voice/interpret", fields=fields))
 
     def test_preference_audio_returns_ranked_candidates_and_restart(self):
-        with patch("app.routers.voice.transcribe_voice", return_value="덜 단 커피"):
+        with patch("app.routers.voice.transcribe_voice", return_value="덜 단 커피"), \
+                patch("app.routers.voice.recommend", return_value=["iced_americano", "cafe_latte"]):
             status, body = self.post([("stage", "menu")])
         self.assertEqual(status, 200)
         self.assertEqual(body["action"], {"type": "recommendation_results", "menu_ids": ["iced_americano", "cafe_latte"]})
         with patch("app.routers.voice.transcribe_voice", return_value="다시 추천"):
             status, body = self.post([("stage", "recommendations"), ("candidate_menu_ids", "cafe_latte")])
         self.assertEqual(body["action"]["type"], "restart_recommendation")
+
+    def test_missing_45_menu_scores_returns_guidance(self):
+        with patch("app.routers.voice.transcribe_voice", return_value="달달한 음료 추천"), \
+                patch("app.routers.voice.recommend", side_effect=ValueError("45종 추천 점수표가 아직 준비되지 않았어요.")):
+            status, body = self.post([("stage", "menu")])
+        self.assertEqual(status, 422)
+        self.assertIn("45종", body["detail"]["message"])
 
     def test_repeated_fields_keep_display_order_and_send_pcm_to_transcriber(self):
         fields = [("stage", "recommendations"), ("candidate_menu_ids", "cafe_latte"),

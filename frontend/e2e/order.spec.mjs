@@ -118,7 +118,7 @@ test('an ID conflict locks retry until the customer starts a fresh order', async
   await expect(page.getByRole('button', { name: '요청 정보 확인 필요' })).toBeDisabled();
   await page.getByRole('button', { name: '처음으로', exact: true }).click();
   await page.getByRole('button', { name: '주문하기', exact: true }).click();
-  await expect(page.getByRole('heading', { name: '간편 메뉴판' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: '전체 메뉴판' })).toBeVisible();
   await expect(page.getByRole('alert')).toHaveCount(0);
   await chooseIcedAmericano(page);
   await page.getByRole('button', { name: /포장해서/ }).click();
@@ -136,7 +136,7 @@ test('returning home from touch completion starts a fresh order', async ({ page 
     window.speechSynthesis.cancel = () => { window.speechCancelCount += 1; };
   });
 
-  await page.getByRole('button', { name: '전체 메뉴판 보기' }).click();
+  await expect(page.getByRole('button', { name: /간편 메뉴판 보기|전체 메뉴판 보기/ })).toHaveCount(0);
   await page.getByRole('button', { name: '크게 보기' }).click();
   await expect(page.getByRole('button', { name: '기본 크기로 보기' })).toHaveAttribute('aria-pressed', 'true');
   await chooseIcedAmericano(page);
@@ -148,7 +148,7 @@ test('returning home from touch completion starts a fresh order', async ({ page 
   await page.getByRole('button', { name: '처음으로 돌아가기' }).click();
   await expect.poll(() => page.evaluate(() => window.speechCancelCount)).toBe(cancellationsBeforeHome);
   await page.getByRole('button', { name: '주문하기', exact: true }).click();
-  await expect(page.getByRole('heading', { name: '간편 메뉴판' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: '전체 메뉴판' })).toBeVisible();
   await expect(page.getByRole('button', { name: '크게 보기' })).toHaveAttribute('aria-pressed', 'false');
   await expect(page.getByRole('region', { name: '주문 완료' })).toHaveCount(0);
   await expect(page.getByText(orderNumber, { exact: true })).toHaveCount(0);
