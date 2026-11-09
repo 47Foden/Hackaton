@@ -4,9 +4,15 @@ import math
 import os
 import re
 from pathlib import Path
-from app.db.catalog import MENU_IDS
-
 ALIASES = {'레몬 아이스티': '레몬티', '말차라떼': '녹차라떼'}
+# These names identify the frozen score snapshot. Catalog names may change.
+SCORE_MENU_IDS = {
+    "복숭아 아이스티": "peach_iced_tea", "레몬티": "lemon_tea_alias",
+    "아이스아메리카노": "iced_americano", "레몬에이드": "lemonade",
+    "딸기라떼": "strawberry_latte", "청포도에이드": "green_grape_ade",
+    "카페라떼": "cafe_latte", "레몬차": "lemon_tea", "유자차": "citron_tea",
+    "에스프레소": "espresso", "녹차라떼": "green_tea_latte",
+}
 TASTES = {'단맛': r'단맛|달달|달콤|달지|달게|달은|단(?=거|음료|커피|차|티|라떼)',
           '신맛': r'신맛|새콤|상큼|시지|신(?=거|음료|커피|차|티)',
           '쓴맛': r'쓴맛|쌉싸름|쓰지|쓴(?=거|음료|커피|차|티)'}
@@ -47,12 +53,13 @@ def load_scores():
         with (root / file).open(encoding='utf-8-sig', newline='') as stream:
             for row in csv.DictReader(stream):
                 name = ALIASES.get(row['메뉴'], row['메뉴'])
-                if name not in MENU_IDS or name in table: raise ValueError('Invalid menu mapping')
+                menu_id = SCORE_MENU_IDS.get(name)
+                if menu_id is None or menu_id in table: raise ValueError('Invalid menu mapping')
                 values = {c: float(row[c]) for c in columns}
                 if any(not math.isfinite(v) or not 0 <= v <= 1 or (binary and v not in (0,1)) for v in values.values()):
                     raise ValueError('Invalid score')
-                table[name] = values
-        if set(table) != set(MENU_IDS): raise ValueError('Incomplete dataset')
+                table[menu_id] = values
+        if set(table) != set(SCORE_MENU_IDS.values()): raise ValueError('Incomplete dataset')
         tables.append(table)
     return tables
 
@@ -62,16 +69,15 @@ def recommend(text, menus):
     continuous, binary = load_scores()
     ranked = []
     for menu in menus:
-        if not menu['is_available']: continue
-        name = menu['name']
-        if name not in continuous: raise ValueError('메뉴 점수 데이터가 준비되지 않았어요.')
-        if category and not binary[name][category]: continue
+        menu_id = menu['menu_id']
+        if not menu['is_available'] or menu_id not in continuous: continue
+        if category and not binary[menu_id][category]: continue
         if temperature and temperature not in menu['available_temperatures']: continue
         if price:
             amount, op = price; value = menu['price_krw']
             if not {'이하': value <= amount, '미만': value < amount, '이상': value >= amount, '초과': value > amount}[op]: continue
         # A negative attribute reverses only that attribute, never unrelated tastes.
         weights = tastes or {t: 1 for t in TASTES}
-        score = sum(continuous[name][t] if direction > 0 else 1-continuous[name][t] for t,direction in weights.items()) / len(weights)
-        ranked.append((score, menu['menu_id']))
+        score = sum(continuous[menu_id][t] if direction > 0 else 1-continuous[menu_id][t] for t,direction in weights.items()) / len(weights)
+        ranked.append((score, menu_id))
     return [mid for _,mid in sorted(ranked, key=lambda item: (-item[0], item[1]))[:4]]

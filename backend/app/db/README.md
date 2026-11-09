@@ -12,9 +12,9 @@ docker compose exec -T backend python -m app.db.seed
 `--check`는 파일 검증만 하며 DB를 연결하거나 변경하지 않는다. migration과 seed는 명시적으로 실행한다. 앱 시작/health 요청에서 자동 실행하지 않는다. seed 실패가 테이블 미적용 때문이면 migration을 먼저 실행한다. 기존 볼륨을 삭제할 필요가 없다.
 
 - connection.py: DATABASE_URL 연결. with 블록 성공 시 commit, 오류 시 rollback, 종료 시 close.
-- migrations/: 순서가 고정된 SQL. 0001은 메뉴·카테고리·온도·주문 테이블이며, 0002는 기존 주문에 UUID를 채우고 `request_id` 유일 제약을 추가한다.
+- migrations/: 순서가 고정된 SQL. 0001은 기본 주문 테이블, 0002는 주문 요청 UUID, 0003은 메뉴 분류와 온도별 옵션, 주문 옵션 스냅샷을 추가한다.
 - migrate.py: ledger 생성, 체크섬 검증, advisory lock, 한 트랜잭션에서 미적용 migration 실행. 적용된 파일은 수정하지 않고 새 번호를 추가한다.
-- catalog.py: common의 리터럴 메뉴 정의/JSON, ID 매핑, 가격·출처·이미지 파일 사전 검증. common Python 코드는 실행하지 않는다.
+- catalog.py: common의 주문 카탈로그 JSON에서 메뉴 ID, 옵션 프로필, 가격·출처·온도별 이미지를 검증한다.
 - seed.py: 검증 완료 후 한 트랜잭션으로 UPSERT. 같은 seed는 중복을 만들지 않으며 기존 판매/간편 목록 설정·주문을 유지한다. common에서 사라진 기존 메뉴는 자동 삭제하지 않고 중단한다.
 - ../repositories/menus.py: list_menus()는 반복 읽기 격리 수준에서 일관된 메뉴 목록을 API 계약 형식으로 반환한다. read_menus(connection)은 호출자가 관리하는 연결에서 같은 조회를 수행한다. GET /api/menus 라우터에서 사용한다.
 

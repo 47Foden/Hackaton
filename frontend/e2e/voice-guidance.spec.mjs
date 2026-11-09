@@ -17,6 +17,7 @@ test('start announces voice ordering, touch session remains silent without micro
   await expect(page.locator('.microphone-control')).toHaveCount(0);
   await page.getByRole('button', { name: /카페라떼/ }).click();
   await page.getByRole('button', { name: /따뜻하게/ }).click();
+  await page.getByRole('button', { name: '옵션 없이 계속' }).click();
   await page.getByRole('button', { name: /매장에서/ }).click();
   await expect(page.getByRole('button', { name: '주문 확정', exact: true })).toBeVisible();
   expect(await page.evaluate(() => window.prompts.length)).toBe(1);

@@ -18,13 +18,13 @@ const storedOrder = {
 test('mock uses the API catalogue and computes server-side order fields', async () => {
   const api = createMockApi({ delayMs: 0 });
   const { menus } = await api.getMenus();
-  assert.equal(menus.length, 11);
+  assert.equal(menus.length, 45);
   assert.equal(menus.filter(menu => menu.is_featured).length, 4);
-  assert.equal(menus.reduce((sum, menu) => sum + menu.variants.length, 0), 16);
+  assert.equal(menus.reduce((sum, menu) => sum + menu.variants.length, 0), 71);
   const result = await api.createOrder(request);
   assert.equal(result.total_price_krw, menus.find(menu => menu.menu_id === request.menu_id).price_krw);
   assert.match(result.order_number, /^DEV-/);
-  assert.deepEqual(Object.keys(result).sort(), ['menu_id','temperature','service_type','order_id','order_number','menu_name','quantity','total_price_krw','created_at'].sort());
+  assert.deepEqual(Object.keys(result).sort(), ['menu_id','temperature','service_type','order_id','order_number','menu_name','quantity','total_price_krw','selected_options','created_at'].sort());
   menus[0].price_krw = -1;
   assert.notEqual((await api.getMenus()).menus[0].price_krw, -1);
 });
@@ -35,7 +35,7 @@ test('mock rejects unknown menus, unsupported options, and client prices', async
     [selection, 422],
     [{ ...request, request_id: 'invalid' }, 422],
     [{ ...request, menu_id: 'missing' }, 404],
-    [{ ...request, temperature: 'HOT' }, 422],
+    [{ ...request, menu_id: 'strawberry_latte', temperature: 'HOT' }, 422],
     [{ ...request, price_krw: 1 }, 422],
   ]) await assert.rejects(api.createOrder(payload), error => error.status === status && !error.uncertain);
 });

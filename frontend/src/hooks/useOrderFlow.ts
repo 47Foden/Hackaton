@@ -12,9 +12,11 @@ export function useOrderFlow(api: KioskApi) {
   async function confirm() {
     if (order.stage !== 'review' || pending.current || order.error?.kind === 'conflict') return;
     const controller = new AbortController();
+    const optionIds = order.draft.selectedOptions.map(choice => choice.id);
     const request = submittedRequest.current ??= {
       request_id: crypto.randomUUID(), menu_id: order.draft.menu.id,
       temperature: order.draft.temperature, service_type: order.draft.serviceType,
+      ...(optionIds.length ? { option_ids: optionIds } : {}),
     };
     pending.current = controller;
     dispatch({ type: 'submit' });

@@ -58,34 +58,37 @@ test('empty success is separate from failure and can reload', async ({ page }) =
 
 test('404 images preserve card selection, prices, options and the order summary', async ({ page }) => {
   const response = await catalogue();
-  const menu = response.menus.find(item => item.menu_id === 'iced_americano');
+  const menu = response.menus.find(item => item.menu_id === 'lemonade');
   menu.image_url = '/images/menus/not-found.jpg';
   menu.variants[0].image_url = menu.image_url;
   await page.route('**/api/menus', route => route.fulfill({ json: response }));
   await page.route('**/images/menus/not-found.jpg', route => route.fulfill({ status: 404, body: '' }));
   await start(page);
-  const card = page.getByRole('button', { name: /아이스아메리카노/ });
+  const card = page.getByRole('button', { name: /레몬에이드/ });
   await expect(card).toContainText('사진 준비 중');
-  await expect(card).toContainText('2,000원');
+  await expect(card).toContainText('3,500원');
   await expect(card).toBeEnabled();
   await card.click();
+  await expect(page.getByRole('heading', { name: '따뜻하게, 차갑게?' })).toHaveCount(0);
+  await page.getByRole('button', { name: '옵션 없이 계속' }).click();
   await expect(page.getByRole('heading', { name: '어디에서 드시겠어요?' })).toBeVisible();
   await expect(page.locator('.order-summary')).toContainText('사진 준비 중');
-  await expect(page.locator('.order-summary')).toContainText('아이스아메리카노');
+  await expect(page.locator('.order-summary')).toContainText('레몬에이드');
   await page.getByRole('button', { name: /매장에서/ }).click();
   await expect(page.getByRole('button', { name: '주문 확정', exact: true })).toBeEnabled();
 });
 
 test('an empty image path has a placeholder and can still be ordered', async ({ page }) => {
   const response = await catalogue();
-  const menu = response.menus.find(item => item.menu_id === 'iced_americano');
+  const menu = response.menus.find(item => item.menu_id === 'lemonade');
   menu.image_url = '';
   menu.variants[0].image_url = '';
   await page.route('**/api/menus', route => route.fulfill({ json: response }));
   await start(page);
-  const card = page.getByRole('button', { name: /아이스아메리카노/ });
+  const card = page.getByRole('button', { name: /레몬에이드/ });
   await expect(card).toContainText('사진 준비 중');
   await expect(card.locator('img')).toHaveCount(0);
   await card.click();
+  await page.getByRole('button', { name: '옵션 없이 계속' }).click();
   await expect(page.getByRole('heading', { name: '어디에서 드시겠어요?' })).toBeVisible();
 });

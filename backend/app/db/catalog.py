@@ -1,22 +1,19 @@
 """Validate the repository catalogue before opening a write transaction."""
 
-import ast
 import json
 import os
 from dataclasses import dataclass
 from datetime import date
 from pathlib import Path
+from typing import get_args
 from urllib.parse import urlparse
 
+from pydantic import ValidationError
+
+from app.schemas.menus import Category, MenuOptionGroup
+
 ROOT = Path(__file__).resolve().parents[3]
-MENU_IDS = {
-    "복숭아 아이스티": "peach_iced_tea", "레몬티": "lemon_tea_alias",
-    "아이스아메리카노": "iced_americano", "레몬에이드": "lemonade",
-    "딸기라떼": "strawberry_latte", "청포도에이드": "green_grape_ade",
-    "카페라떼": "cafe_latte", "레몬차": "lemon_tea", "유자차": "citron_tea",
-    "에스프레소": "espresso", "녹차라떼": "green_tea_latte",
-}
-CATEGORY_ORDER = ("커피", "티", "에이드", "논커피라떼", "라떼")
+CATEGORY_ORDER = get_args(Category)
 
 
 class CatalogError(ValueError):
@@ -32,6 +29,7 @@ class CatalogMenu:
     is_featured: bool
     categories: tuple[str, ...]
     variants: tuple[tuple[str, str], ...]
+    option_groups: list[dict]
 
 
 def require(condition: bool, message: str) -> None:
@@ -53,32 +51,41 @@ def read_json(path: Path):
 
 def validate_source(source: dict) -> None:
     require(isinstance(source, dict), "Invalid source record")
-    parsed = urlparse(source.get("source_url", ""))
-    require(parsed.scheme == "https" and bool(parsed.netloc), "Missing HTTPS source URL")
     try:
         date.fromisoformat(source["checked_date"])
     except (KeyError, TypeError, ValueError) as error:
         raise CatalogError("Invalid source checked_date") from error
 
 
+def validate_source_url(source: dict) -> None:
+    parsed = urlparse(source.get("source_url", ""))
+    require(parsed.scheme == "https" and bool(parsed.netloc), "Missing HTTPS source URL")
+
+
+def load_option_profiles(common: Path) -> dict[str, list[dict]]:
+    data = read_json(common / "order_option_profiles.json")
+    result = {}
+    for profile, groups in data["profiles"].items():
+        try:
+            options = [MenuOptionGroup.model_validate(group) for group in data["common"] + groups]
+        except ValidationError as error:
+            raise CatalogError(f"Invalid options for profile: {profile}") from error
+        require(len({group.id for group in options}) == len(options), f"Duplicate option group: {profile}")
+        result[profile] = [group.model_dump() for group in options]
+    return result
+
+
 def load_catalog(common_dir: Path | None = None, public_dir: Path | None = None) -> list[CatalogMenu]:
     common = common_dir or Path(os.environ.get("COMMON_DIR", ROOT / "common"))
     public = (public_dir or Path(os.environ.get("FRONTEND_PUBLIC_DIR", ROOT / "frontend/public"))).resolve()
-    # Read literal definitions rather than executing the Python catalogue.
-    definitions = {}
-    for node in ast.parse((common / "menu_data.py").read_text(encoding="utf-8-sig")).body:
-        if (isinstance(node, ast.Assign) and isinstance(node.targets[0], ast.Name)
-                and node.targets[0].id in {"MENUS", "CATEGORIES", "PRICE_OPTIONS"}):
-            definitions[node.targets[0].id] = ast.literal_eval(node.value)
-    names = definitions["MENUS"]
-    categories = definitions["CATEGORIES"]
-    options = definitions["PRICE_OPTIONS"]
-    require(isinstance(names, list) and len(names) == len(set(names)) == 11, "Expected 11 unique menus")
-    require(set(names) == set(MENU_IDS), "Menu ID mapping differs from common")
-    require(tuple(categories) == CATEGORY_ORDER, "Category mapping differs from schema")
-    require(all(isinstance(items, list) and len(items) == len(set(items)) and set(items) <= set(names)
-                for items in categories.values()), "Invalid category members")
-    require(isinstance(options, list) and all(type(p) is int and p >= 0 for p in options), "Invalid PRICE_OPTIONS")
+    metadata = read_json(common / "order_catalog.json")
+    require(isinstance(metadata, list) and bool(metadata), "Missing order catalog")
+    names = [menu["name"] for menu in metadata]
+    ids = [menu["menu_id"] for menu in metadata]
+    for values in (names, ids):
+        require(all(isinstance(value, str) and bool(value.strip()) for value in values)
+                and len(values) == len(set(values)), "Invalid or duplicate catalog names or IDs")
+    profiles = load_option_profiles(common)
     prices = read_json(common / "menu_prices.json")
     images = read_json(common / "menu_images.json")
     sources = read_json(common / "menu_price_sources.json")
@@ -91,12 +98,21 @@ def load_catalog(common_dir: Path | None = None, public_dir: Path | None = None)
     require(isinstance(image_sources, list), "Invalid image sources")
     for source in image_sources:
         validate_source(source)
+        validate_source_url(source)
     result = []
-    for order, name in enumerate(names, 1):
+    for order, menu in enumerate(metadata, 1):
+        name = menu["name"]
+        memberships = menu["categories"]
+        require(isinstance(memberships, list) and bool(memberships) and len(memberships) == len(set(memberships))
+                and set(memberships) <= set(CATEGORY_ORDER), f"Invalid categories: {name}")
+        profile = menu["option_profile"]
+        require(profile in profiles, f"Unknown option profile: {name}")
         price = prices[name]
-        require(type(price) is int and price >= 0 and price in options, f"Invalid price: {name}")
+        require(type(price) is int and price >= 0, f"Invalid price: {name}")
         source = sources[name]
         validate_source(source)
+        if source.get("source_kind") != "user_provided":
+            validate_source_url(source)
         require(type(source.get("price_krw")) is int and source["price_krw"] == price,
                 f"Price source mismatch: {name}")
         variants = images[name]
@@ -110,8 +126,7 @@ def load_catalog(common_dir: Path | None = None, public_dir: Path | None = None)
                        and item.get("temperature") == temperature and item.get("image_path") == image_url]
             require(len(matches) == 1, f"Image source mismatch: {name}/{temperature}")
             require(urlparse(matches[0].get("image_source_url", "")).scheme == "https", "Invalid image source URL")
-        memberships = tuple(category for category, members in categories.items() if name in members)
-        require(bool(memberships), f"Menu has no category: {name}")
-        result.append(CatalogMenu(MENU_IDS[name], name, price, order, name in featured, memberships,
-                                  tuple((t, variants[t]) for t in ("HOT", "COLD") if t in variants)))
+        result.append(CatalogMenu(menu["menu_id"], name, price, order, name in featured, tuple(memberships),
+                                  tuple((t, variants[t]) for t in ("HOT", "COLD") if t in variants),
+                                  profiles[profile]))
     return result

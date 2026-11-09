@@ -8,6 +8,7 @@ import { useMenus } from '../hooks/useMenus';
 import { useOrderFlow } from '../hooks/useOrderFlow';
 import type { OrderSelection } from '../state/order';
 import { TemperatureScreen } from './order/TemperatureScreen';
+import { CustomizationScreen } from './order/CustomizationScreen';
 import { ServiceTypeScreen } from './order/ServiceTypeScreen';
 import { ReviewScreen } from './order/ReviewScreen';
 import { CompletionScreen } from './order/CompletionScreen';
@@ -41,12 +42,15 @@ export function OrderScreen({ onHome }: { onHome: () => void }) {
       {order.stage === 'menu' && catalog.status === 'error' && <CatalogStatus status="error" message={catalog.message} onReload={reload} />}
       {order.stage === 'menu' && catalog.status === 'ready' && (catalog.menus.length === 0
         ? <CatalogStatus status="empty" onReload={reload} />
-        : <MenuBoard menus={catalog.menus} simplifiedMenus={catalog.menus.filter(menu => menu.featured)}
+        : <MenuBoard groupByCategory menus={catalog.menus} simplifiedMenus={catalog.menus.filter(menu => menu.featured)}
           selectedMenu={null} view={menuView} onViewChange={setMenuView}
           onSelect={menuId => applySelection({ type: 'select_menu', menuId })} />)}
       {order.stage === 'temperature' && <TemperatureScreen menu={order.menu}
         onSelect={temperature => applySelection({ type: 'set_temperature', temperature })} />}
+      {order.stage === 'customization' && <CustomizationScreen menu={order.menu} temperature={order.temperature}
+        onContinue={ids => dispatch({ type: 'set_options', ids })} />}
       {order.stage === 'service_type' && <ServiceTypeScreen menu={order.menu} temperature={order.temperature}
+        selectedOptions={order.selectedOptions}
         onSelect={serviceType => applySelection({ type: 'set_service_type', serviceType })} />}
       {(order.stage === 'review' || order.stage === 'submitting') && <ReviewScreen draft={order.draft}
         isMock={isMockOrderApi} pending={order.stage === 'submitting'}

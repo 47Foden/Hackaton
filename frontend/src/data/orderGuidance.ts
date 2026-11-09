@@ -3,6 +3,7 @@ import type { OrderState } from '../state/order';
 const guidance = {
   menu: { title: '어떤 음료를 드시겠어요?', description: '메뉴를 눌러 선택해 주세요.' },
   temperature: { title: '따뜻하게, 차갑게?', description: '원하는 음료 온도를 선택해 주세요.' },
+  customization: { title: '추가 옵션을 고르시겠어요?', description: '화면에서 옵션을 선택하거나 옵션 없이 계속할 수 있어요.' },
   service_type: { title: '어디에서 드시겠어요?', description: '매장 또는 포장을 선택해 주세요.' },
   review: { title: '주문 내용을 확인해 주세요.', description: '메뉴와 옵션을 확인한 후 주문 확정을 눌러 주세요.' },
   submitting: { title: '주문을 처리하고 있어요.', description: '잠시만 기다려 주세요.' },

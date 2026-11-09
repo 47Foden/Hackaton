@@ -1,10 +1,11 @@
 from uuid import UUID
 
 import psycopg
+from psycopg.types.json import Jsonb
 
 ORDER_RESULT_COLUMNS = """
     id, menu_id, menu_name_snapshot, temperature, service_type,
-    quantity, total_price_krw, created_at
+    quantity, total_price_krw, selected_options, created_at
 """
 
 
@@ -25,10 +26,11 @@ def lock_menu(connection: psycopg.Connection, menu_id: str) -> dict | None:
     """, (menu_id,)).fetchone()
 
 
-def has_temperature(connection: psycopg.Connection, menu_id: str, temperature: str) -> bool:
-    return connection.execute("""
-        SELECT 1 FROM menu_variants WHERE menu_id = %s AND temperature = %s
-    """, (menu_id, temperature)).fetchone() is not None
+def get_variant_options(connection: psycopg.Connection, menu_id: str, temperature: str) -> list[dict] | None:
+    variant = connection.execute("""
+        SELECT option_groups FROM menu_variants WHERE menu_id = %s AND temperature = %s
+    """, (menu_id, temperature)).fetchone()
+    return None if variant is None else variant["option_groups"]
 
 
 def insert_order(
@@ -40,11 +42,14 @@ def insert_order(
     price_krw: int,
     temperature: str,
     service_type: str,
+    selected_options: list[dict],
 ) -> dict:
     return connection.execute(f"""
         INSERT INTO orders (
-            request_id, menu_id, menu_name_snapshot, unit_price_krw, temperature, service_type, total_price_krw
+            request_id, menu_id, menu_name_snapshot, unit_price_krw, temperature, service_type,
+            total_price_krw, selected_options
         )
-        VALUES (%s, %s, %s, %s, %s, %s, %s)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
         RETURNING {ORDER_RESULT_COLUMNS}
-    """, (request_id, menu_id, menu_name, price_krw, temperature, service_type, price_krw)).fetchone()
+    """, (request_id, menu_id, menu_name, price_krw, temperature, service_type,
+          price_krw, Jsonb(selected_options))).fetchone()
