@@ -41,7 +41,7 @@ export function MenuBoard({
       aria-labelledby={headingId}>
       <div className="menu-board__heading">
         <div>
-          <span className="eyebrow">MEGA MENU</span>
+          <span className="eyebrow">MENU</span>
           <h2 id={headingId}>{showAll ? '전체 메뉴판' : '간편 메뉴판'}</h2>
         </div>
         <div className="menu-board__controls">

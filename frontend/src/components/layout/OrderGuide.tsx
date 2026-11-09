@@ -21,7 +21,6 @@ export function OrderGuide({ title, description, voiceDescription, onHome }: Ord
         <button type="button" className="text-button" disabled={!onHome} onClick={onHome}>처음으로</button>
       </div>
       <div className="order-guide__text">
-        <span className="eyebrow">MAKE YOUR DAY, MEGA</span>
         <h1 ref={headingRef} tabIndex={-1}>{title}</h1>
         <p>{description}</p>
         {voiceDescription && <p className="order-guide__voice">{voiceDescription}</p>}
