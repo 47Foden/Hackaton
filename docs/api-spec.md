@@ -54,7 +54,7 @@ common의 한글 메뉴명은 변경하지 않는다. 아래 ID는 API/DB 연결
 
 ## 5. GET /api/menus — 구현됨
 
-쿼리/본문 없음. 성공 200, display_order 오름차순, 동점은 menu_id COLLATE "C" 오름차순으로 정렬한 menus 배열. 아래 예시는 한 건이며 정상 seed는 11건이다. 판매 중지 메뉴도 is_available=false로 반환한다.
+쿼리와 본문 없이 호출한다. 성공 200은 display_order 오름차순으로 정렬한 menus 배열을 반환한다. 동점은 menu_id COLLATE "C" 오름차순이다. 확장 seed는 메뉴 45종을 제공하며 판매 중지 메뉴도 is_available=false로 반환한다.
 
 ```json
 {
@@ -62,11 +62,11 @@ common의 한글 메뉴명은 변경하지 않는다. 아래 ID는 API/DB 연결
     {
       "menu_id": "peach_iced_tea",
       "name": "복숭아 아이스티",
-      "categories": ["티"],
+      "categories": ["음료", "티"],
       "price_krw": 3000,
       "available_temperatures": ["COLD"],
       "variants": [
-        {"temperature":"COLD","image_url":"/images/menus/peach-iced-tea-ice.jpg"}
+        {"temperature":"COLD","image_url":"/images/menus/peach-iced-tea-ice.jpg","option_groups":[]}
       ],
       "image_url": "/images/menus/peach-iced-tea-ice.jpg",
       "is_available": true,
@@ -79,19 +79,20 @@ common의 한글 메뉴명은 변경하지 않는다. 아래 ID는 API/DB 연결
 
 | 필드 | 자료형 / 규칙 |
 | --- | --- |
-| menu_id, name | 필수 비어 있지 않은 문자열, 위 고정 매핑 |
-| categories | 필수 문자열 배열, CATEGORIES의 소속 목록 |
-| price_krw | 필수 0 이상 정수, 현재 PRICE_OPTIONS의 값이며 메뉴별 common 가격과 일치 |
+| menu_id, name | 필수 비어 있지 않은 문자열, `common/order_catalog.json`의 ID와 표시명 |
+| categories | 필수 문자열 배열, 주문 카탈로그의 대분류와 하위 분류 |
+| price_krw | 필수 0 이상 정수, 메뉴별 기본가 |
 | available_temperatures | 필수 비어 있지 않은 배열. HOT, COLD 순서, 중복 없음 |
 | variants | 각 제공 온도마다 정확히 한 객체. 온도 집합은 available_temperatures와 동일 |
 | variants[].image_url | 필수 문자열, common의 해당 온도 경로 |
+| variants[].option_groups | 해당 온도의 옵션 그룹 배열. 그룹은 `id`, `label`, `max_selections`, `choices`를 제공한다. 선택지는 `id`, `label`, `price_delta_krw`를 제공한다. 예시에서는 그룹을 생략했다. |
 | image_url | 기본 카드 이미지. COLD가 있으면 COLD, 없으면 HOT 이미지 |
 | is_available, is_featured | 필수 boolean |
 | display_order | 필수 양의 정수 |
 
 이미지는 프론트 origin의 frontend/public 아래에서 제공한다. 백엔드가 이미지 파일을 JSON으로 전송하지 않는다. 이미지 요청 실패 시 화면이 대체 이미지를 표시하되 메뉴 이름·가격은 유지한다. 계획의 nullable 이미지/온도별 가격 제안보다 현재 common을 우선하므로 응답 가격은 메뉴당 하나다.
 
-온도가 한 가지면 프론트가 자동 선택해 이용 방식 단계로 이동한다. 두 가지면 선택 화면을 표시한다. 자동 선택한 온도도 최종 확인과 주문 요청에 반드시 담는다.
+온도가 한 가지면 프론트가 자동 선택하고, 두 가지면 온도 화면을 표시한다. 온도를 확정한 뒤 추가 옵션과 매장/포장을 선택한다. 자동 선택한 온도도 최종 확인과 주문 요청에 담는다.
 
 메뉴가 없으면 200과 `{"menus":[]}`를 반환한다. DB 조회 실패/테이블 미적용과 카탈로그 응답 무결성 오류는 503 CATALOG_UNAVAILABLE이다. seed 검증은 빈 온도나 누락 이미지를 가진 메뉴의 게시를 막아야 한다.
 
@@ -103,7 +104,7 @@ common의 한글 메뉴명은 변경하지 않는다. 아래 ID는 API/DB 연결
 {"request_id":"550e8400-e29b-41d4-a716-446655440000","menu_id":"peach_iced_tea","temperature":"COLD","service_type":"TAKEOUT"}
 ```
 
-새 요청은 한 트랜잭션에서 메뉴 존재, 판매 여부, 제공 온도를 검증하고 DB 가격으로 주문을 저장한다. 수량은 1이며 커밋 확인 후 `201`을 반환한다. 같은 UUID와 같은 주문 내용은 `200`과 기존 저장 결과를 반환한다.
+선택한 추가 옵션이 있으면 `option_ids` 배열을 함께 보낸다. 생략하면 빈 선택으로 처리한다. 서버는 한 트랜잭션에서 판매 여부, 온도, 옵션 소속과 선택 제한을 검증하고 DB 기본가와 추가금으로 합계를 계산한다. 수량은 1이며 커밋 확인 후 `201`을 반환한다. 같은 UUID와 같은 주문 내용은 옵션 순서와 관계없이 `200`과 기존 저장 결과를 반환한다.
 
 ```json
 {
@@ -114,23 +115,24 @@ common의 한글 메뉴명은 변경하지 않는다. 아래 ID는 API/DB 연결
   "temperature":"COLD",
   "service_type":"TAKEOUT",
   "quantity":1,
+  "selected_options":[],
   "total_price_krw":3000,
   "created_at":"2026-11-07T00:00:00Z"
 }
 ```
 
-order_id와 order_number는 같은 orders.id를 문자열로 표현한다. 일일 초기화·고정 자릿수·무결번을 보장하지 않는다. menu_name과 금액은 주문 시점 스냅샷이다. 주문 저장은 결제 성공을 뜻하지 않는다.
+order_id와 order_number는 같은 orders.id를 문자열로 표현한다. menu_name, 금액, selected_options의 옵션명과 추가금은 주문 시점에 저장한다.
 
 ### 오류 계약
 
-업무 오류 형태: `{"detail":{"code":"INVALID_OPTION","message":"선택할 수 없는 온도입니다."}}`.
+업무 오류 예시는 `{"detail":{"code":"INVALID_OPTION","message":"선택할 수 없는 온도 또는 추가 옵션입니다."}}`이다.
 
 | HTTP | code | 조건 |
 | --- | --- | --- |
 | 404 | MENU_NOT_FOUND | 등록되지 않은 menu_id |
 | 409 | MENU_UNAVAILABLE | 판매 중지 |
-| 409 | IDEMPOTENCY_CONFLICT | 이미 저장된 UUID에 다른 메뉴, 온도 또는 이용 방식이 들어옴 |
-| 422 | INVALID_OPTION | enum 자체는 유효하지만 그 메뉴가 제공하지 않는 온도 |
+| 409 | IDEMPOTENCY_CONFLICT | 이미 저장된 UUID에 다른 메뉴, 온도, 이용 방식 또는 옵션이 들어옴 |
+| 422 | INVALID_OPTION | 메뉴가 제공하지 않는 온도·옵션, 중복 옵션 또는 선택 제한 초과 |
 | 503 | ORDER_STORAGE_UNAVAILABLE | DB 연결·저장·COMMIT 확인 실패 |
 | 503 | CATALOG_UNAVAILABLE | 메뉴 조회 실패 (GET /menus) |
 
@@ -199,10 +201,10 @@ curl -F 'audio=@recording.webm;type=audio/webm' -F 'stage=recommendations' \
 | 422 | FastAPI 기본 `detail` 배열 | 필수 폼 필드 누락, `stage` 값 오류 또는 메뉴 ID 형식 오류 |
 | 422 | `INVALID_VOICE_CONTEXT` | 단계에 필요한 메뉴 ID 누락, 미등록 ID, 중복 후보 또는 단계와 맥락 불일치 |
 | 502 | `TRANSCRIPTION_FAILED` | 전사 워커가 실패했거나 유효한 응답을 반환하지 않음 |
-| 503 | `TRANSCRIPTION_UNAVAILABLE`, `CATALOG_UNAVAILABLE` | 워커 미설정·연결 불가·사용 중, 또는 DB 카탈로그 조회 실패 |
-| 504 | `TRANSCRIPTION_TIMEOUT` | 전사 워커 응답 대기 시간이 25초 초과 |
+| 503 | `TRANSCRIPTION_UNAVAILABLE`, `TRANSCRIPTION_BUSY`, `CATALOG_UNAVAILABLE` | 워커 미설정·연결 불가, 워커가 다른 녹음을 처리 중, 또는 DB 카탈로그 조회 실패 |
+| 504 | `TRANSCRIPTION_TIMEOUT` | 전사 워커 응답 대기 시간이 75초 초과 |
 
-Whisper는 공용 서버의 전사 워커에서 미리 로드한다. FastAPI는 내부 `VOICE_TRANSCRIPTION_URL`로 변환된 PCM을 보내고 전사 텍스트를 받는다. 브라우저 전체 요청 예산은 40초로 잡고 공용 서버 실측 후 조정한다.
+Whisper는 공용 서버의 전사 워커에서 미리 로드한다. FastAPI는 내부 `VOICE_TRANSCRIPTION_URL`로 변환된 PCM을 보내고 전사 텍스트를 받는다. 브라우저 전체 요청 제한은 90초다.
 
 기존 Pretuning·추천 설계는 아래에 보존한다. 데이터와 충돌할 경우 위 common 매핑이 우선하며, 관리 작업의 request_id 정책을 기본 주문 API에 적용하지 않는다.
 

@@ -11,6 +11,7 @@ import { browserVoiceGuidance as voice } from '../voice/browserVoiceGuidance';
 import { kioskApi, isMockOrderApi } from '../api';
 import type { Menu } from '../data/menuCatalog';
 import { TemperatureScreen } from './order/TemperatureScreen';
+import { CustomizationScreen } from './order/CustomizationScreen';
 import { ServiceTypeScreen } from './order/ServiceTypeScreen';
 import { ReviewScreen } from './order/ReviewScreen';
 import { CompletionScreen } from './order/CompletionScreen';
@@ -34,7 +35,7 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
     : order.stage === 'complete' ? { title: '주문이 접수되었어요.', description: `주문번호는 ${order.result.order_number}번입니다.` }
     : getOrderGuidance(order, isMockOrderApi);
   useVoiceGuidance(`${guide.title} ${guide.description}`);
-  const enabled = !['submitting', 'complete'].includes(stage) && !(order.stage === 'review' && order.error?.kind === 'conflict');
+  const enabled = !['customization', 'submitting', 'complete'].includes(stage) && !(order.stage === 'review' && order.error?.kind === 'conflict');
   function interrupt() { ++revision.current; voice.cancel(); setError(''); }
   function choose(menu: Menu) { interrupt(); setSelected(menu); }
   function accept() {
@@ -53,7 +54,7 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
       if (stage === 'recommendations') candidates?.forEach(menuId => body.append('candidate_menu_ids', menuId));
       if (order.stage === 'temperature' || order.stage === 'service_type') body.set('selected_menu_id', order.menu.id);
       const response = await fetch('/api/voice/interpret', { method: 'POST', body,
-        signal: AbortSignal.any([signal, AbortSignal.timeout(40_000)]) });
+        signal: AbortSignal.any([signal, AbortSignal.timeout(90_000)]) });
       const data = await response.json();
       if (signal.aborted || id !== revision.current) return;
       if (!response.ok) throw new Error(`${data?.detail?.message ?? '음성을 처리하지 못했어요. 다시 시도해 주세요.'}${data?.detail?.code ? ` (${data.detail.code})` : ''}`);
@@ -88,7 +89,7 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
   return <KioskLayout {...guide} status={isMockOrderApi ? '개발용 주문입니다.' : '음성 또는 터치로 주문해 주세요.'}
     onHome={order.stage === 'submitting' ? undefined : () => { interrupt(); onHome(); }}
     microphone={<OrderMicrophone key={stage} disabledReason={enabled ? undefined : '현재 단계에서는 녹음할 수 없어요.'} onRecordingComplete={record} />}>
-    <p className="order-step__note">마이크를 누르고 말씀하신 뒤 ‘녹음 종료’를 눌러 주세요. 종료 후 음성을 분석합니다.</p>
+    {enabled && <p className="order-step__note">마이크를 누르고 말씀하신 뒤 ‘녹음 종료’를 눌러 주세요. 종료 후 음성을 분석합니다.</p>}
     {transcript && <p role="status" className="order-step__note">인식한 말: {transcript}</p>}
     {error && <p role="alert">{error}</p>}
     {selected && <section className="voice-menu-confirmation" aria-label="선택 메뉴 확인">
@@ -107,13 +108,16 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
     </section>}
     {stage === 'menu' && candidates === null && (catalog.status === 'ready'
       ? catalog.menus.length === 0 ? <CatalogStatus status="empty" onReload={reload} />
-        : <MenuBoard menus={catalog.menus} simplifiedMenus={catalog.menus.filter(m => m.featured)} selectedMenu={null}
+        : <MenuBoard groupByCategory menus={catalog.menus} simplifiedMenus={catalog.menus.filter(m => m.featured)} selectedMenu={null}
           view={menuView} onViewChange={view => { interrupt(); setMenuView(view); }}
           onSelect={menuId => { const menu = catalog.menus.find(m => m.id === menuId && m.available); if (menu) choose(menu); }} />
       : catalog.status === 'loading' ? <CatalogStatus status="loading" />
         : <CatalogStatus status="error" message={catalog.message} onReload={() => { interrupt(); reload(); }} />)}
     {order.stage === 'temperature' && <TemperatureScreen menu={order.menu} onSelect={temperature => { interrupt(); dispatch({ type: 'set_temperature', temperature }); }} />}
-    {order.stage === 'service_type' && <ServiceTypeScreen menu={order.menu} temperature={order.temperature} onSelect={serviceType => { interrupt(); dispatch({ type: 'set_service_type', serviceType }); }} />}
+    {order.stage === 'customization' && <CustomizationScreen menu={order.menu} temperature={order.temperature}
+      onContinue={ids => { interrupt(); dispatch({ type: 'set_options', ids }); }} />}
+    {order.stage === 'service_type' && <ServiceTypeScreen menu={order.menu} temperature={order.temperature} selectedOptions={order.selectedOptions}
+      onSelect={serviceType => { interrupt(); dispatch({ type: 'set_service_type', serviceType }); }} />}
     {(order.stage === 'review' || order.stage === 'submitting') && <ReviewScreen draft={order.draft} isMock={isMockOrderApi} pending={order.stage === 'submitting'}
       error={order.stage === 'review' ? order.error : undefined} onConfirm={() => { interrupt(); void confirm(); }} />}
     {order.stage === 'complete' && <CompletionScreen draft={order.draft} result={order.result} isMock={isMockOrderApi} onHome={() => { interrupt(); onHome(); }} />}

@@ -20,12 +20,14 @@ def read_menus(connection: psycopg.Connection) -> list[dict]:
     with connection.cursor(row_factory=dict_row) as cursor:
         menus = cursor.execute('SELECT * FROM menus ORDER BY display_order, menu_id COLLATE "C"').fetchall()
         categories = cursor.execute("SELECT menu_id, category FROM menu_categories").fetchall()
-        variants = cursor.execute("SELECT menu_id, temperature, image_url FROM menu_variants").fetchall()
+        variants = cursor.execute("SELECT menu_id, temperature, image_url, option_groups FROM menu_variants").fetchall()
     by_id = {menu["menu_id"]: {**menu, "categories": [], "variants": []} for menu in menus}
     for row in categories:
         by_id[row["menu_id"]]["categories"].append(row["category"])
     for row in variants:
-        by_id[row["menu_id"]]["variants"].append({"temperature": row["temperature"], "image_url": row["image_url"]})
+        by_id[row["menu_id"]]["variants"].append({
+            "temperature": row["temperature"], "image_url": row["image_url"], "option_groups": row["option_groups"],
+        })
     for menu in by_id.values():
         if not menu["categories"] or any(category not in CATEGORY_ORDER for category in menu["categories"]):
             raise CatalogReadError(f"Menu has invalid categories: {menu['menu_id']}")

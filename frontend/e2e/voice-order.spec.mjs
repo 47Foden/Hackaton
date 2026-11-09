@@ -37,6 +37,8 @@ test('independent voice session mixes speech and touch and submits only after co
   expect(orders).toBe(0);
   await say();
   await page.getByRole('button', { name: /따뜻하게/ }).click();
+  await expect(page.getByRole('button', { name: '음성 녹음', exact: true })).toBeDisabled();
+  await page.getByRole('button', { name: '옵션 없이 계속' }).click();
   await say();
   await expect(page.getByRole('button', { name: '주문 확정', exact: true })).toBeVisible();
   expect(orders).toBe(0);
@@ -62,7 +64,7 @@ test('voice menu uses kiosk cards, enlargement and matching centered confirmatio
   await page.getByRole('button', { name: '전체 메뉴판 보기' }).click();
   await page.getByRole('button', { name: '크게 보기' }).click();
   await expect(page.locator('.menu-board--enlarged')).toBeVisible();
-  await page.getByRole('button', { name: /카페라떼/ }).click();
+  await page.getByText('카페라떼', { exact: true }).click();
   const confirmation = page.getByRole('region', { name: '선택 메뉴 확인' });
   await expect(confirmation).toBeVisible();
   const card = await page.locator('.voice-menu-confirmation__card').boundingBox();
@@ -71,7 +73,7 @@ test('voice menu uses kiosk cards, enlargement and matching centered confirmatio
   await expect(confirmation.getByRole('button', { name: '네, 이 메뉴로 주문' })).toHaveClass('primary-button');
   await expect(confirmation.getByRole('button', { name: '다른 메뉴 선택' })).toHaveClass('primary-button');
   await expect(confirmation.getByRole('button', { name: '다른 메뉴 선택' })).toBeInViewport();
-  await page.screenshot({ path: '/tmp/voice-confirmation.png' });
+  await page.screenshot({ path: test.info().outputPath('voice-confirmation.png') });
   await confirmation.getByRole('button', { name: '다른 메뉴 선택' }).click();
   await expect(page.getByRole('heading', { name: '전체 메뉴판' })).toBeVisible();
 });
@@ -112,6 +114,7 @@ test('voice recommendation, spoken restart, candidate selection and order comple
   await say();
   await expect(page.getByRole('heading',{name:'따뜻하게, 차갑게?'})).toBeVisible();
   await say();
+  await page.getByRole('button', { name: '옵션 없이 계속' }).click();
   await expect(page.getByRole('heading',{name:'어디에서 드시겠어요?'})).toBeVisible();
   await say();
   await expect(page.getByRole('button',{name:'주문 확정',exact:true})).toBeVisible();

@@ -7,8 +7,8 @@ export function MenuCard({ menu, selected, onSelect }: MenuCardProps) {
   return (
     <button type="button" className={`menu-card${selected ? ' menu-card--selected' : ''}`}
       aria-pressed={selected} disabled={!menu.available} onClick={onSelect}>
-      <span className="menu-card__temperature">{menu.temperatures.join(' / ')}</span>
-      <MenuImage className="menu-card__image" src={menu.imageUrl} />
+      <span className="menu-card__temperature">{menu.temperatures.map(value => value === 'COLD' ? 'ICE' : value).join(' / ')}</span>
+      <MenuImage className="menu-card__image" src={menu.imageUrl} loading="lazy" />
       <span className="menu-card__name">{menu.name}</span>
       <span className="menu-card__price">{menu.price.toLocaleString('ko-KR')}원</span>
       {!menu.available && <span>판매 중지</span>}

@@ -71,15 +71,18 @@ class MenusApiTests(unittest.TestCase):
         self.assertEqual(status, 200)
         self.assertEqual(set(body), {'menus'})
         menus = body['menus']
-        self.assertEqual(len(menus), 11)
-        self.assertEqual(sum(len(menu['variants']) for menu in menus), 16)
+        self.assertEqual(len(menus), 45)
+        self.assertEqual(sum(len(menu['variants']) for menu in menus), 71)
         self.assertEqual(sum(menu['is_featured'] for menu in menus), 4)
         self.assertEqual([menu['name'] for menu in menus], [menu.name for menu in load_catalog()])
         for menu, expected in zip(menus, load_catalog()):
             self.assertEqual(menu['price_krw'], expected.price_krw)
             self.assertEqual(menu['categories'], list(expected.categories))
             self.assertEqual(menu['available_temperatures'], [t for t, _ in expected.variants])
-            self.assertEqual(menu['variants'], [{'temperature': t, 'image_url': image} for t, image in expected.variants])
+            self.assertEqual(menu['variants'], [
+                {'temperature': t, 'image_url': image, 'option_groups': expected.option_groups}
+                for t, image in expected.variants
+            ])
             variants = dict(expected.variants)
             self.assertEqual(menu['image_url'], variants.get('COLD', variants.get('HOT')))
             self.assertIs(type(menu['is_available']), bool)
@@ -95,7 +98,7 @@ class MenusApiTests(unittest.TestCase):
         status, body = self.get()
         self.assertEqual(status, 200)
         menus = body['menus']
-        self.assertEqual(len(menus), 11)
+        self.assertEqual(len(menus), 45)
         self.assertEqual([m['menu_id'] for m in menus[:2]], ['cafe_latte', 'espresso'])
         self.assertFalse(menus[1]['is_available'])
         self.assertFalse(menus[1]['is_featured'])

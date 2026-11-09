@@ -11,6 +11,7 @@ export interface MenuBoardView {
 interface MenuBoardProps {
   menus: Menu[];
   simplifiedMenus: Menu[];
+  groupByCategory?: boolean;
   selectedMenu: string | null;
   view: MenuBoardView;
   onViewChange: (view: MenuBoardView) => void;
@@ -19,7 +20,7 @@ interface MenuBoardProps {
 
 /** 목록 전환과 확대는 서로 독립적이며, 상태는 주문 화면이 유지한다. */
 export function MenuBoard({
-  menus, simplifiedMenus, selectedMenu, view, onViewChange, onSelect,
+  menus, simplifiedMenus, groupByCategory = false, selectedMenu, view, onViewChange, onSelect,
 }: MenuBoardProps) {
   const headingId = useId();
   const gridId = useId();
@@ -27,6 +28,13 @@ export function MenuBoard({
   const visibleMenus = showAll ? menus : simplifiedMenus;
   const selectedOutsideList = selectedMenu !== null
     && !visibleMenus.some(menu => menu.name === selectedMenu);
+  const groups = new Map<string, Menu[]>();
+  for (const menu of visibleMenus) {
+    const category = showAll && groupByCategory ? menu.categories.join(' · ') : '';
+    const group = groups.get(category);
+    if (group) group.push(menu);
+    else groups.set(category, [menu]);
+  }
 
   return (
     <section className={`menu-board${view.enlarged ? ' menu-board--enlarged' : ''}`}
@@ -55,10 +63,15 @@ export function MenuBoard({
         {visibleMenus.length}종 표시 · {view.enlarged ? '확대 크기' : '기본 크기'}
         {selectedOutsideList && ` · 선택한 ${selectedMenu} 메뉴는 전체 메뉴판에서 확인할 수 있어요.`}
       </p>
-      <div id={gridId} className="menu-grid">
-        {visibleMenus.map(menu => (
-          <MenuCard key={menu.name} menu={menu} selected={selectedMenu === menu.name}
-            onSelect={() => onSelect(menu.id)} />
+      <div id={gridId}>
+        {[...groups].map(([category, group]) => (
+          <section key={category} className="menu-board__category">
+            {category && <h3>{category}</h3>}
+            <div className="menu-grid">
+              {group.map(menu => <MenuCard key={menu.id} menu={menu} selected={selectedMenu === menu.name}
+                onSelect={() => onSelect(menu.id)} />)}
+            </div>
+          </section>
         ))}
       </div>
     </section>

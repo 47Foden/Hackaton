@@ -14,7 +14,7 @@ ORDER_REJECTIONS = {
     "MENU_NOT_FOUND": (404, "등록되지 않은 메뉴입니다."),
     "MENU_UNAVAILABLE": (409, "현재 판매하지 않는 메뉴입니다."),
     "IDEMPOTENCY_CONFLICT": (409, "같은 요청 ID로 접수된 주문의 내용이 다릅니다."),
-    "INVALID_OPTION": (422, "선택할 수 없는 온도입니다."),
+    "INVALID_OPTION": (422, "선택할 수 없는 온도 또는 추가 옵션입니다."),
 }
 
 

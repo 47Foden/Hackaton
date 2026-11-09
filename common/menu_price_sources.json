@@ -1,65 +1,303 @@
 {
-  "복숭아 아이스티": {
+  "아메리카노": {
     "price_krw": 3000,
-    "source_url": "https://app.passorder.co.kr/normal/5c94c944-e062-4b61-b5b5-a89104f26d0f/menus",
-    "source_label": "메가MGC커피 정자엠코점 패스오더 표시 가격",
-    "checked_date": "2026-11-07",
-    "official_name": "복숭아아이스티"
-  },
-  "레몬티": {
-    "price_krw": 3300,
-    "source_url": "https://app.passorder.co.kr/normal/5c94c944-e062-4b61-b5b5-a89104f26d0f/menus",
-    "source_label": "메가MGC커피 정자엠코점 패스오더 표시 가격",
-    "checked_date": "2026-11-07",
-    "official_name": "레몬차"
-  },
-  "아이스아메리카노": {
-    "price_krw": 2000,
-    "source_url": "https://app.passorder.co.kr/normal/5c94c944-e062-4b61-b5b5-a89104f26d0f/menus",
-    "source_label": "메가MGC커피 정자엠코점 패스오더 표시 가격",
-    "checked_date": "2026-11-07",
+    "source_kind": "user_provided",
+    "source_label": "사용자 제공 메뉴 가격",
+    "checked_date": "2026-11-09",
     "official_name": "아메리카노"
   },
-  "레몬에이드": {
-    "price_krw": 3500,
-    "source_url": "https://app.passorder.co.kr/normal/5c94c944-e062-4b61-b5b5-a89104f26d0f/menus",
-    "source_label": "메가MGC커피 정자엠코점 패스오더 표시 가격",
-    "checked_date": "2026-11-07",
-    "official_name": "레몬에이드"
+  "꿀아메리카노": {
+    "price_krw": 2700,
+    "source_kind": "user_provided",
+    "source_label": "사용자 제공 메뉴 가격",
+    "checked_date": "2026-11-09",
+    "official_name": "꿀아메리카노"
   },
-  "딸기라떼": {
-    "price_krw": 3700,
-    "source_url": "https://app.passorder.co.kr/normal/5c94c944-e062-4b61-b5b5-a89104f26d0f/menus",
-    "source_label": "메가MGC커피 정자엠코점 패스오더 표시 가격",
-    "checked_date": "2026-11-07",
-    "official_name": "딸기라떼"
+  "바닐라 아메리카노": {
+    "price_krw": 2700,
+    "source_kind": "user_provided",
+    "source_label": "사용자 제공 메뉴 가격",
+    "checked_date": "2026-11-09",
+    "official_name": "바닐라아메리카노"
   },
-  "청포도에이드": {
-    "price_krw": 3500,
-    "source_url": "https://app.passorder.co.kr/normal/5c94c944-e062-4b61-b5b5-a89104f26d0f/menus",
-    "source_label": "메가MGC커피 정자엠코점 패스오더 표시 가격",
-    "checked_date": "2026-11-07",
-    "official_name": "청포도에이드"
+  "헤이즐넛 아메리카노": {
+    "price_krw": 2700,
+    "source_kind": "user_provided",
+    "source_label": "사용자 제공 메뉴 가격",
+    "checked_date": "2026-11-09",
+    "official_name": "헤이즐넛아메리카노"
   },
   "카페라떼": {
     "price_krw": 2900,
-    "source_url": "https://app.passorder.co.kr/normal/5c94c944-e062-4b61-b5b5-a89104f26d0f/menus",
-    "source_label": "메가MGC커피 정자엠코점 패스오더 표시 가격",
-    "checked_date": "2026-11-07",
+    "source_kind": "user_provided",
+    "source_label": "사용자 제공 메뉴 가격",
+    "checked_date": "2026-11-09",
     "official_name": "카페라떼"
+  },
+  "바닐라라떼": {
+    "price_krw": 3400,
+    "source_kind": "user_provided",
+    "source_label": "사용자 제공 메뉴 가격",
+    "checked_date": "2026-11-09",
+    "official_name": "바닐라라떼"
+  },
+  "연유라떼": {
+    "price_krw": 3900,
+    "source_kind": "user_provided",
+    "source_label": "사용자 제공 메뉴 가격",
+    "checked_date": "2026-11-09",
+    "official_name": "연유라떼"
+  },
+  "카푸치노": {
+    "price_krw": 2900,
+    "source_kind": "user_provided",
+    "source_label": "사용자 제공 메뉴 가격",
+    "checked_date": "2026-11-09",
+    "official_name": "카푸치노"
+  },
+  "헤이즐넛 라떼": {
+    "price_krw": 3400,
+    "source_kind": "user_provided",
+    "source_label": "사용자 제공 메뉴 가격",
+    "checked_date": "2026-11-09",
+    "official_name": "헤이즐넛라떼"
+  },
+  "콜드브루 오리지널": {
+    "price_krw": 3500,
+    "source_kind": "user_provided",
+    "source_label": "사용자 제공 메뉴 가격",
+    "checked_date": "2026-11-09",
+    "official_name": "콜드브루오리지널"
+  },
+  "디카페인 아메리카노": {
+    "price_krw": 4500,
+    "source_kind": "user_provided",
+    "source_label": "사용자 제공 메뉴 가격",
+    "checked_date": "2026-11-09",
+    "official_name": "디카페인 아메리카노"
+  },
+  "디카페인 꿀 아메리카노": {
+    "price_krw": 3700,
+    "source_kind": "user_provided",
+    "source_label": "사용자 제공 메뉴 가격",
+    "checked_date": "2026-11-09",
+    "official_name": "디카페인 꿀아메리카노"
+  },
+  "디카페인 바닐라 아메리카노": {
+    "price_krw": 3700,
+    "source_kind": "user_provided",
+    "source_label": "사용자 제공 메뉴 가격",
+    "checked_date": "2026-11-09",
+    "official_name": "디카페인 바닐라 아메리카노"
+  },
+  "디카페인 헤이즐넛 아메리카노": {
+    "price_krw": 3700,
+    "source_kind": "user_provided",
+    "source_label": "사용자 제공 메뉴 가격",
+    "checked_date": "2026-11-09",
+    "official_name": "디카페인 헤이즐넛 아메리카노"
+  },
+  "디카페인 카페라떼": {
+    "price_krw": 3900,
+    "source_kind": "user_provided",
+    "source_label": "사용자 제공 메뉴 가격",
+    "checked_date": "2026-11-09",
+    "official_name": "디카페인 카페라떼"
+  },
+  "디카페인 바닐라라떼": {
+    "price_krw": 4400,
+    "source_kind": "user_provided",
+    "source_label": "사용자 제공 메뉴 가격",
+    "checked_date": "2026-11-09",
+    "official_name": "디카페인 바닐라라떼"
+  },
+  "디카페인 연유라떼": {
+    "price_krw": 4900,
+    "source_kind": "user_provided",
+    "source_label": "사용자 제공 메뉴 가격",
+    "checked_date": "2026-11-09",
+    "official_name": "디카페인 연유라떼"
+  },
+  "디카페인 카푸치노": {
+    "price_krw": 3900,
+    "source_kind": "user_provided",
+    "source_label": "사용자 제공 메뉴 가격",
+    "checked_date": "2026-11-09",
+    "official_name": "디카페인 카푸치노"
+  },
+  "디카페인 헤이즐넛라떼": {
+    "price_krw": 4400,
+    "source_kind": "user_provided",
+    "source_label": "사용자 제공 메뉴 가격",
+    "checked_date": "2026-11-09",
+    "official_name": "디카페인 헤이즐넛 라떼"
+  },
+  "콜드브루 디카페인": {
+    "price_krw": 3500,
+    "source_kind": "user_provided",
+    "source_label": "사용자 제공 메뉴 가격",
+    "checked_date": "2026-11-09",
+    "official_name": "콜드브루디카페인"
+  },
+  "레몬에이드": {
+    "price_krw": 3500,
+    "source_kind": "user_provided",
+    "source_label": "사용자 제공 메뉴 가격",
+    "checked_date": "2026-11-09",
+    "official_name": "레몬에이드"
+  },
+  "자몽에이드": {
+    "price_krw": 3500,
+    "source_kind": "user_provided",
+    "source_label": "사용자 제공 메뉴 가격",
+    "checked_date": "2026-11-09",
+    "official_name": "자몽에이드"
+  },
+  "청포도에이드": {
+    "price_krw": 3500,
+    "source_kind": "user_provided",
+    "source_label": "사용자 제공 메뉴 가격",
+    "checked_date": "2026-11-09",
+    "official_name": "청포도에이드"
+  },
+  "쿠키프라페": {
+    "price_krw": 3900,
+    "source_kind": "user_provided",
+    "source_label": "사용자 제공 메뉴 가격",
+    "checked_date": "2026-11-09",
+    "official_name": "쿠키프라페"
+  },
+  "녹차프라페": {
+    "price_krw": 3900,
+    "source_kind": "user_provided",
+    "source_label": "사용자 제공 메뉴 가격",
+    "checked_date": "2026-11-09",
+    "official_name": "녹차프라페"
+  },
+  "커피프라페": {
+    "price_krw": 3900,
+    "source_kind": "user_provided",
+    "source_label": "사용자 제공 메뉴 가격",
+    "checked_date": "2026-11-09",
+    "official_name": "커피프라페"
+  },
+  "딸기쿠키프라페": {
+    "price_krw": 3900,
+    "source_kind": "user_provided",
+    "source_label": "사용자 제공 메뉴 가격",
+    "checked_date": "2026-11-09",
+    "official_name": "딸기쿠키프라페"
+  },
+  "딸기요거트스무디": {
+    "price_krw": 3900,
+    "source_kind": "user_provided",
+    "source_label": "사용자 제공 메뉴 가격",
+    "checked_date": "2026-11-09",
+    "official_name": "딸기요거트스무디"
+  },
+  "플레인요거트스무디": {
+    "price_krw": 3900,
+    "source_kind": "user_provided",
+    "source_label": "사용자 제공 메뉴 가격",
+    "checked_date": "2026-11-09",
+    "official_name": "플레인요거트스무디"
+  },
+  "딸기바나나주스": {
+    "price_krw": 4000,
+    "source_kind": "user_provided",
+    "source_label": "사용자 제공 메뉴 가격",
+    "checked_date": "2026-11-09",
+    "official_name": "딸기바나나주스"
+  },
+  "딸기주스": {
+    "price_krw": 4000,
+    "source_kind": "user_provided",
+    "source_label": "사용자 제공 메뉴 가격",
+    "checked_date": "2026-11-09",
+    "official_name": "딸기주스"
+  },
+  "망고요거트스무디": {
+    "price_krw": 3900,
+    "source_kind": "user_provided",
+    "source_label": "사용자 제공 메뉴 가격",
+    "checked_date": "2026-11-09",
+    "official_name": "망고요거트스무디"
+  },
+  "블루베리요거트스무디": {
+    "price_krw": 3900,
+    "source_kind": "user_provided",
+    "source_label": "사용자 제공 메뉴 가격",
+    "checked_date": "2026-11-09",
+    "official_name": "블루베리요거트스무디"
+  },
+  "딸기라떼": {
+    "price_krw": 3700,
+    "source_kind": "user_provided",
+    "source_label": "사용자 제공 메뉴 가격",
+    "checked_date": "2026-11-09",
+    "official_name": "딸기라떼"
+  },
+  "오레오초코라떼": {
+    "price_krw": 3900,
+    "source_kind": "user_provided",
+    "source_label": "사용자 제공 메뉴 가격",
+    "checked_date": "2026-11-09",
+    "official_name": "오레오초코라떼"
+  },
+  "녹차라떼": {
+    "price_krw": 3500,
+    "source_kind": "user_provided",
+    "source_label": "사용자 제공 메뉴 가격",
+    "checked_date": "2026-11-09",
+    "official_name": "녹차라떼"
+  },
+  "흑당라떼": {
+    "price_krw": 3300,
+    "source_kind": "user_provided",
+    "source_label": "사용자 제공 메뉴 가격",
+    "checked_date": "2026-11-09",
+    "official_name": "흑당라떼"
+  },
+  "복숭아 아이스티": {
+    "price_krw": 3000,
+    "source_kind": "user_provided",
+    "source_label": "사용자 제공 메뉴 가격",
+    "checked_date": "2026-11-09",
+    "official_name": "복숭아아이스티"
+  },
+  "제로 복숭아 아이스티": {
+    "price_krw": 3000,
+    "source_kind": "user_provided",
+    "source_label": "사용자 제공 메뉴 가격",
+    "checked_date": "2026-11-09",
+    "official_name": "제로 복숭아 아이스티"
+  },
+  "사과유자차": {
+    "price_krw": 3500,
+    "source_kind": "user_provided",
+    "source_label": "사용자 제공 메뉴 가격",
+    "checked_date": "2026-11-09",
+    "official_name": "사과유자차"
+  },
+  "자몽차": {
+    "price_krw": 3300,
+    "source_kind": "user_provided",
+    "source_label": "사용자 제공 메뉴 가격",
+    "checked_date": "2026-11-09",
+    "official_name": "자몽차"
   },
   "레몬차": {
     "price_krw": 3300,
-    "source_url": "https://app.passorder.co.kr/normal/5c94c944-e062-4b61-b5b5-a89104f26d0f/menus",
-    "source_label": "메가MGC커피 정자엠코점 패스오더 표시 가격",
-    "checked_date": "2026-11-07",
+    "source_kind": "user_provided",
+    "source_label": "사용자 제공 메뉴 가격",
+    "checked_date": "2026-11-09",
     "official_name": "레몬차"
   },
   "유자차": {
     "price_krw": 3300,
-    "source_url": "https://app.passorder.co.kr/normal/5c94c944-e062-4b61-b5b5-a89104f26d0f/menus",
-    "source_label": "메가MGC커피 정자엠코점 패스오더 표시 가격",
-    "checked_date": "2026-11-07",
+    "source_kind": "user_provided",
+    "source_label": "사용자 제공 메뉴 가격",
+    "checked_date": "2026-11-09",
     "official_name": "유자차"
   },
   "에스프레소": {
@@ -69,11 +307,11 @@
     "checked_date": "2026-11-07",
     "official_name": "에스프레소"
   },
-  "녹차라떼": {
-    "price_krw": 3500,
+  "레몬티": {
+    "price_krw": 3300,
     "source_url": "https://app.passorder.co.kr/normal/5c94c944-e062-4b61-b5b5-a89104f26d0f/menus",
     "source_label": "메가MGC커피 정자엠코점 패스오더 표시 가격",
     "checked_date": "2026-11-07",
-    "official_name": "녹차라떼"
+    "official_name": "레몬차"
   }
 }

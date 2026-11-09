@@ -119,6 +119,9 @@ class TranscriptionTransportTests(unittest.TestCase):
             try:
                 with patch.dict(os.environ, {"VOICE_TRANSCRIPTION_URL": f"http://127.0.0.1:{worker.server_port}/transcribe"}):
                     self.assertEqual(transcribe_voice(b"\x01\x00"), "차갑게")
+                    with worker.slot, self.assertRaises(TranscriptionError) as busy:
+                        transcribe_voice(b"\x01\x00")
+                    self.assertEqual((busy.exception.status, busy.exception.code), (503, "TRANSCRIPTION_BUSY"))
                 self.assertEqual(received, [b"\x01\x00"])
             finally:
                 worker.shutdown()

@@ -1,5 +1,7 @@
 import argparse
 
+from psycopg.types.json import Jsonb
+
 from app.db.catalog import CatalogError, load_catalog
 from app.db.connection import connect
 
@@ -26,8 +28,10 @@ def seed(database_url: str | None = None, *, common_dir=None, public_dir=None) -
             with connection.cursor() as cursor:
                 cursor.executemany("INSERT INTO menu_categories(menu_id, category) VALUES (%s, %s)",
                                    [(menu.menu_id, category) for category in menu.categories])
-                cursor.executemany("INSERT INTO menu_variants(menu_id, temperature, image_url) VALUES (%s, %s, %s)",
-                                   [(menu.menu_id, temperature, image) for temperature, image in menu.variants])
+                cursor.executemany(
+                    "INSERT INTO menu_variants(menu_id, temperature, image_url, option_groups) VALUES (%s, %s, %s, %s)",
+                    [(menu.menu_id, temperature, image, Jsonb(menu.option_groups)) for temperature, image in menu.variants],
+                )
     return len(menus)
 
 

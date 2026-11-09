@@ -65,5 +65,5 @@ test('offline mock menu mode remains explicitly selectable', async () => {
   const api = createKioskApi({ menuMode: 'mock', orderMode: 'mock', mock: { delayMs: 0 }, transport: async () => {
     assert.fail('explicit mock mode must not request HTTP');
   }});
-  assert.equal((await api.getMenus()).menus.length, 11);
+  assert.equal((await api.getMenus()).menus.length, 45);
 });

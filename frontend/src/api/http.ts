@@ -25,6 +25,13 @@ export function createHttpApi(transport: typeof fetch = fetch): KioskApi {
         || typeof body?.menu_name !== 'string' || typeof body?.menu_id !== 'string'
         || !['HOT', 'COLD'].includes(body?.temperature) || !['DINE_IN', 'TAKEOUT'].includes(body?.service_type)
         || body?.quantity !== 1 || !Number.isInteger(body?.total_price_krw) || body.total_price_krw < 0
+        || (body?.selected_options !== undefined && (!Array.isArray(body.selected_options)
+          || body.selected_options.some((option: unknown) => {
+            if (!option || typeof option !== 'object') return true;
+            const { id, label, price_delta_krw } = option as Record<string, unknown>;
+            return typeof id !== 'string' || typeof label !== 'string'
+              || typeof price_delta_krw !== 'number' || !Number.isInteger(price_delta_krw) || price_delta_krw < 0;
+          })))
         || typeof body?.created_at !== 'string' || Number.isNaN(Date.parse(body.created_at)))) {
         throw new ApiError('주문 응답을 확인할 수 없어요.', response.status, 'INVALID_RESPONSE', true);
       }

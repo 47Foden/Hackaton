@@ -75,7 +75,10 @@ def interpret_transcript(
             return Retry(reason="OUTSIDE_CANDIDATES")
         matches = [candidate_menu_ids[index]]
     else:
-        matches = [menu_id for menu_id, menu in menus.items() if _compact(menu["name"]) == phrase]
+        matches = [
+            menu_id for menu_id, menu in menus.items()
+            if _compact(menu["name"]) == phrase or (menu_id == "iced_americano" and phrase == "아이스아메리카노")
+        ]
     if len(matches) != 1:
         return _recommendation(phrase) or Retry(reason="UNRECOGNIZED")
     menu_id = matches[0]
