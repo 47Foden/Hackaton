@@ -1,6 +1,6 @@
 # LLM 직접 추천 텍스트 실험
 
-현재 초안은 **v1(개선 전)**이다. 이후 개선은 [버전 기록](experiments/versions.md)에 따라 별도 커밋과 새 결과 폴더로 구분한다.
+공유 기준선은 **v1(개선 전)**이며, 별도 **[v2 구현 초안](experiments/v2-design.md)**을 추가했다. v2 실제 API 성능은 아직 미평가다. [버전 기록](experiments/versions.md)에 따라 별도 커밋과 새 결과 폴더로 구분한다.
 
 첫 실제 실험(2026-11-09)의 [검토 결과](experiments/2026-11-09-first-live/review.ko.md), [실행 결과](experiments/2026-11-09-first-live/results.ko.md), [원본 JSON](experiments/2026-11-09-first-live/results.json)을 함께 보관한다. 현재 결과는 기존 방식보다 낫다는 근거가 아니며 운영 기본값은 유지한다.
 

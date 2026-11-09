@@ -1,0 +1,882 @@
+{
+  "version": "sensory-editorial-v2.1",
+  "is_gold_standard": false,
+  "author": "assistant_editorial_inference",
+  "checked_date": "2026-11-09",
+  "evidence_sha256": "9e139602d9dbd6669f5cfb7a45c998b2a3c35e89732b91eee8e7e4b061f8c60b",
+  "definitions": {
+    "refreshing": {
+      "label": "깔끔함·상쾌함의 후보",
+      "kind": "subjective",
+      "meaning": "산미/탄산/향의 청량감을 깔끔함으로 느낄 수 있다는 가설. 짧은 뒷맛이나 저당을 뜻하지 않음."
+    },
+    "rich": {
+      "label": "부드럽고 묵직한 인상의 후보",
+      "kind": "subjective",
+      "meaning": "우유의 부드러움에서 묵직함을 느낄 수 있다는 가설. 텁텁함을 확정하지 않음."
+    },
+    "sweet": {
+      "label": "설명에 단맛이 언급됨",
+      "kind": "description",
+      "meaning": "공식 설명의 단맛 언급. 당도 수치/저당/끈적함과 동일하지 않음."
+    },
+    "tart": {
+      "label": "설명에 산미가 언급됨",
+      "kind": "description",
+      "meaning": "공식 설명의 산미/상큼함 언급. 사용자의 선호 여부는 별도."
+    },
+    "carbonated": {
+      "label": "설명에 탄산이 언급됨",
+      "kind": "description",
+      "meaning": "공식 설명에 탄산 조합이 명시됨. 사용자에게 항상 깔끔하게 느껴지는 것은 아님."
+    },
+    "milky_texture": {
+      "label": "우유의 부드러운 질감 후보",
+      "kind": "subjective",
+      "meaning": "우유와 부드러움 설명에 근거한 감각 가설. 알레르기/무우유 판단에 사용 금지."
+    },
+    "astringent": {
+      "label": "떫거나 입이 마르는 감각",
+      "kind": "subjective",
+      "meaning": "실제 관능/추출 정보가 필요. 홍차/녹차/커피라는 이름만으로 확정하지 않음."
+    },
+    "lingering_sweetness": {
+      "label": "입에 단맛이 오래 남거나 끈적한 감각",
+      "kind": "subjective",
+      "meaning": "실제 뒷맛/점도 평가가 필요. 단맛·당류·우유만으로 확정하거나 부정하지 않음."
+    }
+  },
+  "interpretation_guide": [
+    {
+      "expression": "깔끔하다/텁텁하다",
+      "possible_meanings": [
+        "탄산·산미의 상쾌함",
+        "우유 질감의 묵직함",
+        "단맛이 남는 뒷맛",
+        "떫고 마르는 감각"
+      ],
+      "rule": "원문 맥락으로 해석하되 뜻이 갈려 후보가 달라지면 LLM이 한 가지 구체적인 질문을 선택한다. 무조건 산미/무우유로 치환하지 않는다."
+    },
+    {
+      "expression": "달지만 끈적하지 않게",
+      "possible_meanings": [
+        "단맛은 선호하나 긴 단맛 잔류는 회피"
+      ],
+      "rule": "sweet와 lingering_sweetness는 서로 다른 축이다. 뒷맛은 미확인이므로 끈적하지 않다고 단정하지 말고 대체 기준을 확인한다."
+    },
+    {
+      "expression": "밤에 잠 깨지 않게",
+      "possible_meanings": [
+        "카페인 회피",
+        "개인의 수면 민감도"
+      ],
+      "rule": "감각 태그로 건강·카페인 사실을 추정하지 않는다. 확인된 카페인 수치와 사용자 기준을 사용하고 수면 영향을 보장하지 않는다."
+    }
+  ],
+  "profiles": [
+    {
+      "menu_id": "peach_iced_tea",
+      "name": "복숭아 아이스티",
+      "temperature": "COLD",
+      "tags": {
+        "refreshing": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "rich": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "sweet": {
+          "state": "supported",
+          "basis_fields": [
+            "description"
+          ],
+          "rationale": "공식 요약이 복숭아의 단맛을 언급함."
+        },
+        "tart": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "carbonated": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "milky_texture": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "astringent": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "lingering_sweetness": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        }
+      }
+    },
+    {
+      "menu_id": "lemon_tea_alias",
+      "name": "레몬티",
+      "temperature": "HOT",
+      "tags": {
+        "refreshing": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "rich": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "sweet": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "tart": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "carbonated": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "milky_texture": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "astringent": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "lingering_sweetness": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        }
+      }
+    },
+    {
+      "menu_id": "lemon_tea_alias",
+      "name": "레몬티",
+      "temperature": "COLD",
+      "tags": {
+        "refreshing": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "rich": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "sweet": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "tart": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "carbonated": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "milky_texture": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "astringent": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "lingering_sweetness": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        }
+      }
+    },
+    {
+      "menu_id": "iced_americano",
+      "name": "아이스아메리카노",
+      "temperature": "COLD",
+      "tags": {
+        "refreshing": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "rich": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "sweet": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "tart": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "carbonated": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "milky_texture": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "astringent": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "lingering_sweetness": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        }
+      }
+    },
+    {
+      "menu_id": "lemonade",
+      "name": "레몬에이드",
+      "temperature": "COLD",
+      "tags": {
+        "refreshing": {
+          "state": "inferred",
+          "basis_fields": [
+            "description"
+          ],
+          "rationale": "산미와 탄산의 청량감을 깔끔함으로 느낄 가능성이 있음. 실제 뒷맛은 미확인."
+        },
+        "rich": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "sweet": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "tart": {
+          "state": "supported",
+          "basis_fields": [
+            "description"
+          ],
+          "rationale": "공식 요약이 레몬 산미를 언급함."
+        },
+        "carbonated": {
+          "state": "supported",
+          "basis_fields": [
+            "description"
+          ],
+          "rationale": "공식 요약에 탄산이 명시됨."
+        },
+        "milky_texture": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "astringent": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "lingering_sweetness": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        }
+      }
+    },
+    {
+      "menu_id": "strawberry_latte",
+      "name": "딸기라떼",
+      "temperature": "COLD",
+      "tags": {
+        "refreshing": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "rich": {
+          "state": "inferred",
+          "basis_fields": [
+            "description"
+          ],
+          "rationale": "우유의 부드러움에서 묵직한 인상을 느낄 가능성. 끈적함은 미확인."
+        },
+        "sweet": {
+          "state": "supported",
+          "basis_fields": [
+            "description"
+          ],
+          "rationale": "공식 요약이 달콤함을 언급함."
+        },
+        "tart": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "carbonated": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "milky_texture": {
+          "state": "inferred",
+          "basis_fields": [
+            "description"
+          ],
+          "rationale": "우유와 부드러운 라떼 설명에 근거한 감각 가설."
+        },
+        "astringent": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "lingering_sweetness": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        }
+      }
+    },
+    {
+      "menu_id": "green_grape_ade",
+      "name": "청포도에이드",
+      "temperature": "COLD",
+      "tags": {
+        "refreshing": {
+          "state": "inferred",
+          "basis_fields": [
+            "description"
+          ],
+          "rationale": "탄산의 상쾌함을 깔끔함으로 느낄 가능성. 단맛 잔류/끈적함은 미확인."
+        },
+        "rich": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "sweet": {
+          "state": "supported",
+          "basis_fields": [
+            "description"
+          ],
+          "rationale": "공식 요약이 달콤한 청포도 풍미를 언급함."
+        },
+        "tart": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "carbonated": {
+          "state": "supported",
+          "basis_fields": [
+            "description"
+          ],
+          "rationale": "공식 요약에 탄산이 명시됨."
+        },
+        "milky_texture": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "astringent": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "lingering_sweetness": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        }
+      }
+    },
+    {
+      "menu_id": "cafe_latte",
+      "name": "카페라떼",
+      "temperature": "HOT",
+      "tags": {
+        "refreshing": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "rich": {
+          "state": "inferred",
+          "basis_fields": [
+            "description"
+          ],
+          "rationale": "우유의 부드러움/고소함을 묵직한 인상으로 느낄 가능성. 텁텁함은 미확인."
+        },
+        "sweet": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "tart": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "carbonated": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "milky_texture": {
+          "state": "inferred",
+          "basis_fields": [
+            "description"
+          ],
+          "rationale": "공식 요약의 우유와 부드러움으로 질감을 추론함."
+        },
+        "astringent": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "lingering_sweetness": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        }
+      }
+    },
+    {
+      "menu_id": "cafe_latte",
+      "name": "카페라떼",
+      "temperature": "COLD",
+      "tags": {
+        "refreshing": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "rich": {
+          "state": "inferred",
+          "basis_fields": [
+            "description"
+          ],
+          "rationale": "우유의 부드러움/고소함을 묵직한 인상으로 느낄 가능성. 텁텁함은 미확인."
+        },
+        "sweet": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "tart": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "carbonated": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "milky_texture": {
+          "state": "inferred",
+          "basis_fields": [
+            "description"
+          ],
+          "rationale": "공식 요약의 우유와 부드러움으로 질감을 추론함."
+        },
+        "astringent": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "lingering_sweetness": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        }
+      }
+    },
+    {
+      "menu_id": "lemon_tea",
+      "name": "레몬차",
+      "temperature": "HOT",
+      "tags": {
+        "refreshing": {
+          "state": "inferred",
+          "basis_fields": [
+            "description"
+          ],
+          "rationale": "산미와 향을 산뜻하게 느낄 가능성. 낮은 당도나 짧은 뒷맛을 뜻하지 않음."
+        },
+        "rich": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "sweet": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "tart": {
+          "state": "supported",
+          "basis_fields": [
+            "description"
+          ],
+          "rationale": "공식 요약이 레몬 산미를 언급함."
+        },
+        "carbonated": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "milky_texture": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "astringent": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "lingering_sweetness": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        }
+      }
+    },
+    {
+      "menu_id": "lemon_tea",
+      "name": "레몬차",
+      "temperature": "COLD",
+      "tags": {
+        "refreshing": {
+          "state": "inferred",
+          "basis_fields": [
+            "description"
+          ],
+          "rationale": "산미와 향을 산뜻하게 느낄 가능성. 낮은 당도나 짧은 뒷맛을 뜻하지 않음."
+        },
+        "rich": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "sweet": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "tart": {
+          "state": "supported",
+          "basis_fields": [
+            "description"
+          ],
+          "rationale": "공식 요약이 레몬 산미를 언급함."
+        },
+        "carbonated": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "milky_texture": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "astringent": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "lingering_sweetness": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        }
+      }
+    },
+    {
+      "menu_id": "citron_tea",
+      "name": "유자차",
+      "temperature": "HOT",
+      "tags": {
+        "refreshing": {
+          "state": "inferred",
+          "basis_fields": [
+            "description"
+          ],
+          "rationale": "유자의 산미를 산뜻하게 느낄 수 있다는 가설. 실제 뒷맛/끈적함은 미확인."
+        },
+        "rich": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "sweet": {
+          "state": "supported",
+          "basis_fields": [
+            "description"
+          ],
+          "rationale": "공식 요약이 달콤함을 언급함."
+        },
+        "tart": {
+          "state": "supported",
+          "basis_fields": [
+            "description"
+          ],
+          "rationale": "공식 요약이 상큼함을 언급함."
+        },
+        "carbonated": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "milky_texture": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "astringent": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "lingering_sweetness": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        }
+      }
+    },
+    {
+      "menu_id": "citron_tea",
+      "name": "유자차",
+      "temperature": "COLD",
+      "tags": {
+        "refreshing": {
+          "state": "inferred",
+          "basis_fields": [
+            "description"
+          ],
+          "rationale": "유자의 산미를 산뜻하게 느낄 수 있다는 가설. 실제 뒷맛/끈적함은 미확인."
+        },
+        "rich": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "sweet": {
+          "state": "supported",
+          "basis_fields": [
+            "description"
+          ],
+          "rationale": "공식 요약이 달콤함을 언급함."
+        },
+        "tart": {
+          "state": "supported",
+          "basis_fields": [
+            "description"
+          ],
+          "rationale": "공식 요약이 상큼함을 언급함."
+        },
+        "carbonated": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "milky_texture": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "astringent": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "lingering_sweetness": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        }
+      }
+    },
+    {
+      "menu_id": "espresso",
+      "name": "에스프레소",
+      "temperature": "HOT",
+      "tags": {
+        "refreshing": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "rich": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "sweet": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "tart": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "carbonated": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "milky_texture": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "astringent": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "lingering_sweetness": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        }
+      }
+    },
+    {
+      "menu_id": "green_tea_latte",
+      "name": "녹차라떼",
+      "temperature": "HOT",
+      "tags": {
+        "refreshing": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "rich": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "sweet": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "tart": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "carbonated": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "milky_texture": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "astringent": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "lingering_sweetness": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        }
+      }
+    },
+    {
+      "menu_id": "green_tea_latte",
+      "name": "녹차라떼",
+      "temperature": "COLD",
+      "tags": {
+        "refreshing": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "rich": {
+          "state": "inferred",
+          "basis_fields": [
+            "description"
+          ],
+          "rationale": "우유 기반의 부드러운 인상에 대한 가설. 텁텁함/떫음은 미확인."
+        },
+        "sweet": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "tart": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "carbonated": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "milky_texture": {
+          "state": "inferred",
+          "basis_fields": [
+            "description"
+          ],
+          "rationale": "공식 요약의 녹차와 우유, 부드러움에 근거함. 원료 전환 주의."
+        },
+        "astringent": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        },
+        "lingering_sweetness": {
+          "state": "unknown",
+          "basis_fields": [],
+          "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,324 @@
+{
+  "checked_date": "2026-11-09",
+  "original_evidence_preserved": true,
+  "fact_changes": [
+    {
+      "menu_id": "iced_americano",
+      "temperature": "COLD",
+      "field": "description",
+      "before": {
+        "status": "unknown",
+        "value": null,
+        "source": null,
+        "checked_date": null,
+        "note": "해당 온도/상품에 대한 명시적 자료 미확인"
+      },
+      "after": {
+        "status": "verified",
+        "value": "에스프레소에 물을 더한 아이스 커피. 매장 설명에서 부드럽고 풍부한 바디감을 강조함.",
+        "source": "https://app.passorder.co.kr/normal/5c94c944-e062-4b61-b5b5-a89104f26d0f/menus",
+        "checked_date": "2026-11-09",
+        "note": "정자엠코점의 아이스 아메리카노 상품 설명. 브랜드 공식 영양 수치나 우유 미포함 증거로 확장하지 않음."
+      }
+    },
+    {
+      "menu_id": "lemonade",
+      "temperature": "COLD",
+      "field": "description",
+      "before": {
+        "status": "verified",
+        "value": "레몬의 산미와 탄산의 청량감을 특징으로 설명하는 에이드.",
+        "source": "https://www.mega-mgccoffee.com/menu/menu.php?menu_category1=1&menu_category2=1&category=3&page=1",
+        "checked_date": "2026-11-09",
+        "note": "공식 페이지의 기본 제공 상품 표기. 매장 레시피/옵션 변경은 별도 확인."
+      },
+      "after": {
+        "status": "verified",
+        "value": "레몬의 산미와 탄산의 청량감을 설명하는 에이드. 기본 710mL 당류 표기 53.6g.",
+        "source": "https://www.mega-mgccoffee.com/menu/menu.php?category=3&menu_category1=1&menu_category2=1&page=1",
+        "checked_date": "2026-11-09",
+        "note": "공식 상품 설명 및 영양 표기의 짧은 요약. 당류만으로 실제 단맛 강도/뒷맛을 확정하지 않음."
+      }
+    },
+    {
+      "menu_id": "lemon_tea",
+      "temperature": "HOT",
+      "field": "description",
+      "before": {
+        "status": "verified",
+        "value": "레몬의 산미와 향을 강조한 과일 차.",
+        "source": "https://www.mega-mgccoffee.com/menu/menu.php?menu_category1=1&menu_category2=1&category=2&page=1",
+        "checked_date": "2026-11-09",
+        "note": "공식 페이지의 기본 제공 상품 표기. 매장 레시피/옵션 변경은 별도 확인."
+      },
+      "after": {
+        "status": "verified",
+        "value": "레몬의 산미와 향을 강조한 과일 차. 기본 591mL 당류 표기 59.3g.",
+        "source": "https://www.mega-mgccoffee.com/menu/menu.php?category=2&menu_category1=1&menu_category2=1&page=1",
+        "checked_date": "2026-11-09",
+        "note": "해당 온도 공식 설명·영양 표기의 요약. 낮은 당도/짧은 뒷맛이라는 뜻은 아님."
+      }
+    },
+    {
+      "menu_id": "lemon_tea",
+      "temperature": "COLD",
+      "field": "description",
+      "before": {
+        "status": "verified",
+        "value": "레몬의 산미와 향을 강조한 과일 차.",
+        "source": "https://www.mega-mgccoffee.com/menu/menu.php?menu_category1=1&menu_category2=1&category=2&page=2",
+        "checked_date": "2026-11-09",
+        "note": "공식 페이지의 해당 온도 기본 상품 표기. 레시피/옵션 변경은 별도 확인."
+      },
+      "after": {
+        "status": "verified",
+        "value": "레몬의 산미와 향을 강조한 과일 차. 기본 710mL 당류 표기 71.1g.",
+        "source": "https://www.mega-mgccoffee.com/menu/menu.php?category=2&menu_category1=1&menu_category2=1&page=2",
+        "checked_date": "2026-11-09",
+        "note": "해당 온도 공식 설명·영양 표기의 요약. 낮은 당도/짧은 뒷맛이라는 뜻은 아님."
+      }
+    },
+    {
+      "menu_id": "green_tea_latte",
+      "temperature": "HOT",
+      "field": "description",
+      "before": {
+        "status": "unknown",
+        "value": null,
+        "source": null,
+        "checked_date": null,
+        "note": "해당 온도/상품에 대한 명시적 자료 미확인"
+      },
+      "after": {
+        "status": "verified",
+        "value": "녹차와 우유를 조합한 부드러운 라떼. 기본 591mL 당류 표기 36.6g, 변경 원료 공지 42.1g.",
+        "source": "https://www.mega-mgccoffee.com/menu/menu.php?category=6&menu_category1=1&menu_category2=1&page=1",
+        "checked_date": "2026-11-09",
+        "note": "공식 HOT 상품을 직접 확인. 원료 전환 기간으로 매장 원료와 실제 성분량은 별도 확인."
+      }
+    },
+    {
+      "menu_id": "green_tea_latte",
+      "temperature": "HOT",
+      "field": "caffeine_mg",
+      "before": {
+        "status": "unknown",
+        "value": null,
+        "source": null,
+        "checked_date": null,
+        "note": "해당 온도/상품에 대한 명시적 자료 미확인"
+      },
+      "after": {
+        "status": "unknown",
+        "value": null,
+        "source": null,
+        "checked_date": null,
+        "note": "공식 HOT 기본 표기 57.0mg와 변경 원료 공지 82.9mg가 병기됨. 매장 원료 미확인으로 단일 값 확정 불가."
+      }
+    },
+    {
+      "menu_id": "green_tea_latte",
+      "temperature": "HOT",
+      "field": "milk",
+      "before": {
+        "status": "unknown",
+        "value": null,
+        "source": null,
+        "checked_date": null,
+        "note": "해당 온도/상품에 대한 명시적 자료 미확인"
+      },
+      "after": {
+        "status": "verified",
+        "value": true,
+        "source": "https://www.mega-mgccoffee.com/menu/menu.php?category=6&menu_category1=1&menu_category2=1&page=1",
+        "checked_date": "2026-11-09",
+        "note": "공식 설명과 기존/변경 원료 모두 우유 표기. 알레르기 안전성 보장은 아님."
+      }
+    },
+    {
+      "menu_id": "green_tea_latte",
+      "temperature": "HOT",
+      "field": "allergens",
+      "before": {
+        "status": "unknown",
+        "value": null,
+        "source": null,
+        "checked_date": null,
+        "note": "해당 온도/상품에 대한 명시적 자료 미확인"
+      },
+      "after": {
+        "status": "verified",
+        "value": [
+          "우유"
+        ],
+        "source": "https://www.mega-mgccoffee.com/menu/menu.php?category=6&menu_category1=1&menu_category2=1&page=1",
+        "checked_date": "2026-11-09",
+        "note": "공식 표기된 성분이며 전체 성분/교차접촉 정보는 별도임."
+      }
+    },
+    {
+      "menu_id": "green_tea_latte",
+      "temperature": "COLD",
+      "field": "description",
+      "before": {
+        "status": "verified",
+        "value": "녹차와 우유를 조합한 부드러운 라떼.",
+        "source": "https://www.mega-mgccoffee.com/menu/menu.php?menu_category1=1&menu_category2=1&category=6&page=2",
+        "checked_date": "2026-11-09",
+        "note": "공식 원료 전환 공지 있음. 매장에 따라 기존/변경 원료가 다를 수 있음."
+      },
+      "after": {
+        "status": "verified",
+        "value": "녹차와 우유를 조합한 부드러운 라떼. 기본 591mL 당류 표기 40.7g, 변경 원료 공지 45.1g.",
+        "source": "https://www.mega-mgccoffee.com/menu/menu.php?category=6&menu_category1=1&menu_category2=1&page=2",
+        "checked_date": "2026-11-09",
+        "note": "공식 COLD 상품의 원료 전환 공지 확인. 기존/변경 원료가 매장별로 다를 수 있음."
+      }
+    }
+  ],
+  "tag_changes": [
+    {
+      "menu_id": "iced_americano",
+      "temperature": "COLD",
+      "tag": "rich",
+      "before": {
+        "state": "unknown",
+        "basis_fields": [],
+        "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+      },
+      "after": {
+        "state": "inferred",
+        "basis_fields": [
+          "description"
+        ],
+        "rationale": "해당 매장 상품 설명의 풍부한 바디감에서 묵직한 인상 가능성을 추론함. 실제 텁텁함이나 농도 측정값은 없음."
+      }
+    },
+    {
+      "menu_id": "lemonade",
+      "temperature": "COLD",
+      "tag": "sweet",
+      "before": {
+        "state": "unknown",
+        "basis_fields": [],
+        "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+      },
+      "after": {
+        "state": "inferred",
+        "basis_fields": [
+          "description"
+        ],
+        "rationale": "확인된 해당 온도의 당류 표기에서 단맛 가능성을 추론함. 실제 단맛 강도·끈적함·단맛 잔류는 확정하지 않음."
+      }
+    },
+    {
+      "menu_id": "lemon_tea",
+      "temperature": "HOT",
+      "tag": "sweet",
+      "before": {
+        "state": "unknown",
+        "basis_fields": [],
+        "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+      },
+      "after": {
+        "state": "inferred",
+        "basis_fields": [
+          "description"
+        ],
+        "rationale": "확인된 해당 온도의 당류 표기에서 단맛 가능성을 추론함. 실제 단맛 강도·끈적함·단맛 잔류는 확정하지 않음."
+      }
+    },
+    {
+      "menu_id": "lemon_tea",
+      "temperature": "COLD",
+      "tag": "sweet",
+      "before": {
+        "state": "unknown",
+        "basis_fields": [],
+        "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+      },
+      "after": {
+        "state": "inferred",
+        "basis_fields": [
+          "description"
+        ],
+        "rationale": "확인된 해당 온도의 당류 표기에서 단맛 가능성을 추론함. 실제 단맛 강도·끈적함·단맛 잔류는 확정하지 않음."
+      }
+    },
+    {
+      "menu_id": "green_tea_latte",
+      "temperature": "HOT",
+      "tag": "milky_texture",
+      "before": {
+        "state": "unknown",
+        "basis_fields": [],
+        "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+      },
+      "after": {
+        "state": "inferred",
+        "basis_fields": [
+          "description"
+        ],
+        "rationale": "공식 HOT 상품에서 우유와 부드러운 질감을 확인해 감각 후보로 추론함. 실측 아님."
+      }
+    },
+    {
+      "menu_id": "green_tea_latte",
+      "temperature": "HOT",
+      "tag": "rich",
+      "before": {
+        "state": "unknown",
+        "basis_fields": [],
+        "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+      },
+      "after": {
+        "state": "inferred",
+        "basis_fields": [
+          "description"
+        ],
+        "rationale": "공식 HOT 설명의 우유·부드러움에서 묵직한 인상 가능성을 추론함. 텁텁함 확정 아님."
+      }
+    },
+    {
+      "menu_id": "green_tea_latte",
+      "temperature": "HOT",
+      "tag": "sweet",
+      "before": {
+        "state": "unknown",
+        "basis_fields": [],
+        "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+      },
+      "after": {
+        "state": "inferred",
+        "basis_fields": [
+          "description"
+        ],
+        "rationale": "확인된 해당 온도의 당류 표기에서 단맛 가능성을 추론함. 실제 단맛 강도·끈적함·단맛 잔류는 확정하지 않음."
+      }
+    },
+    {
+      "menu_id": "green_tea_latte",
+      "temperature": "COLD",
+      "tag": "sweet",
+      "before": {
+        "state": "unknown",
+        "basis_fields": [],
+        "rationale": "현재 제공 자료로 이 감각을 판단할 근거가 부족함."
+      },
+      "after": {
+        "state": "inferred",
+        "basis_fields": [
+          "description"
+        ],
+        "rationale": "확인된 해당 온도의 당류 표기에서 단맛 가능성을 추론함. 실제 단맛 강도·끈적함·단맛 잔류는 확정하지 않음."
+      }
+    }
+  ],
+  "remaining": [
+    "레몬티 별칭의 레시피 동일성 미확인",
+    "우유 미포함 명시 자료 없음",
+    "녹차라떼 원료 전환의 단일 카페인 값 미확인",
+    "아이스아메리카노 공식 영양 수치 미확인",
+    "전체 메뉴 실제 떫음/단맛 잔류 관능 자료 미확인"
+  ]
+}
