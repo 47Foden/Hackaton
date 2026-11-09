@@ -4,7 +4,6 @@ import { MenuBoard, type MenuBoardView } from '../components/menu/MenuBoard';
 import { CatalogStatus } from '../components/menu/CatalogStatus';
 import { MenuImage } from '../components/menu/MenuImage';
 import { OrderMicrophone } from '../components/voice/OrderMicrophone';
-import { RecommendationTextTest } from '../components/voice/RecommendationTextTest';
 import { useMenus } from '../hooks/useMenus';
 import { useOrderFlow } from '../hooks/useOrderFlow';
 import { useVoiceGuidance } from '../hooks/useVoiceGuidance';
@@ -92,13 +91,6 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
     <p className="order-step__note">마이크를 누르고 말씀하신 뒤 ‘녹음 종료’를 눌러 주세요. 종료 후 음성을 분석합니다.</p>
     {transcript && <p role="status" className="order-step__note">인식한 말: {transcript}</p>}
     {error && <p role="alert">{error}</p>}
-    {import.meta.env.DEV && !selected && order.stage === 'menu' && <RecommendationTextTest disabled={catalog.status !== 'ready'}
-      onShowCandidates={ids => {
-        if (catalog.status !== 'ready' || !ids.every(id => catalog.menus.some(menu => menu.id === id && menu.available))) {
-          setError('현재 판매 메뉴와 시험 결과가 달라요. 메뉴를 새로 확인해 주세요.'); return;
-        }
-        interrupt(); setCandidates(ids);
-      }} />}
     {selected && <section className="voice-menu-confirmation" aria-label="선택 메뉴 확인">
       <div className="voice-menu-confirmation__card">
         <MenuImage src={selected.imageUrl} className="voice-menu-confirmation__image" />
