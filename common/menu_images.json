@@ -1,26 +1,149 @@
 {
-  "복숭아 아이스티": {
-    "COLD": "/images/menus/peach-iced-tea-ice.jpg"
-  },
-  "레몬티": {
-    "HOT": "/images/menus/lemon-tea-hot.jpg",
-    "COLD": "/images/menus/lemon-tea-ice.jpg"
-  },
-  "아이스아메리카노": {
+  "아메리카노": {
+    "HOT": "/images/menus/iced-americano-hot.jpg",
     "COLD": "/images/menus/iced-americano-ice.jpg"
   },
-  "레몬에이드": {
-    "COLD": "/images/menus/lemonade-ice.jpg"
+  "꿀아메리카노": {
+    "HOT": "/images/menus/honey-americano-hot.jpg",
+    "COLD": "/images/menus/honey-americano-ice.jpg"
   },
-  "딸기라떼": {
-    "COLD": "/images/menus/strawberry-latte-ice.jpg"
+  "바닐라 아메리카노": {
+    "HOT": "/images/menus/vanilla-americano-hot.jpg",
+    "COLD": "/images/menus/vanilla-americano-ice.jpg"
   },
-  "청포도에이드": {
-    "COLD": "/images/menus/green-grape-ade-ice.jpg"
+  "헤이즐넛 아메리카노": {
+    "HOT": "/images/menus/hazelnut-americano-hot.jpg",
+    "COLD": "/images/menus/hazelnut-americano-ice.jpg"
   },
   "카페라떼": {
     "HOT": "/images/menus/cafe-latte-hot.jpg",
     "COLD": "/images/menus/cafe-latte-ice.jpg"
+  },
+  "바닐라라떼": {
+    "HOT": "/images/menus/vanilla-latte-hot.jpg",
+    "COLD": "/images/menus/vanilla-latte-ice.jpg"
+  },
+  "연유라떼": {
+    "HOT": "/images/menus/condensed-milk-latte-hot.jpg",
+    "COLD": "/images/menus/condensed-milk-latte-ice.jpg"
+  },
+  "카푸치노": {
+    "HOT": "/images/menus/cappuccino-hot.jpg",
+    "COLD": "/images/menus/cappuccino-ice.jpg"
+  },
+  "헤이즐넛 라떼": {
+    "HOT": "/images/menus/hazelnut-latte-hot.jpg",
+    "COLD": "/images/menus/hazelnut-latte-ice.jpg"
+  },
+  "콜드브루 오리지널": {
+    "HOT": "/images/menus/cold-brew-hot.jpg",
+    "COLD": "/images/menus/cold-brew-ice.jpg"
+  },
+  "디카페인 아메리카노": {
+    "HOT": "/images/menus/decaf-americano-hot.jpg",
+    "COLD": "/images/menus/decaf-americano-ice.jpg"
+  },
+  "디카페인 꿀 아메리카노": {
+    "HOT": "/images/menus/decaf-honey-americano-hot.jpg",
+    "COLD": "/images/menus/decaf-honey-americano-ice.jpg"
+  },
+  "디카페인 바닐라 아메리카노": {
+    "HOT": "/images/menus/decaf-vanilla-americano-hot.jpg",
+    "COLD": "/images/menus/decaf-vanilla-americano-ice.jpg"
+  },
+  "디카페인 헤이즐넛 아메리카노": {
+    "HOT": "/images/menus/decaf-hazelnut-americano-hot.jpg",
+    "COLD": "/images/menus/decaf-hazelnut-americano-ice.jpg"
+  },
+  "디카페인 카페라떼": {
+    "HOT": "/images/menus/decaf-cafe-latte-hot.jpg",
+    "COLD": "/images/menus/decaf-cafe-latte-ice.jpg"
+  },
+  "디카페인 바닐라라떼": {
+    "HOT": "/images/menus/decaf-vanilla-latte-hot.jpg",
+    "COLD": "/images/menus/decaf-vanilla-latte-ice.jpg"
+  },
+  "디카페인 연유라떼": {
+    "HOT": "/images/menus/decaf-condensed-milk-latte-hot.jpg",
+    "COLD": "/images/menus/decaf-condensed-milk-latte-ice.jpg"
+  },
+  "디카페인 카푸치노": {
+    "HOT": "/images/menus/decaf-cappuccino-hot.jpg",
+    "COLD": "/images/menus/decaf-cappuccino-ice.jpg"
+  },
+  "디카페인 헤이즐넛라떼": {
+    "HOT": "/images/menus/decaf-hazelnut-latte-hot.jpg",
+    "COLD": "/images/menus/decaf-hazelnut-latte-ice.jpg"
+  },
+  "콜드브루 디카페인": {
+    "HOT": "/images/menus/decaf-cold-brew-hot.jpg",
+    "COLD": "/images/menus/decaf-cold-brew-ice.jpg"
+  },
+  "레몬에이드": {
+    "COLD": "/images/menus/lemonade-ice.jpg"
+  },
+  "자몽에이드": {
+    "COLD": "/images/menus/grapefruit-ade-ice.png"
+  },
+  "청포도에이드": {
+    "COLD": "/images/menus/green-grape-ade-ice.jpg"
+  },
+  "쿠키프라페": {
+    "COLD": "/images/menus/cookie-frappe-ice.jpg"
+  },
+  "녹차프라페": {
+    "COLD": "/images/menus/green-tea-frappe-ice.png"
+  },
+  "커피프라페": {
+    "COLD": "/images/menus/coffee-frappe-ice.jpg"
+  },
+  "딸기쿠키프라페": {
+    "COLD": "/images/menus/strawberry-cookie-frappe-ice.jpg"
+  },
+  "딸기요거트스무디": {
+    "COLD": "/images/menus/strawberry-yogurt-smoothie-ice.jpg"
+  },
+  "플레인요거트스무디": {
+    "COLD": "/images/menus/plain-yogurt-smoothie-ice.jpg"
+  },
+  "딸기바나나주스": {
+    "COLD": "/images/menus/strawberry-banana-juice-ice.jpg"
+  },
+  "딸기주스": {
+    "COLD": "/images/menus/strawberry-juice-ice.jpg"
+  },
+  "망고요거트스무디": {
+    "COLD": "/images/menus/mango-yogurt-smoothie-ice.jpg"
+  },
+  "블루베리요거트스무디": {
+    "COLD": "/images/menus/blueberry-yogurt-smoothie-ice.jpg"
+  },
+  "딸기라떼": {
+    "COLD": "/images/menus/strawberry-latte-ice.jpg"
+  },
+  "오레오초코라떼": {
+    "COLD": "/images/menus/oreo-chocolate-latte-ice.jpg"
+  },
+  "녹차라떼": {
+    "HOT": "/images/menus/green-tea-latte-hot.jpg",
+    "COLD": "/images/menus/green-tea-latte-ice.jpg"
+  },
+  "흑당라떼": {
+    "COLD": "/images/menus/brown-sugar-latte-ice.jpg"
+  },
+  "복숭아 아이스티": {
+    "COLD": "/images/menus/peach-iced-tea-ice.jpg"
+  },
+  "제로 복숭아 아이스티": {
+    "COLD": "/images/menus/zero-peach-iced-tea-ice.jpg"
+  },
+  "사과유자차": {
+    "HOT": "/images/menus/apple-citron-tea-hot.jpg",
+    "COLD": "/images/menus/apple-citron-tea-ice.jpg"
+  },
+  "자몽차": {
+    "HOT": "/images/menus/grapefruit-tea-hot.jpg",
+    "COLD": "/images/menus/grapefruit-tea-ice.jpg"
   },
   "레몬차": {
     "HOT": "/images/menus/lemon-tea-hot.jpg",
@@ -33,8 +156,8 @@
   "에스프레소": {
     "HOT": "/images/menus/espresso-hot.jpg"
   },
-  "녹차라떼": {
-    "HOT": "/images/menus/green-tea-latte-hot.jpg",
-    "COLD": "/images/menus/green-tea-latte-ice.jpg"
+  "레몬티": {
+    "HOT": "/images/menus/lemon-tea-hot.jpg",
+    "COLD": "/images/menus/lemon-tea-ice.jpg"
   }
 }

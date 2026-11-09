@@ -1,3 +1,4 @@
+import { selectCategory } from './category-navigation.mjs';
 import { test, expect } from '@playwright/test';
 import { createMockApi } from '../src/api/mock/createMockApi.ts';
 
@@ -7,7 +8,7 @@ const result = {
   ...draft,
   order_id: orderNumber,
   order_number: orderNumber,
-  menu_name: '아이스아메리카노',
+  menu_name: '아메리카노',
   quantity: 1,
   total_price_krw: 2300,
   created_at: '2026-11-07T00:00:00Z',
@@ -22,11 +23,17 @@ async function startOrder(page) {
 
 async function openReview(page) {
   await startOrder(page);
-  await page.getByRole('button', { name: /아이스아메리카노/ }).click();
+  await chooseIcedAmericano(page);
   await page.getByRole('button', { name: /포장해서/ }).click();
   const confirm = page.getByRole('button', { name: '주문 확정', exact: true });
   await expect(confirm).toBeEnabled();
   return confirm;
+}
+
+async function chooseIcedAmericano(page) {
+  await page.getByText('아메리카노', { exact: true }).click();
+  await page.getByRole('button', { name: /차갑게/ }).click();
+  await page.getByRole('button', { name: '옵션 없이 계속' }).click();
 }
 
 test('final confirmation submits once and locks the buttons while waiting', async ({ page }) => {
@@ -112,9 +119,9 @@ test('an ID conflict locks retry until the customer starts a fresh order', async
   await expect(page.getByRole('button', { name: '요청 정보 확인 필요' })).toBeDisabled();
   await page.getByRole('button', { name: '처음으로', exact: true }).click();
   await page.getByRole('button', { name: '주문하기', exact: true }).click();
-  await expect(page.getByRole('heading', { name: '간편 메뉴판' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: '전체 메뉴판' })).toBeVisible();
   await expect(page.getByRole('alert')).toHaveCount(0);
-  await page.getByRole('button', { name: /아이스아메리카노/ }).click();
+  await chooseIcedAmericano(page);
   await page.getByRole('button', { name: /포장해서/ }).click();
   await page.getByRole('button', { name: '주문 확정', exact: true }).click();
   await expect(page.getByRole('definition')).toHaveText(orderNumber);
@@ -130,10 +137,10 @@ test('returning home from touch completion starts a fresh order', async ({ page 
     window.speechSynthesis.cancel = () => { window.speechCancelCount += 1; };
   });
 
-  await page.getByRole('button', { name: '전체 메뉴판 보기' }).click();
+  await expect(page.getByRole('button', { name: /간편 메뉴판 보기|전체 메뉴판 보기/ })).toHaveCount(0);
   await page.getByRole('button', { name: '크게 보기' }).click();
   await expect(page.getByRole('button', { name: '기본 크기로 보기' })).toHaveAttribute('aria-pressed', 'true');
-  await page.getByRole('button', { name: /아이스아메리카노/ }).click();
+  await chooseIcedAmericano(page);
   await page.getByRole('button', { name: /포장해서/ }).click();
   await page.getByRole('button', { name: '주문 확정', exact: true }).click();
   await expect(page.getByRole('definition')).toHaveText(orderNumber);
@@ -142,15 +149,47 @@ test('returning home from touch completion starts a fresh order', async ({ page 
   await page.getByRole('button', { name: '처음으로 돌아가기' }).click();
   await expect.poll(() => page.evaluate(() => window.speechCancelCount)).toBe(cancellationsBeforeHome);
   await page.getByRole('button', { name: '주문하기', exact: true }).click();
-  await expect(page.getByRole('heading', { name: '간편 메뉴판' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: '전체 메뉴판' })).toBeVisible();
   await expect(page.getByRole('button', { name: '크게 보기' })).toHaveAttribute('aria-pressed', 'false');
   await expect(page.getByRole('region', { name: '주문 완료' })).toHaveCount(0);
   await expect(page.getByText(orderNumber, { exact: true })).toHaveCount(0);
 
+  await selectCategory(page, '커피', '라떼');
   await page.getByRole('button', { name: /카페라떼/ }).click();
   await page.getByRole('button', { name: /따뜻하게/ }).click();
+  await page.getByRole('button', { name: '옵션 없이 계속' }).click();
   await page.getByRole('button', { name: /매장에서/ }).click();
   const review = page.getByRole('region', { name: '최종 주문 확인' });
   await expect(review.getByRole('heading', { name: '카페라떼' })).toBeVisible();
   await expect(review.getByText('따뜻하게 · 매장에서')).toBeVisible();
+});
+
+test('customization adds the correct price and appears in confirmation and receipt', async ({ page }) => {
+  const api = createMockApi({ delayMs: 0 });
+  await page.route('**/api/orders', async route => {
+    const payload = route.request().postDataJSON();
+    expect(payload.option_ids).toEqual(['size:up', 'milk:oat', 'sweetness:vanilla']);
+    const order = await api.createOrder(payload);
+    await route.fulfill({ status: 201, json: { ...order, order_id: '42', order_number: '42' } });
+  });
+  await startOrder(page);
+  await selectCategory(page, '커피', '라떼');
+  await page.getByText('카페라떼', { exact: true }).click();
+  await page.getByRole('button', { name: /따뜻하게/ }).click();
+  const options = page.getByRole('region', { name: '추가 옵션 선택' });
+  await options.getByRole('button', { name: /사이즈업/ }).click();
+  await options.getByRole('button', { name: /아몬드밀크/ }).click();
+  await options.getByRole('button', { name: /오트밀크/ }).click();
+  await expect(options.getByRole('button', { name: /아몬드밀크/ })).toHaveAttribute('aria-pressed', 'false');
+  await options.getByRole('button', { name: /^바닐라 시럽/ }).click();
+  await expect(options.getByText('4,800원', { exact: true })).toBeVisible();
+  await options.getByRole('button', { name: '선택한 옵션으로 계속' }).click();
+  await page.getByRole('button', { name: /매장에서/ }).click();
+  const review = page.getByRole('region', { name: '최종 주문 확인' });
+  await expect(review).toContainText('오트밀크 변경');
+  await expect(review).toContainText('4,800원');
+  await review.getByRole('button', { name: '주문 확정', exact: true }).click();
+  const receipt = page.getByRole('region', { name: '주문 완료' });
+  await expect(receipt).toContainText('바닐라 시럽 추가');
+  await expect(receipt).toContainText('4,800원');
 });

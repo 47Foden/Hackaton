@@ -55,6 +55,21 @@ class RecommendationResults(BaseModel):
     menu_ids: list[MenuId] = Field(max_length=4)
 
 
+class DirectCandidate(BaseModel):
+    menu_id: MenuId
+    temperature: Temperature
+    reason: str
+
+
+class DirectRecommendation(BaseModel):
+    type: Literal['direct_recommendation'] = 'direct_recommendation'
+    status: Literal['recommend', 'clarify', 'insufficient_data']
+    recommendations: list[DirectCandidate] = Field(max_length=1)
+    questions: list[str] = Field(max_length=1)
+    missing_information: list[str]
+    engine: Literal['llm-direct'] = 'llm-direct'
+
+
 class RestartRecommendation(BaseModel):
     type: Literal["restart_recommendation"] = "restart_recommendation"
 
@@ -63,7 +78,7 @@ class Confirm(BaseModel):
     type: Literal["confirm"] = "confirm"
 
 
-VoiceAction = Annotated[RecommendationResults | RestartRecommendation | Confirm | SelectMenu | SetTemperature | SetServiceType | Recommend | Retry, Field(discriminator="type")]
+VoiceAction = Annotated[DirectRecommendation | RecommendationResults | RestartRecommendation | Confirm | SelectMenu | SetTemperature | SetServiceType | Recommend | Retry, Field(discriminator="type")]
 
 
 class VoiceInterpretResponse(BaseModel):

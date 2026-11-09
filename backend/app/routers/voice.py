@@ -1,5 +1,6 @@
 from asyncio import timeout
 from threading import BoundedSemaphore
+import os
 from typing import Annotated
 
 import psycopg
@@ -16,6 +17,9 @@ from app.services.voice.audio import (
 from app.services.voice.interpretation import interpret_transcript
 from app.services.recommendation import recommend
 from app.services.voice.transcription import TranscriptionError, transcribe_voice
+from app.schemas.voice import DirectRecommendation
+from app.services.voice.llm_recommendation import recommend as llm_recommend
+from app.services.llm_direct import DirectError
 
 MAX_MULTIPART_BYTES = MAX_AUDIO_BYTES + 16 * 1024
 UPLOAD_TIMEOUT_SECONDS = 5
@@ -135,6 +139,20 @@ def interpret_audio(
     if stage in {"menu", "recommendations"} and any(word in transcript.replace(" ", "") for word in ("재추천", "다시추천", "다른추천")):
         action = RestartRecommendation()
     elif stage in {"menu", "recommendations"} and (action.type == "recommend" or (action.type == "retry" and action.reason == "UNRECOGNIZED")):
+        engine = os.environ.get('RECOMMENDATION_ENGINE', 'existing')
+        if engine == 'llm-direct':
+            try:
+                result = llm_recommend(transcript, list(menus.values()))['result']
+                action = DirectRecommendation(**{k: result[k] for k in ('status', 'recommendations', 'questions', 'missing_information')})
+            except DirectError:
+                raise HTTPException(502, detail={'code': 'LLM_RECOMMENDATION_FAILED',
+                    'message': 'LLM 추천이 실패했거나 조건 검증을 통과하지 못했어요. 자동 재시도하지 않았어요.'}) from None
+            except (ValueError, OSError, KeyError):
+                raise HTTPException(503, detail={'code': 'LLM_EVIDENCE_NOT_READY',
+                    'message': '현재 메뉴와 LLM 근거 자료의 연결을 확인해 주세요.'}) from None
+            return VoiceInterpretResponse(transcript=transcript, action=action)
+        if engine != 'existing':
+            raise HTTPException(503, detail={'code': 'INVALID_RECOMMENDATION_ENGINE', 'message': '추천 방식 설정을 확인해 주세요.'})
         try:
             action = RecommendationResults(menu_ids=recommend(transcript, list(menus.values())))
         except ValueError as error:

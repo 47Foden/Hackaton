@@ -79,8 +79,30 @@ class OrdersApiTests(unittest.TestCase):
         self.assertEqual(stored["created_at"], created_at)
         self.assertEqual(body, {
             **SELECTION, "order_id": str(stored["id"]), "order_number": str(stored["id"]),
-            "menu_name": "에스프레소", "quantity": 1, "total_price_krw": 1700,
+            "menu_name": "에스프레소", "quantity": 1, "total_price_krw": 1700, "selected_options": [],
         })
+
+    def test_option_price_snapshot_and_replay(self):
+        selected_ids = ["sweetness:vanilla", "milk:oat", "size:up"]
+        payload = {**ORDER, "menu_id": "cafe_latte", "option_ids": selected_ids}
+        status, body = self.post(payload)
+        self.assertEqual(status, 201)
+        self.assertEqual(body["total_price_krw"], 4800)
+        self.assertEqual({choice["id"]: choice["price_delta_krw"] for choice in body["selected_options"]},
+                         {"size:up": 700, "milk:oat": 500, "sweetness:vanilla": 700})
+        with connect(self.url) as connection:
+            stored = connection.execute("SELECT selected_options FROM orders").fetchone()
+            self.assertEqual(stored["selected_options"], body["selected_options"])
+            connection.execute("UPDATE menus SET price_krw = 9999 WHERE menu_id = 'cafe_latte'")
+        self.assertEqual(self.post({**payload, "option_ids": selected_ids[::-1]}), (200, body))
+        self.assertEqual(self.post({**payload, "option_ids": selected_ids[1:]})[0], 409)
+
+    def test_rejects_foreign_duplicate_and_conflicting_option_ids(self):
+        for ids in (["soda:zero"], ["size:up", "size:up"], ["milk:oat", "milk:almond"]):
+            status, body = self.post({**ORDER, "menu_id": "cafe_latte", "option_ids": ids})
+            self.assertEqual(status, 422)
+            self.assertEqual(body["detail"]["code"], "INVALID_OPTION")
+        self.assert_no_orders()
 
     def test_rejects_invalid_requests_without_inserting(self):
         for payload in (

@@ -1,8 +1,8 @@
-from typing import Literal
+from typing import Annotated, Literal
 
 from pydantic import AwareDatetime, BaseModel, ConfigDict, Field
 
-from app.schemas.menus import Temperature
+from app.schemas.menus import MenuOption, Temperature
 
 ServiceType = Literal["DINE_IN", "TAKEOUT"]
 
@@ -17,6 +17,7 @@ class OrderSelection(BaseModel):
 
 class CreateOrderRequest(OrderSelection):
     request_id: str = Field(pattern=r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
+    option_ids: list[Annotated[str, Field(pattern=r"^[a-z_]+:[a-z_]+$")]] = Field(default_factory=list, max_length=32)
 
 
 class OrderResponse(OrderSelection):
@@ -25,4 +26,5 @@ class OrderResponse(OrderSelection):
     menu_name: str
     quantity: Literal[1]
     total_price_krw: int = Field(ge=0)
+    selected_options: list[MenuOption] = Field(default_factory=list)
     created_at: AwareDatetime

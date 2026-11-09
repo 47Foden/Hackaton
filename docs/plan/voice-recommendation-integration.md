@@ -28,8 +28,8 @@
 | 최대 길이와 크기 | 30초·오디오 2 MiB. multipart 전체는 2 MiB + 16 KiB | 한국어 샘플은 1.90~2.76초이며, 여러 취향을 함께 말할 여유를 둔다. 30초 샘플은 317,804바이트였다. |
 | 서버 동시 처리 | 음성 프로세스당 1건, 대기열 없이 추가 요청에 `503 AUDIO_BUSY` | CPU 기준 전사 재호출 중앙값 12.30초, 종료 시 프로세스 RSS 3.55 GiB를 고려해 한 건으로 시작한다. 초기 공용 서버는 음성 처리 워커 1개로 운영한다. |
 | 업로드와 변환 | 업로드 수신 최대 5초. ffprobe 검사와 FFmpeg 변환을 합쳐 최대 5초 | 2.76초·30초 샘플을 각각 7회 변환했으며 전체 최대 176.1ms였다. |
-| 전사 타임아웃 | 모델 로드 완료 후 최대 25초, 전사 API 연결 시 적용 | 짧은 한국어 샘플의 재호출 최댓값 14.44초에 여유를 더한 초기값이다. 공용 서버에서 긴 발화도 다시 측정한다. |
-| 클라이언트 타임아웃 | 현재 업로드·검사 15초, 이후 전사 포함 요청 40초 | 서버의 업로드 5초·변환 5초·전사 25초에 네트워크 여유를 둔다. |
+| 전사 타임아웃 | 모델 로드 완료 후 최대 75초, 전사 API 연결 시 적용 | Windows CPU 워커의 전사가 기존 25초를 넘는 경우를 반영한다. |
+| 클라이언트 타임아웃 | 업로드·검사 요청 15초, 전사 포함 요청 90초 | 서버의 업로드 5초·변환 5초·전사 75초에 네트워크 여유를 둔다. |
 
 녹음이 제한을 넘으면 해당 녹음을 폐기하고 마이크를 해제한다. 화면에서 **다시 녹음**을 눌러 30초 이내로 발화하거나 터치 주문을 계속할 수 있다. 서버가 바쁘거나 처리 시간이 초과된 경우도 사용자가 다시 녹음한다. [세부 실측 결과](whisper-benchmark.md)
 
@@ -58,7 +58,7 @@ $env:PYTHONPATH = (Resolve-Path backend).Path
 & ./backend/scripts/voice/.venv/Scripts/python.exe -m app.services.voice.whisper_worker --model-dir models/whisper-large-v3-turbo --port 8765
 ```
 
-FastAPI에는 `VOICE_TRANSCRIPTION_URL`을 지정한다. 같은 호스트에서 직접 실행할 때는 `http://127.0.0.1:8765/transcribe`, 로컬 Docker Desktop에서는 `http://host.docker.internal:8765/transcribe`를 사용한다. 공용 서버에서는 전사 워커를 사설 인터페이스에 둔다. `--model-dir`과 `--device`로 배포 모델과 CPU/CUDA를 선택한다. API에서 25초를 넘겨 연결을 종료해도 워커는 진행 중인 전사를 마칠 때까지 다음 전사를 받지 않는다.
+FastAPI에는 `VOICE_TRANSCRIPTION_URL`을 지정한다. 같은 호스트에서 직접 실행할 때는 `http://127.0.0.1:8765/transcribe`, 로컬 Docker Desktop에서는 `http://host.docker.internal:8765/transcribe`를 사용한다. 공용 서버에서는 전사 워커를 사설 인터페이스에 둔다. `--model-dir`과 `--device`로 배포 모델과 CPU/CUDA를 선택한다. API가 75초 뒤 대기를 중단해도 워커는 진행 중인 전사를 마칠 때까지 새 요청에 `TRANSCRIPTION_BUSY`를 반환한다.
 
 ### 5.3 추천 데이터와 후보 화면
 

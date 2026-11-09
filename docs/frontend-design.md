@@ -4,10 +4,9 @@
 
 ## 로고와 토큰
 
-[common/brand_assets.json](../common/brand_assets.json)에 공식 원본 URL·확인일·로컬 경로·색상·글꼴을 기록했다. 로고 두 파일은 frontend/public/images/brand에 저장했다.
+[common/brand_assets.json](../common/brand_assets.json)에 팀 로고의 경로와 대체 텍스트, 색상과 글꼴 참고 자료를 기록한다.
 
-- 흰색 또는 노란색 바탕에서는 검은 로고 `/images/brand/mega-logo-dark.png`를 우선 사용한다.
-- `/images/brand/mega-logo.png`는 공식 헤더의 다른 변형이다. 배경과 대비를 확인한 뒤 사용한다.
+- 시작 화면과 주문 화면 상단에는 팀 로고 `/images/brand/technica61.svg`를 사용한다.
 - 로고 비율은 유지하고 잘라내거나 색을 덧칠하지 않는다. 시작 화면 중앙에는 충분한 여백과 함께 배치하고 바로 아래 노란 주문하기 버튼을 둔다.
 - 공식 CSS 확인값: 메인 노랑 #FDD000, 버튼 hover #FFDF43, 본문 #1C1C1B, 흰 배경 #FFFFFF, 테두리 #E0E0E0.
 - 기본 글꼴은 Noto Sans KR을 우선하고 Noto Sans/Malgun Gothic/sans-serif를 대체 글꼴로 둔다. 글꼴 파일은 아직 포함하지 않았으므로 구현 시 로딩 방식과 대체 표시를 확인한다.
@@ -25,7 +24,7 @@
 
 | 항목 | 출처 / 위치 | 준비 상태 |
 | --- | --- | --- |
-| 로고 | 공식 헤더 원본, frontend/public/images/brand | 2종 확보. 검은 로고 시각 확인 완료 |
+| 로고 | 팀 로고, frontend/public/images/brand/technica61.svg | 시작 화면 및 주문 화면에 적용 |
 | 메뉴 이미지 | 공식 메뉴 원본, frontend/public/images/menus 및 common/menu_images.json | 14파일, 메뉴 11개·온도 16개 연결 완료 |
 | 가격 | common/menu_prices.json 및 menu_price_sources.json | 11개 입력 완료. 매장 주문 페이지 기반, 에스프레소는 모바일쿠폰 가격 |
 | 간소화 목록 | common/menu_display.json | 프로젝트 초기 4종 설정. 전체 11종 전환과 독립 확대 지원 |

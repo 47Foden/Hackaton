@@ -1,3 +1,4 @@
+import { selectCategory } from './category-navigation.mjs';
 import { test, expect } from '@playwright/test';
 import { createMockApi } from '../src/api/mock/createMockApi.ts';
 test.use({ launchOptions: { executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH,
@@ -40,6 +41,7 @@ test('transcription connectivity error preserves touch ordering', async ({ page 
   await page.getByRole('button', { name: '음성 녹음', exact: true }).click();
   await page.getByRole('button', { name: '녹음 종료' }).click();
   await expect(page.getByRole('alert')).toContainText('TRANSCRIPTION_UNAVAILABLE');
+  await selectCategory(page, '커피', '라떼');
   await page.getByRole('button', { name: /카페라떼/ }).click();
   await expect(page.getByRole('button', { name: '네, 이 메뉴로 주문' })).toBeVisible();
 });
@@ -49,6 +51,7 @@ test('permission denied leaves touch menu usable', async ({ page }) => {
   await openVoice(page);
   await page.getByRole('button', { name: '음성 녹음', exact: true }).click();
   await expect(page.getByRole('button', { name: '다시 녹음' })).toBeVisible();
+  await selectCategory(page, '커피', '라떼');
   await page.getByRole('button', { name: /카페라떼/ }).click();
   await expect(page.getByRole('button', { name: '네, 이 메뉴로 주문' })).toBeVisible();
 });

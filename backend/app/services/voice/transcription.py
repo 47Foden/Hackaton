@@ -4,7 +4,7 @@ from http.client import HTTPException as HTTPProtocolError
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
-TRANSCRIPTION_TIMEOUT_SECONDS = 25
+TRANSCRIPTION_TIMEOUT_SECONDS = 75
 
 
 class TranscriptionError(Exception):
@@ -33,7 +33,7 @@ def transcribe_voice(pcm_s16le: bytes) -> str:
     except HTTPError as error:
         error.close()
         if error.code == 503:
-            raise TranscriptionError(503, "TRANSCRIPTION_UNAVAILABLE", "음성 전사 서버가 바빠요. 잠시 후 다시 녹음해 주세요.") from None
+            raise TranscriptionError(503, "TRANSCRIPTION_BUSY", "이전 녹음을 아직 처리 중이에요. 잠시 후 다시 녹음해 주세요.") from None
         raise TranscriptionError(502, "TRANSCRIPTION_FAILED", "음성을 글로 바꾸지 못했어요. 다시 녹음해 주세요.") from None
     except (URLError, TimeoutError) as error:
         if isinstance(error, TimeoutError) or isinstance(getattr(error, "reason", None), TimeoutError):

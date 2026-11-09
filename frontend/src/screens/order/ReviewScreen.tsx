@@ -10,10 +10,11 @@ interface ReviewScreenProps {
 }
 export function ReviewScreen({ draft, isMock, pending, error, onConfirm }: ReviewScreenProps) {
   const confirmLabel = error?.kind === 'uncertain' ? '같은 주문 다시 시도' : error ? '다시 시도' : '주문 확정';
+  const total = draft.menu.price + draft.selectedOptions.reduce((sum, choice) => sum + choice.price_delta_krw, 0);
   return (
     <section className="order-step" aria-label="최종 주문 확인" aria-busy={pending}>
       <OrderSummary {...draft} />
-      <p className="order-step__total">합계 <strong>{draft.menu.price.toLocaleString('ko-KR')}원</strong></p>
+      <p className="order-step__total">합계 <strong>{total.toLocaleString('ko-KR')}원</strong></p>
       {isMock && <p className="order-step__note">개발 모드예요. 실제 주문 접수와 결제는 진행되지 않아요.</p>}
       {error && <p role="alert" className="order-step__note">{error.message}</p>}
       <button type="button" className="primary-button order-step__confirm"

@@ -1,0 +1,672 @@
+{
+  "common": [
+    {
+      "id": "size",
+      "label": "사이즈",
+      "max_selections": 1,
+      "choices": [
+        {
+          "id": "size:up",
+          "label": "사이즈업",
+          "price_delta_krw": 700
+        }
+      ]
+    }
+  ],
+  "profiles": {
+    "coffee_espresso": [
+      {
+        "id": "shot",
+        "label": "샷 선택",
+        "max_selections": 1,
+        "choices": [
+          {
+            "id": "shot:light",
+            "label": "연하게",
+            "price_delta_krw": 0
+          },
+          {
+            "id": "shot:extra",
+            "label": "샷 추가",
+            "price_delta_krw": 600
+          },
+          {
+            "id": "shot:double",
+            "label": "2샷 추가",
+            "price_delta_krw": 1200
+          }
+        ]
+      },
+      {
+        "id": "sweetness",
+        "label": "당도 선택",
+        "max_selections": 1,
+        "choices": [
+          {
+            "id": "sweetness:condensed",
+            "label": "연유 추가",
+            "price_delta_krw": 1000
+          },
+          {
+            "id": "sweetness:stevia",
+            "label": "저당 스테비아 추가",
+            "price_delta_krw": 800
+          }
+        ]
+      }
+    ],
+    "coffee_latte": [
+      {
+        "id": "shot",
+        "label": "샷 선택",
+        "max_selections": 1,
+        "choices": [
+          {
+            "id": "shot:light",
+            "label": "연하게",
+            "price_delta_krw": 0
+          },
+          {
+            "id": "shot:extra",
+            "label": "샷 추가",
+            "price_delta_krw": 600
+          },
+          {
+            "id": "shot:double",
+            "label": "2샷 추가",
+            "price_delta_krw": 1200
+          }
+        ]
+      },
+      {
+        "id": "milk",
+        "label": "우유 변경",
+        "max_selections": 1,
+        "choices": [
+          {
+            "id": "milk:almond",
+            "label": "아몬드밀크 변경",
+            "price_delta_krw": 500
+          },
+          {
+            "id": "milk:oat",
+            "label": "오트밀크 변경",
+            "price_delta_krw": 500
+          }
+        ]
+      },
+      {
+        "id": "sweetness",
+        "label": "당도 선택",
+        "max_selections": 1,
+        "choices": [
+          {
+            "id": "sweetness:honey",
+            "label": "꿀 추가",
+            "price_delta_krw": 1000
+          },
+          {
+            "id": "sweetness:stevia",
+            "label": "저당 스테비아 추가",
+            "price_delta_krw": 800
+          },
+          {
+            "id": "sweetness:vanilla",
+            "label": "바닐라 시럽 추가",
+            "price_delta_krw": 700
+          }
+        ]
+      }
+    ],
+    "coffee_cold_brew": [
+      {
+        "id": "brew",
+        "label": "콜드브루 선택",
+        "max_selections": 1,
+        "choices": [
+          {
+            "id": "brew:light",
+            "label": "연하게",
+            "price_delta_krw": 0
+          }
+        ]
+      },
+      {
+        "id": "sweetness",
+        "label": "당도 선택",
+        "max_selections": 1,
+        "choices": [
+          {
+            "id": "sweetness:vanilla",
+            "label": "바닐라 시럽 추가",
+            "price_delta_krw": 500
+          },
+          {
+            "id": "sweetness:caramel",
+            "label": "카라멜 시럽 추가",
+            "price_delta_krw": 500
+          },
+          {
+            "id": "sweetness:hazelnut",
+            "label": "헤이즐넛 시럽 추가",
+            "price_delta_krw": 500
+          },
+          {
+            "id": "sweetness:light_vanilla",
+            "label": "라이트 바닐라 시럽 추가",
+            "price_delta_krw": 800
+          }
+        ]
+      }
+    ],
+    "decaf_espresso": [
+      {
+        "id": "shot",
+        "label": "디카페인 샷 선택",
+        "max_selections": 1,
+        "choices": [
+          {
+            "id": "shot:light",
+            "label": "연하게",
+            "price_delta_krw": 1000
+          },
+          {
+            "id": "shot:decaf",
+            "label": "디카페인 샷 추가",
+            "price_delta_krw": 2000
+          },
+          {
+            "id": "shot:decaf_double",
+            "label": "디카페인 2샷 추가",
+            "price_delta_krw": 3000
+          }
+        ]
+      },
+      {
+        "id": "sweetness",
+        "label": "당도 선택",
+        "max_selections": 1,
+        "choices": [
+          {
+            "id": "sweetness:condensed",
+            "label": "연유 추가",
+            "price_delta_krw": 1000
+          },
+          {
+            "id": "sweetness:stevia",
+            "label": "저당 스테비아 추가",
+            "price_delta_krw": 800
+          }
+        ]
+      }
+    ],
+    "decaf_latte": [
+      {
+        "id": "shot",
+        "label": "디카페인 샷 선택",
+        "max_selections": 1,
+        "choices": [
+          {
+            "id": "shot:light",
+            "label": "연하게",
+            "price_delta_krw": 0
+          },
+          {
+            "id": "shot:decaf",
+            "label": "디카페인 샷 추가",
+            "price_delta_krw": 1000
+          },
+          {
+            "id": "shot:decaf_double",
+            "label": "디카페인 2샷 추가",
+            "price_delta_krw": 2000
+          }
+        ]
+      },
+      {
+        "id": "milk",
+        "label": "우유 변경",
+        "max_selections": 1,
+        "choices": [
+          {
+            "id": "milk:almond",
+            "label": "아몬드밀크 변경",
+            "price_delta_krw": 500
+          },
+          {
+            "id": "milk:oat",
+            "label": "오트밀크 변경",
+            "price_delta_krw": 500
+          }
+        ]
+      },
+      {
+        "id": "sweetness",
+        "label": "당도 선택",
+        "max_selections": 1,
+        "choices": [
+          {
+            "id": "sweetness:light_vanilla",
+            "label": "라이트 바닐라 시럽 추가",
+            "price_delta_krw": 800
+          },
+          {
+            "id": "sweetness:honey",
+            "label": "꿀 추가",
+            "price_delta_krw": 700
+          },
+          {
+            "id": "sweetness:stevia",
+            "label": "저당 스테비아 추가",
+            "price_delta_krw": 800
+          }
+        ]
+      }
+    ],
+    "decaf_cold_brew": [
+      {
+        "id": "brew",
+        "label": "콜드브루 선택",
+        "max_selections": 1,
+        "choices": [
+          {
+            "id": "brew:light",
+            "label": "연하게",
+            "price_delta_krw": 0
+          }
+        ]
+      },
+      {
+        "id": "sweetness",
+        "label": "당도 선택",
+        "max_selections": 1,
+        "choices": [
+          {
+            "id": "sweetness:light_vanilla",
+            "label": "라이트 바닐라 시럽 추가",
+            "price_delta_krw": 800
+          },
+          {
+            "id": "sweetness:condensed",
+            "label": "연유 추가",
+            "price_delta_krw": 700
+          },
+          {
+            "id": "sweetness:honey",
+            "label": "꿀 추가",
+            "price_delta_krw": 700
+          }
+        ]
+      }
+    ],
+    "ade": [
+      {
+        "id": "shot",
+        "label": "논커피 샷 선택",
+        "max_selections": 1,
+        "choices": [
+          {
+            "id": "shot:extra",
+            "label": "샷 추가",
+            "price_delta_krw": 600
+          },
+          {
+            "id": "shot:double",
+            "label": "2샷 추가",
+            "price_delta_krw": 1200
+          },
+          {
+            "id": "shot:decaf",
+            "label": "디카페인 샷 추가",
+            "price_delta_krw": 1000
+          },
+          {
+            "id": "shot:decaf_double",
+            "label": "디카페인 2샷 추가",
+            "price_delta_krw": 2000
+          }
+        ]
+      },
+      {
+        "id": "soda",
+        "label": "사이다 변경",
+        "max_selections": 1,
+        "choices": [
+          {
+            "id": "soda:zero",
+            "label": "제로 사이다 변경",
+            "price_delta_krw": 0
+          }
+        ]
+      },
+      {
+        "id": "sweetness",
+        "label": "당도 선택",
+        "max_selections": 1,
+        "choices": [
+          {
+            "id": "sweetness:vanilla",
+            "label": "바닐라 시럽 추가",
+            "price_delta_krw": 500
+          },
+          {
+            "id": "sweetness:caramel",
+            "label": "카라멜 시럽 추가",
+            "price_delta_krw": 500
+          },
+          {
+            "id": "sweetness:hazelnut",
+            "label": "헤이즐넛 시럽 추가",
+            "price_delta_krw": 500
+          },
+          {
+            "id": "sweetness:light_vanilla",
+            "label": "라이트 바닐라 시럽 추가",
+            "price_delta_krw": 800
+          }
+        ]
+      }
+    ],
+    "frappe": [
+      {
+        "id": "whip",
+        "label": "휘핑·젤라또",
+        "max_selections": 1,
+        "choices": [
+          {
+            "id": "whip:with",
+            "label": "휘핑",
+            "price_delta_krw": 0
+          },
+          {
+            "id": "whip:without",
+            "label": "휘핑 제외",
+            "price_delta_krw": 0
+          },
+          {
+            "id": "whip:chocolate",
+            "label": "초코젤라또 변경",
+            "price_delta_krw": 200
+          },
+          {
+            "id": "whip:yogurt",
+            "label": "요거젤라또 변경",
+            "price_delta_krw": 200
+          },
+          {
+            "id": "whip:red_bean",
+            "label": "팥젤라또 변경",
+            "price_delta_krw": 200
+          },
+          {
+            "id": "whip:strawberry_yogurt",
+            "label": "딸기요거트 젤라또 변경",
+            "price_delta_krw": 200
+          }
+        ]
+      },
+      {
+        "id": "shot",
+        "label": "논커피 샷 선택",
+        "max_selections": 1,
+        "choices": [
+          {
+            "id": "shot:extra",
+            "label": "샷 추가",
+            "price_delta_krw": 600
+          },
+          {
+            "id": "shot:double",
+            "label": "2샷 추가",
+            "price_delta_krw": 1200
+          },
+          {
+            "id": "shot:decaf",
+            "label": "디카페인 샷 추가",
+            "price_delta_krw": 1000
+          },
+          {
+            "id": "shot:decaf_double",
+            "label": "디카페인 2샷 추가",
+            "price_delta_krw": 2000
+          }
+        ]
+      },
+      {
+        "id": "sweetness",
+        "label": "당도 선택",
+        "max_selections": 1,
+        "choices": [
+          {
+            "id": "sweetness:vanilla",
+            "label": "바닐라 시럽 추가",
+            "price_delta_krw": 500
+          },
+          {
+            "id": "sweetness:caramel",
+            "label": "카라멜 시럽 추가",
+            "price_delta_krw": 500
+          },
+          {
+            "id": "sweetness:hazelnut",
+            "label": "헤이즐넛 시럽 추가",
+            "price_delta_krw": 500
+          },
+          {
+            "id": "sweetness:light_vanilla",
+            "label": "라이트 바닐라 시럽 추가",
+            "price_delta_krw": 800
+          },
+          {
+            "id": "sweetness:condensed",
+            "label": "연유 추가",
+            "price_delta_krw": 700
+          },
+          {
+            "id": "sweetness:honey",
+            "label": "꿀 추가",
+            "price_delta_krw": 700
+          }
+        ]
+      },
+      {
+        "id": "pearl",
+        "label": "펄 선택",
+        "max_selections": 1,
+        "choices": [
+          {
+            "id": "pearl:tapioca",
+            "label": "타피오카 펄 추가",
+            "price_delta_krw": 700
+          }
+        ]
+      }
+    ],
+    "smoothie_juice": [
+      {
+        "id": "shot",
+        "label": "논커피 샷 선택",
+        "max_selections": 1,
+        "choices": [
+          {
+            "id": "shot:extra",
+            "label": "샷 추가",
+            "price_delta_krw": 600
+          },
+          {
+            "id": "shot:double",
+            "label": "2샷 추가",
+            "price_delta_krw": 1200
+          },
+          {
+            "id": "shot:decaf",
+            "label": "디카페인 샷 추가",
+            "price_delta_krw": 1000
+          },
+          {
+            "id": "shot:decaf_double",
+            "label": "디카페인 2샷 추가",
+            "price_delta_krw": 2000
+          }
+        ]
+      },
+      {
+        "id": "sweetness",
+        "label": "당도 선택",
+        "max_selections": 1,
+        "choices": [
+          {
+            "id": "sweetness:vanilla",
+            "label": "바닐라 시럽 추가",
+            "price_delta_krw": 500
+          },
+          {
+            "id": "sweetness:caramel",
+            "label": "카라멜 시럽 추가",
+            "price_delta_krw": 500
+          },
+          {
+            "id": "sweetness:hazelnut",
+            "label": "헤이즐넛 시럽 추가",
+            "price_delta_krw": 500
+          },
+          {
+            "id": "sweetness:light_vanilla",
+            "label": "라이트 바닐라 시럽 추가",
+            "price_delta_krw": 800
+          }
+        ]
+      }
+    ],
+    "noncoffee_latte": [
+      {
+        "id": "shot",
+        "label": "논커피 샷 선택",
+        "max_selections": 1,
+        "choices": [
+          {
+            "id": "shot:extra",
+            "label": "샷 추가",
+            "price_delta_krw": 600
+          },
+          {
+            "id": "shot:double",
+            "label": "2샷 추가",
+            "price_delta_krw": 1200
+          },
+          {
+            "id": "shot:decaf",
+            "label": "디카페인 샷 추가",
+            "price_delta_krw": 1000
+          },
+          {
+            "id": "shot:decaf_double",
+            "label": "디카페인 2샷 추가",
+            "price_delta_krw": 2000
+          }
+        ]
+      },
+      {
+        "id": "milk",
+        "label": "우유 변경",
+        "max_selections": 1,
+        "choices": [
+          {
+            "id": "milk:almond",
+            "label": "아몬드밀크 변경",
+            "price_delta_krw": 500
+          },
+          {
+            "id": "milk:oat",
+            "label": "오트밀크 변경",
+            "price_delta_krw": 500
+          }
+        ]
+      },
+      {
+        "id": "sweetness",
+        "label": "당도 선택",
+        "max_selections": 1,
+        "choices": [
+          {
+            "id": "sweetness:light_vanilla",
+            "label": "라이트 바닐라 시럽 추가",
+            "price_delta_krw": 800
+          },
+          {
+            "id": "sweetness:honey",
+            "label": "꿀 추가",
+            "price_delta_krw": 700
+          },
+          {
+            "id": "sweetness:stevia",
+            "label": "저당 스테비아 추가",
+            "price_delta_krw": 800
+          }
+        ]
+      }
+    ],
+    "tea": [
+      {
+        "id": "shot",
+        "label": "논커피 샷 선택",
+        "max_selections": 1,
+        "choices": [
+          {
+            "id": "shot:extra",
+            "label": "샷 추가",
+            "price_delta_krw": 600
+          },
+          {
+            "id": "shot:double",
+            "label": "2샷 추가",
+            "price_delta_krw": 1200
+          },
+          {
+            "id": "shot:decaf",
+            "label": "디카페인 샷 추가",
+            "price_delta_krw": 1000
+          },
+          {
+            "id": "shot:decaf_double",
+            "label": "디카페인 2샷 추가",
+            "price_delta_krw": 2000
+          }
+        ]
+      },
+      {
+        "id": "sweetness",
+        "label": "당도 선택",
+        "max_selections": 1,
+        "choices": [
+          {
+            "id": "sweetness:vanilla",
+            "label": "바닐라 시럽 추가",
+            "price_delta_krw": 500
+          },
+          {
+            "id": "sweetness:caramel",
+            "label": "카라멜 시럽 추가",
+            "price_delta_krw": 500
+          },
+          {
+            "id": "sweetness:hazelnut",
+            "label": "헤이즐넛 시럽 추가",
+            "price_delta_krw": 500
+          },
+          {
+            "id": "sweetness:light_vanilla",
+            "label": "라이트 바닐라 시럽 추가",
+            "price_delta_krw": 800
+          },
+          {
+            "id": "sweetness:honey",
+            "label": "꿀 추가",
+            "price_delta_krw": 700
+          }
+        ]
+      }
+    ],
+    "common_only": []
+  }
+}

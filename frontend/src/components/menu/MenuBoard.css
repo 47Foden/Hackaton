@@ -1,24 +1,41 @@
-.menu-board { max-width: 1200px; margin: auto; }
-
-.menu-board__heading {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-}
-
+.menu-board { max-width: 1100px; margin: auto; background: #fff; padding: 28px; border-radius: 20px; }
+.menu-board__heading { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
 .menu-board__heading h2 { font-size: 28px; margin-top: 6px; }
 .menu-board__controls { display: flex; flex-wrap: wrap; gap: 12px; }
 .menu-board__controls [aria-pressed='true'] { background: var(--brand-yellow); }
-.menu-board__summary { margin: 16px 0 24px; font-size: 18px; line-height: 1.6; color: #62625a; }
-.menu-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
-.menu-board--enlarged .menu-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.menu-board--enlarged .menu-card__image { height: 215px; }
-.menu-board--enlarged .menu-card__name,
-.menu-board--enlarged .menu-card__price { font-size: 24px; }
-
+.menu-board__navigation { margin-top: 28px; }
+.menu-board__tabs { display: flex; border-bottom: 1px solid #ececec; gap: 32px; }
+.menu-board__tabs button { position: relative; border: 0; background: none; color: #777; font-size: 24px; padding: 18px 8px; min-height: 64px; font-weight: 700; }
+.menu-board__tabs button[aria-pressed='true'] { color: #171717; }
+.menu-board__tabs button[aria-pressed='true']::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 4px; border-radius: 4px; background: #222; }
+.menu-board__chips { display: flex; flex-wrap: wrap; gap: 12px; padding: 22px 0; }
+.menu-board__chips button { border: 0; border-radius: 40px; background: #f5f5f5; color: #666; font-size: 20px; font-weight: 700; padding: 14px 26px; min-height: 56px; }
+.menu-board__chips button[aria-pressed='true'] { color: #fff; background: #303030; }
+.menu-board__summary { margin: 24px 0; font-size: 22px; line-height: 1.6; }
+.menu-board__summary strong { color: #426ef5; }
+.menu-board__summary > span { font-size: 16px; color: #666; }
+.menu-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 32px; }
+.menu-board .menu-card { flex-direction: row; text-align: left; gap: 22px; padding: 8px; border-radius: 18px; box-shadow: none; min-width: 0; flex-wrap: wrap; }
+.menu-board .menu-card__image { width: 145px; height: 155px; flex-shrink: 0; background: #f5f5f5; border-radius: 24px; margin: 0; padding: 12px; }
+.menu-card__details { display: flex; flex: 1; min-width: 100px; flex-direction: column; align-items: flex-start; gap: 8px; }
+.menu-board .menu-card__name { font-size: 22px; line-height: 1.4; }
+.menu-board .menu-card__temperature { display: flex; gap: 8px; font-size: 18px; font-weight: 500; }
+.menu-card__temperature--cold { color: #426ef5; }
+.menu-card__temperature--hot { color: #ef4059; }
+.menu-board .menu-card__price { margin: 0; font-size: 23px; font-weight: 800; }
+.menu-board--enlarged .menu-grid { grid-template-columns: 1fr; }
+.menu-board--enlarged .menu-card__image { width: 200px; height: 210px; }
+.menu-board--enlarged .menu-card__name, .menu-board--enlarged .menu-card__price { font-size: 28px; }
+.menu-board__empty { padding: 24px 0; line-height: 1.6; }
 @media (max-width: 760px) {
+  .menu-board { padding: 16px; border-radius: 12px; }
   .menu-board__heading { align-items: flex-start; flex-direction: column; gap: 16px; }
-  .menu-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-  .menu-board--enlarged .menu-grid { grid-template-columns: 1fr; }
+  .menu-grid { grid-template-columns: 1fr; gap: 24px; }
+  .menu-board__tabs { gap: 20px; }
+  .menu-board__chips { gap: 8px; }
+  .menu-board__chips button { font-size: 18px; padding: 12px 20px; }
+  .menu-board .menu-card__image { width: 115px; height: 130px; border-radius: 20px; }
+  .menu-board .menu-card { gap: 16px; }
+  .menu-board--enlarged .menu-card__image { width: 140px; height: 160px; }
+  .menu-board--enlarged .menu-card__name, .menu-board--enlarged .menu-card__price { font-size: 25px; }
 }
