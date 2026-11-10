@@ -14,6 +14,7 @@ from app.schemas.voice import RestartRecommendation, MenuId, VoiceAudioResponse,
 from app.services.voice.audio import (
     AUDIO_TOO_LARGE_MESSAGE, MAX_AUDIO_BYTES, SAMPLE_RATE_HZ, PreparedVoiceAudio, VoiceAudioError, prepare_voice_audio,
 )
+from app.services.voice.cart import interpret_named_order, parse_cart
 from app.services.voice.interpretation import interpret_transcript
 from app.services.voice.options import compact, extract_options
 from app.schemas.menus import Temperature
@@ -149,11 +150,14 @@ def interpret_audio(
 
     # Explicit recommendation never selects a menu, even for an exact name or
     # ordinal. Keep customization pending until a candidate is actually chosen.
-    action = (Retry(reason='UNRECOGNIZED' if compact(transcript) else 'EMPTY_TRANSCRIPT')
-              if intent == 'recommend' else
-              interpret_transcript(transcript, stage, menus, selected_menu_id=selected_menu_id, candidate_menu_ids=candidates))
-    if stage == "menu" and intent != "recommend":
-        from app.services.voice.cart import parse_cart
+    if intent == 'recommend':
+        action = Retry(reason='UNRECOGNIZED' if compact(transcript) else 'EMPTY_TRANSCRIPT')
+    else:
+        action = interpret_named_order(transcript, menus, candidate_menu_ids=candidates) if intent == 'order' else None
+        if action is None:
+            action = interpret_transcript(transcript, stage, menus, selected_menu_id=selected_menu_id,
+                                          candidate_menu_ids=candidates)
+    if stage == "menu" and intent is None:
         cart = parse_cart(transcript, menus)
         if cart and (len(cart.items) > 1 or action.type == "retry" or cart.items[0].quantity > 1):
             action = cart

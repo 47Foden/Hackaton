@@ -75,6 +75,37 @@ class VoiceIntentTests(unittest.TestCase):
         self.assertEqual((status, count), (200, 0))
         self.assertEqual(body['action'], {'type': 'retry', 'reason': 'MENU_UNAVAILABLE'})
 
+    def test_named_order_does_not_require_registered_options(self):
+        americano = {**menu(), 'menu_id': 'iced_americano', 'name': '아메리카노'}
+        vanilla = {**menu(), 'menu_id': 'vanilla_americano', 'name': '바닐라 아메리카노'}
+        rows = [americano, vanilla, menu()]
+        for text, menu_id in [
+            ('뜨듯한 아메리카노 부탁드립니다', 'iced_americano'),
+            ('뜨듯한 바닐라 아메리카노', 'vanilla_americano'),
+            ('아메리카노 말고 라떼', 'cafe_latte'),
+        ]:
+            with self.subTest(text=text):
+                status, body, _, calls = self.post(text, 'order', rows=rows)
+                self.assertEqual((status, body['action'], calls),
+                                 (200, {'type': 'select_menu', 'menu_id': menu_id}, 0))
+                self.assertNotIn('recognized_options', body)
+        _, body, _, _ = self.post('아메리카노나 라떼', 'order', rows=rows)
+        self.assertEqual(body['action'], {'type': 'retry', 'reason': 'UNRECOGNIZED'})
+        _, body, _, _ = self.post('뜨듯한 바닐라 아메리카노', 'order',
+                                  rows=[americano, {**vanilla, 'is_available': False}])
+        self.assertEqual(body['action'], {'type': 'retry', 'reason': 'MENU_UNAVAILABLE'})
+
+    def test_named_cart_from_recommendations_keeps_candidate_boundary(self):
+        rows = [menu(), {**menu(), 'menu_id': 'tea', 'name': '레몬티'}]
+        extra = [('candidate_menu_ids', 'cafe_latte')]
+        _, body, _, _ = self.post('뜨듯한 카페라떼 두 잔', 'order',
+                                  stage='recommendations', extra=extra, rows=rows)
+        self.assertEqual(body['action']['type'], 'select_items')
+        self.assertEqual(body['action']['items'][0]['quantity'], 2)
+        _, body, _, _ = self.post('카페라떼 두 잔이랑 레몬티', 'order',
+                                  stage='recommendations', extra=extra, rows=rows)
+        self.assertEqual(body['action'], {'type': 'retry', 'reason': 'OUTSIDE_CANDIDATES'})
+
     def test_invalid_intent_or_stage_rejected_before_transcription(self):
         cases = [('unknown', 'menu', ()),
                  ('order', 'temperature', [('selected_menu_id', 'cafe_latte')]),

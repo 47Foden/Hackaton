@@ -108,13 +108,15 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
       setTranscript(typeof data.transcript === 'string' ? data.transcript : '');
       voice.cancel();
       const action = data.action;
-      if (stage === 'menu' && action?.type === 'select_items' && catalog.status === 'ready') {
-        if (!Array.isArray(action.items) || action.items.length + items.length > 20 ||
-          !action.items.every((item: PendingItem) => catalog.menus.some(m => m.id === item.menu_id && m.available) && Number.isInteger(item.quantity) && item.quantity >= 1 && item.quantity <= 99)) throw new Error('주문 메뉴를 확인해 주세요.');
-        interrupt(); setQueue(action.items); setSelected(null); setCandidates(null); return;
-      }
       if (intent && !acceptsVoiceAction(intent, action?.type)) {
         throw new Error('선택한 입력 목적에 맞는 응답을 받지 못했어요. 같은 버튼을 눌러 다시 말씀해 주세요.');
+      }
+      if (['menu', 'recommendations'].includes(stage) && action?.type === 'select_items' && catalog.status === 'ready') {
+        if (!Array.isArray(action.items) || action.items.length + items.length > 20 ||
+          !action.items.every((item: PendingItem) => catalog.menus.some(m => m.id === item.menu_id && m.available)
+            && (stage !== 'recommendations' || candidates?.includes(item.menu_id))
+            && Number.isInteger(item.quantity) && item.quantity >= 1 && item.quantity <= 99)) throw new Error('주문 메뉴를 확인해 주세요.');
+        interrupt(); setQueue(action.items); setSelected(null); setCandidates(null); return;
       }
       const incoming = readVoiceOptions(data.recognized_options);
       const options = mergeVoiceOptions(intent === 'recommend' ? {} : sessionRef.current, incoming);
