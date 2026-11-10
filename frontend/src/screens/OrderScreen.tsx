@@ -1,3 +1,4 @@
+import type { ServiceType } from '../api/contracts';
 import { useState } from 'react';
 import { KioskLayout } from '../components/layout/KioskLayout';
 import { MenuBoard, type MenuBoardView } from '../components/menu/MenuBoard';
@@ -15,8 +16,8 @@ import { CompletionScreen } from './order/CompletionScreen';
 import './order/OrderFlow.css';
 
 
-export function OrderScreen({ onHome }: { onHome: () => void }) {
-  const { order, dispatch, confirm, items, continueOrder, changeQuantity, quantity, locked } = useOrderFlow(kioskApi);
+export function OrderScreen({ onHome, serviceType }: { onHome: () => void; serviceType: ServiceType }) {
+  const { order, dispatch, confirm, items, continueOrder, changeQuantity, quantity, locked } = useOrderFlow(kioskApi, serviceType);
   const { state: catalog, reload } = useMenus(kioskApi);
   const [menuView, setMenuView] = useState<MenuBoardView>({ enlarged: false });
 
@@ -35,7 +36,7 @@ export function OrderScreen({ onHome }: { onHome: () => void }) {
 
   return (
     <KioskLayout {...guide}
-      status={isMockOrderApi ? '개발용 화면 · 실제 주문은 저장되지 않아요.' : '메뉴와 주문 내용을 확인해 주세요.'}
+      status={isMockOrderApi ? '개발용 화면 · 실제 주문은 저장되지 않아요.' : undefined}
       onHome={order.stage === 'submitting' ? undefined : onHome}
     >
       {order.stage === 'menu' && catalog.status === 'loading' && <CatalogStatus status="loading" />}

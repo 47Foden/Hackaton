@@ -46,3 +46,6 @@
 .quantity-control button { min-width:56px; min-height:56px; border:1px solid #555; border-radius:12px; background:white; font-size:32px; }
 .cart-actions { display:flex; gap:16px; }
 .cart-actions > button { flex:1; }
+
+.quantity-control span { font-size: 32px; font-weight: 700; }
+.order-summary p:first-of-type { font-size: 30px; }

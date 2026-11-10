@@ -107,3 +107,16 @@ export function orderReducer(state: OrderState, action: OrderAction): OrderState
 
 export const temperatureLabels: Record<Temperature, string> = { HOT: '따뜻하게', COLD: '차갑게' };
 export const serviceTypeLabels: Record<ServiceType, string> = { DINE_IN: '매장에서', TAKEOUT: '포장해서' };
+
+// The start-screen selection is authoritative for the entire order session.
+export function sessionOrderReducer(state: OrderState, action: OrderAction | {type: 'continue'}, serviceType: ServiceType): OrderState {
+  if (action.type === 'continue') return initialOrderState;
+  let next = orderReducer(state, action);
+  if (next.stage === 'temperature' || next.stage === 'customization' || next.stage === 'service_type') {
+    const options = { ...next.voiceOptions, service_type: serviceType,
+      unresolved_fields: next.voiceOptions?.unresolved_fields?.filter(field => field !== 'service_type') };
+    next = orderReducer(next, {type: 'apply_voice_options', voiceOptions: options});
+  }
+  if ('draft' in next) return {...next, draft: {...next.draft, serviceType}};
+  return next;
+}

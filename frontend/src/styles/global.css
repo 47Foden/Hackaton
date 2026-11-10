@@ -33,3 +33,18 @@ h1, h2, p { margin: 0; }
 
 .start-screen__voice-guide { text-align: center; font-size: 22px; line-height: 1.6; word-break: keep-all; }
 .start-screen__voice-button { justify-content: center; gap: 16px; }
+
+.start-screen__content { gap: 36px; width: min(880px, 100%); text-align: center; }
+.start-screen__service, .start-screen__actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; width: 100%; }
+.start-screen__service { max-width: 540px; }
+.start-screen__service-button { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 24px; border: 3px solid #ddd; border-radius: 20px; background: #fff; font-size: 30px; font-weight: 700; cursor: pointer; }
+.start-screen__service-button span { font-size: 46px; }
+.start-screen__service-button[aria-pressed="true"] { border-color: #222; background: var(--brand-yellow); }
+.start-screen__actions .start-screen__button { width: 100%; min-width: 0; justify-content: center; gap: 16px; }
+@media (max-width: 540px) {
+  .start-screen { padding: 24px 16px; }
+  .start-screen__content { gap: 28px; }
+  .start-screen__actions, .start-screen__service { gap: 12px; }
+  .start-screen__actions .start-screen__button { font-size: 20px; padding: 20px 12px; }
+  .start-screen__voice-guide { font-size: 18px; }
+}

@@ -1,3 +1,4 @@
+import type { ServiceType } from '../api/contracts';
 import { useEffect, useRef, useState } from 'react';
 import { mergeVoiceOptions, readVoiceOptions, selectedCustomization, validateVoiceOptions } from '../state/voiceOptions';
 import type { VoiceOptions } from '../state/voiceOptions';
@@ -23,8 +24,8 @@ import { CompletionScreen } from './order/CompletionScreen';
 import { getOrderGuidance } from '../data/orderGuidance';
 import './order/OrderFlow.css';
 
-export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
-  const { order, dispatch, confirm, items, continueOrder, deferService, changeQuantity, quantity, setQuantity, locked } = useOrderFlow(kioskApi);
+export function VoiceOrderScreen({ onHome, serviceType }: { onHome: () => void; serviceType: ServiceType }) {
+  const { order, dispatch, confirm, items, continueOrder, deferService, changeQuantity, quantity, setQuantity, locked } = useOrderFlow(kioskApi, serviceType);
   const { state: catalog, reload } = useMenus(kioskApi);
   const [candidates, setCandidates] = useState<string[] | null>(null);
   const [recommendationsExpanded, setRecommendationsExpanded] = useState(false);

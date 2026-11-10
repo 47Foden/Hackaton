@@ -1,10 +1,10 @@
 import { useEffect, useReducer, useRef, useState } from 'react';
-import type { CreateOrderRequest, KioskApi } from '../api/contracts';
+import type { CreateOrderRequest, KioskApi, ServiceType } from '../api/contracts';
 import { asApiError } from '../api/errors';
-import { initialOrderState, orderReducer, type OrderDraft } from '../state/order';
+import { initialOrderState, orderReducer, sessionOrderReducer, type OrderDraft } from '../state/order';
 
-export function useOrderFlow(api: KioskApi) {
-  const [order, dispatch] = useReducer((state: Parameters<typeof orderReducer>[0], action: Parameters<typeof orderReducer>[1] | {type: 'continue'}) => action.type === 'continue' ? initialOrderState : orderReducer(state, action), initialOrderState);
+export function useOrderFlow(api: KioskApi, serviceType: ServiceType) {
+  const [order, dispatch] = useReducer((state: Parameters<typeof orderReducer>[0], action: Parameters<typeof orderReducer>[1] | {type: 'continue'}) => sessionOrderReducer(state, action, serviceType), initialOrderState);
   const [cart, setCart] = useState<OrderDraft[]>([]);
   const [quantity, setQuantity] = useState(1);
   const items = 'draft' in order ? [...cart, {...order.draft, quantity}].map(item => ({...item, serviceType: order.draft.serviceType})) : cart;
