@@ -104,3 +104,36 @@ test('late voice response cannot overwrite a touch selection', async ({ page }) 
   await page.getByRole('button', { name: '옵션 없이 계속' }).click();
   await expect(page.getByRole('region', { name: '매장 또는 포장 선택' })).toBeVisible();
 });
+
+for (const ids of [[], ['shot:extra']]) {
+  test(`complete voice options skip all selection screens and their guidance (${ids.length} extras)`, async ({ page }) => {
+    await page.addInitScript(() => {
+      window.stepHistory = [];
+      window.voicePrompts = [];
+      window.speechSynthesis.speak = utterance => window.voicePrompts.push(utterance.text);
+      window.speechSynthesis.cancel = () => {};
+      new MutationObserver(records => {
+        for (const record of records) for (const node of record.addedNodes) {
+          if (!(node instanceof Element)) continue;
+          for (const section of [node, ...node.querySelectorAll('section[aria-label]')]) {
+            if (section.matches('section[aria-label]')) window.stepHistory.push(section.getAttribute('aria-label'));
+          }
+        }
+      }).observe(document, { childList: true, subtree: true });
+    });
+    await setup(page, [{ action: { type: 'select_menu', menu_id: 'cafe_latte' },
+      recognized_options: { temperature: 'COLD', service_type: 'TAKEOUT', customization: {
+        status: 'resolved', option_ids: ids,
+        intents: ids.map(id => ({ expression: id, candidate_option_ids: [id] })), unresolved: [] } } }]);
+    let submissions = 0;
+    await page.route('**/api/orders', async route => { submissions++; await route.abort(); });
+    await say(page);
+    await page.getByRole('button', { name: '네, 이 메뉴로 주문' }).click();
+    await expect(page.getByRole('region', { name: '최종 주문 확인' })).toBeVisible();
+    const history = await page.evaluate(() => ({ steps: window.stepHistory, prompts: window.voicePrompts.join(' ') }));
+    for (const label of ['온도 선택', '추가 옵션 선택', '매장 또는 포장 선택']) expect(history.steps).not.toContain(label);
+    for (const prompt of ['따뜻하게, 차갑게?', '추가 옵션을 고르시겠어요?', '어디에서 드시겠어요?']) expect(history.prompts).not.toContain(prompt);
+    expect(submissions).toBe(0);
+    if (ids.length) await expect(page.getByRole('region', { name: '최종 주문 확인' })).toContainText('샷 추가');
+  });
+}

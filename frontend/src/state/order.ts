@@ -10,7 +10,7 @@ export interface OrderFailure { message: string; kind: 'rejected' | 'uncertain' 
 export type OrderState =
   | { stage: 'menu' }
   | { stage: 'temperature'; menu: Menu; voiceOptions?: VoiceOptions }
-  | { stage: 'customization'; menu: Menu; temperature: Temperature; voiceOptions?: VoiceOptions }
+  | { stage: 'customization'; menu: Menu; temperature: Temperature; selectedOptions?: MenuOption[]; voiceOptions?: VoiceOptions }
   | { stage: 'service_type'; menu: Menu; temperature: Temperature; selectedOptions: MenuOption[]; voiceOptions?: VoiceOptions }
   | { stage: 'review'; draft: OrderDraft; error?: OrderFailure }
   | { stage: 'submitting'; draft: OrderDraft }
@@ -32,71 +32,69 @@ export type OrderSelection =
 
 export const initialOrderState: OrderState = { stage: 'menu' };
 
-function afterOptions(menu: Menu, temperature: Temperature, selectedOptions: MenuOption[], voiceOptions?: VoiceOptions): OrderState {
-  return voiceOptions?.service_type && !voiceOptions.unresolved_fields?.includes('service_type')
-    ? { stage: 'review', draft: { menu, temperature, selectedOptions, serviceType: voiceOptions.service_type } }
-    : { stage: 'service_type', menu, temperature, selectedOptions, ...(voiceOptions ? { voiceOptions } : {}) };
+type SelectionState = Extract<OrderState, { stage: 'temperature' | 'customization' | 'service_type' }>;
+
+// A supplied snapshot is authoritative, including explicit clears. Preserve
+// completed touch choices when no corresponding voice field was supplied.
+function selectionOptions(state: SelectionState, snapshot?: VoiceOptions): VoiceOptions {
+  const options = { ...(snapshot ?? state.voiceOptions ?? {}) };
+  if (state.stage !== 'temperature' && options.temperature === undefined
+      && !options.unresolved_fields?.includes('temperature')) options.temperature = state.temperature;
+  if (state.stage === 'service_type' && options.customization === undefined) {
+    options.customization = selectedCustomization(state.selectedOptions.map(choice => choice.id));
+  }
+  return options;
 }
 
-function afterTemperature(menu: Menu, temperature: Temperature, options?: VoiceOptions): OrderState {
-  const voiceOptions = options ? validateVoiceOptions(options, menu, temperature) : undefined;
-  if (voiceOptions?.unresolved_fields?.includes('temperature')) return { stage: 'temperature', menu, voiceOptions };
-  const c = voiceOptions?.customization;
-  if (c?.status === 'resolved') {
-    const choices = resolveOrderOptions(menu.optionGroups?.[temperature] ?? [], c.option_ids);
-    if (choices) return afterOptions(menu, temperature, choices, voiceOptions);
+// All selection actions use the same ordered decision: temperature ->
+// customization -> service type -> review. Keep original intents in state so
+// a failed validation at one temperature does not poison the next validation.
+export function nextOrderStage(menu: Menu, options: VoiceOptions = {}): OrderState {
+  const temperature = options.temperature ?? (menu.temperatures.length === 1 ? menu.temperatures[0] : undefined);
+  if (!temperature || !menu.temperatures.includes(temperature) || options.unresolved_fields?.includes('temperature')) {
+    return { stage: 'temperature', menu, voiceOptions: options };
   }
-  return menu.optionGroups?.[temperature]?.length || c?.status === 'needs_clarification'
-    ? { stage: 'customization', menu, temperature, ...(voiceOptions ? { voiceOptions } : {}) }
-    : afterOptions(menu, temperature, [], voiceOptions);
+  const validated = validateVoiceOptions(options, menu, temperature);
+  const customization = validated.customization;
+  const groups = menu.optionGroups?.[temperature] ?? [];
+  const selectedOptions = resolveOrderOptions(groups, customization?.option_ids ?? []);
+  if ((customization && (customization.status !== 'resolved' || !selectedOptions))
+      || (!customization && groups.length > 0)) {
+    return { stage: 'customization', menu, temperature, selectedOptions: selectedOptions ?? [], voiceOptions: options };
+  }
+  const serviceType = options.service_type;
+  if (!serviceType || !['DINE_IN', 'TAKEOUT'].includes(serviceType) || options.unresolved_fields?.includes('service_type')) {
+    return { stage: 'service_type', menu, temperature, selectedOptions: selectedOptions ?? [], voiceOptions: options };
+  }
+  return { stage: 'review', draft: { menu, temperature, serviceType, selectedOptions: selectedOptions ?? [] } };
 }
 
 // 화면 밖에서 들어오는 입력도 현재 단계와 제공 옵션에 맞을 때만 적용한다.
 export function orderReducer(state: OrderState, action: OrderAction): OrderState {
   switch (action.type) {
     case 'apply_voice_options': {
-      if (state.stage !== 'customization' && state.stage !== 'service_type') return state;
-      // The voice screen submits the complete session snapshot, including clears.
-      const options = action.voiceOptions;
-      const temperature = options.temperature ?? state.temperature;
-      if (!state.menu.temperatures.includes(temperature)) return { stage: 'temperature', menu: state.menu, voiceOptions: options };
-      return afterTemperature(state.menu, temperature, options);
+      if (state.stage !== 'temperature' && state.stage !== 'customization' && state.stage !== 'service_type') return state;
+      return nextOrderStage(state.menu, selectionOptions(state, action.voiceOptions));
     }
     case 'select_menu': {
       if (state.stage !== 'menu' || !action.menu.available || action.menu.temperatures.length === 0) return state;
-      const [temperature] = action.menu.temperatures;
-      if (action.voiceOptions) {
-        const voiceOptions = validateVoiceOptions(action.voiceOptions, action.menu);
-        if (voiceOptions.unresolved_fields?.includes('temperature')) return { stage: 'temperature', menu: action.menu, voiceOptions };
-        const chosen = voiceOptions.temperature ?? (action.menu.temperatures.length === 1 ? temperature : undefined);
-        return chosen ? afterTemperature(action.menu, chosen, voiceOptions)
-          : { stage: 'temperature', menu: action.menu, voiceOptions };
-      }
-      return action.menu.temperatures.length === 1
-        ? afterTemperature(action.menu, temperature)
-        : { stage: 'temperature', menu: action.menu };
+      return nextOrderStage(action.menu, action.voiceOptions);
     }
     case 'set_temperature':
       return state.stage === 'temperature' && state.menu.temperatures.includes(action.temperature)
-        ? afterTemperature(state.menu, action.temperature, state.voiceOptions || action.voiceOptions
-          ? mergeVoiceOptions(action.voiceOptions ?? state.voiceOptions ?? {}, { temperature: action.temperature }) : undefined)
+        ? nextOrderStage(state.menu, mergeVoiceOptions(selectionOptions(state, action.voiceOptions), { temperature: action.temperature }))
         : state;
 
     case 'set_options': {
       if (state.stage !== 'customization') return state;
-      const selectedOptions = resolveOrderOptions(state.menu.optionGroups[state.temperature] ?? [], action.ids);
+      const selectedOptions = resolveOrderOptions(state.menu.optionGroups?.[state.temperature] ?? [], action.ids);
       if (!selectedOptions) return state;
-      const options = state.voiceOptions || action.voiceOptions
-        ? { ...mergeVoiceOptions(state.voiceOptions ?? {}, action.voiceOptions), customization: selectedCustomization(action.ids) } : undefined;
-      return afterOptions(state.menu, state.temperature, selectedOptions, options);
+      return nextOrderStage(state.menu, { ...selectionOptions(state, action.voiceOptions),
+        customization: selectedCustomization(action.ids) });
     }
     case 'set_service_type':
       return state.stage === 'service_type' && ['DINE_IN', 'TAKEOUT'].includes(action.serviceType)
-        ? action.voiceOptions?.customization
-          ? afterTemperature(state.menu, state.temperature, mergeVoiceOptions(
-            mergeVoiceOptions(state.voiceOptions ?? {}, action.voiceOptions), { service_type: action.serviceType }))
-          : { stage: 'review', draft: { menu: state.menu, temperature: state.temperature,
-            serviceType: action.serviceType, selectedOptions: state.selectedOptions } }
+        ? nextOrderStage(state.menu, mergeVoiceOptions(selectionOptions(state, action.voiceOptions), { service_type: action.serviceType }))
         : state;
     case 'submit':
       return state.stage === 'review' && state.error?.kind !== 'conflict' ? { stage: 'submitting', draft: state.draft } : state;

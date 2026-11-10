@@ -92,7 +92,8 @@ export function validateVoiceOptions(options: VoiceOptions, menu: Menu, temperat
     }
   }
   result.customization = { ...c, option_ids: ids.filter(id => !invalid.has(id)),
-    status: unresolved.length ? 'needs_clarification' : 'resolved', unresolved: [...new Set(unresolved)] };
+    status: unresolved.length ? 'needs_clarification' : !intents.length && c.status !== 'resolved' ? c.status : 'resolved',
+    unresolved: [...new Set(unresolved)] };
   return result;
 }
 
