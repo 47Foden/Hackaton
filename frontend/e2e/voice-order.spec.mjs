@@ -37,7 +37,7 @@ test('independent voice session mixes speech and touch and submits only after co
   expect(orders).toBe(0);
   await say();
   await page.getByRole('button', { name: /따뜻하게/ }).click();
-  await expect(page.getByRole('button', { name: '음성 녹음', exact: true })).toBeDisabled();
+  await expect(page.getByRole('button', { name: '음성 녹음', exact: true })).toBeEnabled();
   await page.getByRole('button', { name: '옵션 없이 계속' }).click();
   await say();
   await expect(page.getByRole('button', { name: '주문 확정', exact: true })).toBeVisible();

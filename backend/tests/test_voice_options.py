@@ -106,6 +106,20 @@ class OptionExtractionTests(unittest.TestCase):
 
 
 class OptionRouteTests(unittest.TestCase):
+    def test_confirmation_and_customization_context(self):
+        status, body, _ = self.post('네 샷 추가 포장이요', [('stage', 'menu_confirmation'),
+            ('selected_menu_id', 'cafe_latte'), ('selected_temperature', 'COLD')])
+        self.assertEqual(status, 200)
+        self.assertEqual(body['action']['type'], 'confirm')
+        self.assertEqual(body['recognized_options']['customization']['status'], 'resolved')
+        status, body, _ = self.post('샷 추가 포장', [('stage', 'customization'),
+            ('selected_menu_id', 'cafe_latte'), ('selected_temperature', 'COLD')])
+        self.assertEqual(status, 200)
+        self.assertEqual(body['action'], {'type': 'set_options', 'option_ids': ['shot:extra']})
+        self.assertEqual(body['recognized_options']['service_type'], 'TAKEOUT')
+        status, _, _ = self.post('샷 추가', [('stage', 'customization'), ('selected_menu_id', 'cafe_latte')])
+        self.assertEqual(status, 422)
+
     def post(self, transcript, fields=None, recommendation=None):
         with patch('app.routers.voice.list_menus', return_value=[menu()]), \
              patch('app.routers.voice._prepare_upload', return_value=(PreparedVoiceAudio(b'\0\0', 16000, 1), 2)), \

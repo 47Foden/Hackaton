@@ -5,7 +5,7 @@ from pydantic import BaseModel, Field, StringConstraints
 from app.schemas.menus import Temperature
 from app.schemas.orders import ServiceType
 
-VoiceStage = Literal["menu", "temperature", "service_type", "recommendations", "menu_confirmation", "review"]
+VoiceStage = Literal["menu", "temperature", "customization", "service_type", "recommendations", "menu_confirmation", "review"]
 MenuId = Annotated[str, StringConstraints(pattern=r"^[a-z0-9_]{1,64}$")]
 RetryReason = Literal["EMPTY_TRANSCRIPT", "UNRECOGNIZED", "MENU_UNAVAILABLE", "INVALID_OPTION", "OUTSIDE_CANDIDATES"]
 
@@ -37,6 +37,11 @@ class SetServiceType(BaseModel):
     service_type: ServiceType
 
 
+class SetOptions(BaseModel):
+    type: Literal['set_options'] = 'set_options'
+    option_ids: list[str]
+
+
 class Retry(BaseModel):
     type: Literal["retry"] = "retry"
     reason: RetryReason
@@ -65,7 +70,7 @@ class Confirm(BaseModel):
     type: Literal["confirm"] = "confirm"
 
 
-VoiceAction = Annotated[DirectRecommendation | RestartRecommendation | Confirm | SelectMenu | SetTemperature | SetServiceType | Retry, Field(discriminator="type")]
+VoiceAction = Annotated[DirectRecommendation | RestartRecommendation | Confirm | SelectMenu | SetTemperature | SetServiceType | SetOptions | Retry, Field(discriminator="type")]
 
 
 OptionId = Annotated[str, StringConstraints(pattern=r'^[a-z_]+:[a-z_]+$')]

@@ -36,6 +36,9 @@ def interpret_transcript(
                                          for word in confirmations)
         return Confirm() if confirmed else Retry(reason="UNRECOGNIZED")
 
+    if stage == 'customization':
+        return Retry(reason='UNRECOGNIZED')  # Resolved against menu/temperature by the route.
+
     if stage in {"temperature", "service_type"}:
         menu = menus.get(selected_menu_id or "")
         if not menu or not menu["is_available"]:

@@ -155,7 +155,9 @@ multipart 요청 전체는 오디오 제한에 헤더 여유 16 KiB를 더해 �
 | --- | --- | --- |
 | `menu` | `audio`, `stage` | `select_menu`, `direct_recommendation`, `restart_recommendation`, `retry` |
 | `temperature` | `audio`, `stage`, `selected_menu_id` | `set_temperature`, `retry` |
+| `customization` | `audio`, `stage`, `selected_menu_id`, `selected_temperature` | `set_options`, `retry` |
 | `service_type` | `audio`, `stage`, `selected_menu_id` | `set_service_type`, `retry` |
+| `menu_confirmation` | `audio`, `stage`. `selected_menu_id`, `selected_temperature` 선택적 전달 | `confirm`, `retry` |
 | `recommendations` | `audio`, `stage`, `candidate_menu_ids` 1~4개 | `select_menu`, `direct_recommendation`, `restart_recommendation`, `retry` |
 
 메뉴 ID는 등록된 고정 ID를 사용한다. 단계에 해당하지 않는 맥락 필드와 중복 후보는 거부한다. 추천 화면의 메뉴 선택은 현재 후보 안에서만 가능하다. 판매 여부와 제공 온도는 DB 카탈로그를 기준으로 확인한다.
@@ -173,6 +175,7 @@ curl -F 'audio=@recording.webm;type=audio/webm' -F 'stage=recommendations' \
 | `select_menu` | `menu_id` |
 | `set_temperature` | `temperature` (`HOT` 또는 `COLD`) |
 | `set_service_type` | `service_type` (`DINE_IN` 또는 `TAKEOUT`) |
+| `set_options` | `option_ids`. 미해결 항목 여부는 `recognized_options.customization`에서 함께 확인 |
 | `direct_recommendation` | LLM이 결정한 조건에 맞는 전체 후보 또는 자료 부족. |
 | `retry` | `reason` (`EMPTY_TRANSCRIPT`, `UNRECOGNIZED`, `MENU_UNAVAILABLE`, `INVALID_OPTION`, `OUTSIDE_CANDIDATES`) |
 
@@ -214,9 +217,11 @@ curl -F 'audio=@recording.webm;type=audio/webm' -F 'stage=recommendations' \
 
 “샷 추가”만 말하고 메뉴 또는 온도가 아직 정해지지 않았으면 `pending`으로 보존한다. “추가 옵션 없이”는 `resolved`와 빈 `option_ids`이며 커스터마이징 미언급과 구분한다. “샷 추가하고 시럽도”는 유효한 샷 선택을 유지하고 시럽을 `unresolved`에 넣는다. “핫 말고 아이스”, “샷 추가 말고 연하게”는 명확한 정정을 반영하고, “핫이나 아이스”, 부정 표현, 중복 옵션, 그룹별 선택 개수 초과는 자동 확정하지 않는다.
 
-`temperature`/`service_type` 단계에서는 선택적 폼 필드 `selected_temperature=HOT|COLD`를 전달해 커스터마이징을 검증할 수 있다. 메뉴 맥락 없이 온도를 보내거나 메뉴가 제공하지 않는 온도를 보내면 `422 INVALID_VOICE_CONTEXT`다. 메뉴 직접 선택은 해당 메뉴와 발화 온도(또는 유일한 제공 온도)로 검증한다. 추천 경로는 메뉴 확정 전이므로 커스터마이징 의도를 보존하며, 추천이 발화 온도 또는 실제 제공 온도와 충돌하면 `502 LLM_RECOMMENDATION_FAILED`다.
+`temperature`/`service_type` 단계에서는 선택적 폼 필드 `selected_temperature=HOT|COLD`를 전달해 커스터마이징을 검증할 수 있다. `menu_confirmation`에서도 선택 메뉴와 온도를 전달할 수 있으며 `customization` 단계는 둘 다 필수다. 메뉴 맥락 없이 온도를 보내거나 메뉴가 제공하지 않는 온도를 보내면 `422 INVALID_VOICE_CONTEXT`다. 메뉴 직접 선택은 해당 메뉴와 발화 온도(또는 유일한 제공 온도)로 검증한다. 추천 경로는 메뉴 확정 전이므로 커스터마이징 의도를 보존하며, 추천이 발화 온도 또는 실제 제공 온도와 충돌하면 `502 LLM_RECOMMENDATION_FAILED`다.
 
-현재 단계의 `action` 검증과 별도로 옵션을 반환한다. `retry` 응답의 옵션만으로 주문을 진행하면 안 된다. 재추천 행동에는 이전 요청 옵션을 전달하지 않는다. 메뉴 확인 단계는 “네, 포장이요” 같은 복합 확인을 지원하지만 최종 주문 확정의 기존 명시적 확인 규칙은 유지한다. 프론트 세션 보존 및 화면 생략은 후속 구현이다.
+현재 단계의 `action` 검증과 별도로 옵션을 반환한다. `retry` 응답의 옵션만으로 주문을 진행하면 안 되며 `unresolved_fields`는 기존 선택의 자동 확정을 막는다. 재추천 행동에는 이전 요청 옵션을 전달하지 않는다. 메뉴 확인 단계는 “네, 포장이요” 같은 복합 확인을 지원하지만 최종 주문 확정의 기존 명시적 확인 규칙은 유지한다.
+
+프론트는 발화에서 새로 지정한 항목만 세션에 병합한다. 추천·터치 메뉴 선택·메뉴 확인·온도 선택을 거쳐 원래 커스터마이징 의도를 보존하고, 현재 메뉴/온도에서 검증된 값만 주문에 적용한다. 커스터마이징 음성 입력의 `set_options`는 `needs_clarification` 상태도 반환할 수 있으므로 그 경우 유효한 선택을 표시한 채 같은 화면에서 확인받는다. 재추천·홈 이동에서는 세션을 초기화하고, 터치 선택 이후 늦은 음성 응답은 적용하지 않는다.
 
 7.1의 오디오 오류와 처리량 제한을 공유하며, 다음 오류를 추가한다.
 

@@ -1,4 +1,5 @@
 from asyncio import timeout
+import re
 from threading import BoundedSemaphore
 from typing import Annotated
 
@@ -17,7 +18,7 @@ from app.services.voice.interpretation import interpret_transcript
 from app.services.voice.options import extract_options
 from app.schemas.menus import Temperature
 from app.services.voice.transcription import TranscriptionError, transcribe_voice
-from app.schemas.voice import DirectRecommendation
+from app.schemas.voice import DirectRecommendation, SetOptions
 from app.services.llm_direct import recommend as llm_recommend
 from app.services.llm_direct import DirectError
 
@@ -115,8 +116,10 @@ def interpret_audio(
     selected_temperature: Annotated[Temperature | None, Form()] = None,
 ) -> VoiceInterpretResponse:
     candidates = tuple(candidate_menu_ids or ())
-    requires_selection = stage in {"temperature", "service_type"}
-    if (requires_selection != (selected_menu_id is not None)
+    requires_selection = stage in {"temperature", "customization", "service_type"}
+    if ((requires_selection and selected_menu_id is None)
+            or (not requires_selection and stage != 'menu_confirmation' and selected_menu_id is not None)
+            or (stage == 'customization' and selected_temperature is None)
             or (stage == "recommendations") != bool(candidates)
             or len(set(candidates)) != len(candidates)):
         raise _invalid_context()
@@ -144,7 +147,10 @@ def interpret_audio(
 
     action = interpret_transcript(transcript, stage, menus, selected_menu_id=selected_menu_id, candidate_menu_ids=candidates)
     option_menu = menus.get(action.menu_id) if action.type == 'select_menu' else menus.get(selected_menu_id or '')
-    recognized = extract_options(transcript, menu=option_menu, temperature=selected_temperature)
+    option_transcript = re.sub(r'^\s*(?:네|예|맞아요)[,\s]+', '', transcript) if stage == 'menu_confirmation' else transcript
+    recognized = extract_options(option_transcript, menu=option_menu, temperature=selected_temperature)
+    if stage == 'customization' and option_menu and option_menu['is_available'] and recognized and recognized.customization:
+        action = SetOptions(option_ids=recognized.customization.option_ids)
     if stage in {"menu", "recommendations"} and any(word in transcript.replace(" ", "") for word in ("재추천", "다시추천", "다른추천")):
         action = RestartRecommendation()
         recognized = None
