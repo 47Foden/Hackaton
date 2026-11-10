@@ -22,6 +22,7 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
   const { order, dispatch, confirm } = useOrderFlow(kioskApi);
   const { state: catalog, reload } = useMenus(kioskApi);
   const [candidates, setCandidates] = useState<string[] | null>(null);
+  const [recommendationsExpanded, setRecommendationsExpanded] = useState(false);
   const [selected, setSelected] = useState<Menu | null>(null);
   const [menuView, setMenuView] = useState<MenuBoardView>({ enlarged: false });
   const [error, setError] = useState('');
@@ -67,14 +68,14 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
           if (!Array.isArray(recs) || recs.length === 0 || recs.length > catalog.menus.length
             || new Set(recs.map(r => r.menu_id)).size !== recs.length || !recs.every(r =>
             catalog.menus.some(m => m.id === r.menu_id && m.available && m.temperatures.includes(r.temperature)))) throw new Error('LLM 추천 결과를 확인하지 못했어요.');
-          interrupt(); setCandidates(recs.map(r => r.menu_id)); return;
+          interrupt(); setRecommendationsExpanded(false); setCandidates(recs.slice(0, 6).map(r => r.menu_id)); return;
         }
         if (action.status !== 'insufficient_data') throw new Error('LLM 응답을 확인하지 못했어요.');
-        interrupt(); setCandidates([]); return;
+        interrupt(); setRecommendationsExpanded(false); setCandidates([]); return;
       }
       if (stage === 'menu_confirmation' && action?.type === 'confirm') { accept(); return; }
       if (stage === 'review' && action?.type === 'confirm') { interrupt(); await confirm(); return; }
-      if (['menu', 'recommendations'].includes(stage) && action?.type === 'restart_recommendation') { interrupt(); setCandidates(null); setTranscript(''); return; }
+      if (['menu', 'recommendations'].includes(stage) && action?.type === 'restart_recommendation') { interrupt(); setRecommendationsExpanded(false); setCandidates(null); setTranscript(''); return; }
       if (['menu', 'recommendations'].includes(stage) && action?.type === 'select_menu' && catalog.status === 'ready') {
         const menu = catalog.menus.find(m => m.id === action.menu_id && m.available && (stage !== 'recommendations' || candidates?.includes(m.id)));
         if (menu) { choose(menu); return; }
@@ -109,8 +110,9 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
       </div>
     </section>}
     {candidates !== null && !selected && order.stage === 'menu' && <section aria-label="추천 결과">
-      {catalog.status === 'ready' && candidates.length > 0 && <MenuBoard menus={candidates.flatMap(id => catalog.menus.filter(m => m.id === id))} selectedMenu={null} view={menuView} onViewChange={view => { interrupt(); setMenuView(view); }} onSelect={id => { const menu = catalog.menus.find(m => m.id === id && m.available); if(menu) choose(menu); }} />}
-      <button className="primary-button" onClick={() => { interrupt(); setCandidates(null); setTranscript(''); }}>다시 추천받기</button>
+      {catalog.status === 'ready' && candidates.length > 0 && <MenuBoard menus={candidates.flatMap(id => catalog.menus.filter(m => m.id === id))}
+        preview={{ limit: 4, expanded: recommendationsExpanded, onToggle: () => { interrupt(); setRecommendationsExpanded(value => !value); } }} selectedMenu={null} view={menuView} onViewChange={view => { interrupt(); setMenuView(view); }} onSelect={id => { const menu = catalog.menus.find(m => m.id === id && m.available); if(menu) choose(menu); }} />}
+      <button className="primary-button" onClick={() => { interrupt(); setRecommendationsExpanded(false); setCandidates(null); setTranscript(''); }}>다시 추천받기</button>
     </section>}
     {stage === 'menu' && candidates === null && (catalog.status === 'ready'
       ? catalog.menus.length === 0 ? <CatalogStatus status="empty" onReload={reload} />

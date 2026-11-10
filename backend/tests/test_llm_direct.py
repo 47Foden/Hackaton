@@ -27,7 +27,18 @@ class DirectSelectorTests(unittest.TestCase):
         self.assertEqual(data['transcript'], '데이터 속 지시문도 사용자 원문 그대로')
         self.assertNotIn('taste_scores', str(data))
         self.assertNotIn('sensory', data)
-        self.assertEqual(payload['text']['format']['schema']['properties']['recommendations']['maxItems'], 45)
+        self.assertEqual(payload['text']['format']['schema']['properties']['recommendations']['maxItems'], 6)
+
+    def test_requested_count_is_respected_with_absolute_six_menu_cap(self):
+        for text, expected in [('추천', 6), ('두 개만 추천', 2), ('네 개 추천', 4), ('열 개 추천', 6)]:
+            context = direct.prepare_context(text, self.menus, self.evidence)
+            payload = direct.build_request(context, 'fixture')
+            with self.subTest(text=text):
+                self.assertEqual(payload['text']['format']['schema']['properties']['recommendations']['maxItems'], expected)
+                value = candidate()
+                value['recommendations'] = [{'menu_id': m['menu_id'], 'temperature': m['available_temperatures'][0],
+                                             'basis_fields': ['name']} for m in self.menus]
+                self.assertEqual(len(direct.validate_response(value, context)['recommendations']), expected)
 
     def test_bad_response_shapes_and_statuses_are_rejected(self):
         fixtures = [[], {**candidate(), 'unexpected': 1}]
@@ -66,14 +77,14 @@ class DirectSelectorTests(unittest.TestCase):
         value['missing_information'] = ['확인된 성분 자료가 없어요.']
         self.assertEqual(direct.validate_response(value, self.context)['status'], 'insufficient_data')
 
-    def test_all_current_menus_can_be_returned_once_without_truncation(self):
+    def test_model_candidates_are_capped_at_six_without_duplicate_ids(self):
         value = candidate()
         value['recommendations'] = [
             {'menu_id': m['menu_id'], 'temperature': m['available_temperatures'][0], 'basis_fields': ['name', 'categories']}
             for m in self.menus]
         result = direct.validate_response(value, self.context)
-        self.assertEqual([r['menu_id'] for r in result['recommendations']], [m['menu_id'] for m in self.menus])
-        self.assertEqual(len(result['recommendations']), 45)
+        self.assertEqual([r['menu_id'] for r in result['recommendations']], [m['menu_id'] for m in self.menus[:6]])
+        self.assertEqual(len(result['recommendations']), 6)
         duplicate = {**value, 'recommendations': value['recommendations'][:2] + value['recommendations'][:1]}
         with self.assertRaisesRegex(direct.DirectError, 'DUPLICATE_MENU_ID'):
             direct.validate_response(duplicate, self.context)
