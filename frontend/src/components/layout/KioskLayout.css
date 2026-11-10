@@ -51,7 +51,8 @@
   gap: 24px;
 }
 
-.order-footer__status { font-size: 18px; line-height: 1.6; }
+.order-footer--controls-only { justify-content: center; }
+.order-footer__status { flex-shrink: 0; font-size: 18px; line-height: 1.6; }
 
 @media (max-width: 760px) {
   .order-guide { padding: 16px 20px; }

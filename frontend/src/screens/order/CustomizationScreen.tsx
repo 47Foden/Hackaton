@@ -4,21 +4,23 @@ import { OrderSummary } from '../../components/order/OrderSummary';
 import type { Menu, Temperature } from '../../data/menuCatalog';
 import { resolveOrderOptions } from '../../state/orderOptions';
 
-export function CustomizationScreen({ menu, temperature, onContinue, initialIds = [] }: {
-  initialIds?: string[]; menu: Menu; temperature: Temperature; onContinue: (ids: string[]) => void;
+export function CustomizationScreen({ menu, temperature, onContinue, initialSelectedIds = [], onSelectionChange }: {
+  menu: Menu; temperature: Temperature; onContinue: (ids: string[]) => void;
+  initialSelectedIds?: string[]; onSelectionChange?: (ids: string[]) => void;
 }) {
   const groups = menu.optionGroups[temperature] ?? [];
-  const [selectedIds, setSelectedIds] = useState<string[]>(() => resolveOrderOptions(groups, initialIds) ? initialIds : []);
+  const [selectedIds, setSelectedIds] = useState<string[]>(initialSelectedIds);
   const selected = resolveOrderOptions(groups, selectedIds) ?? [];
   const total = menu.price + selected.reduce((sum, choice) => sum + choice.price_delta_krw, 0);
 
   function toggle(group: MenuOptionGroup, id: string) {
-    setSelectedIds(ids => {
+    const next = ((ids: string[]) => {
       if (ids.includes(id)) return ids.filter(value => value !== id);
       const inGroup = (value: string) => group.choices.some(choice => choice.id === value);
       if (group.max_selections === 1) return [...ids.filter(value => !inGroup(value)), id];
       return ids.filter(inGroup).length < group.max_selections ? [...ids, id] : ids;
-    });
+    })(selectedIds);
+    setSelectedIds(next); onSelectionChange?.(next);
   }
 
   return (

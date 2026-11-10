@@ -151,7 +151,7 @@ class VoiceRouteIntegrationTests(unittest.TestCase):
         with patch.object(voice,'transcribe_voice',return_value='카페라떼 주세요'), patch.object(voice,'llm_recommend') as llm:
             status,value=self.post()
         self.assertEqual(status,200)
-        self.assertEqual(value['action']['type'],'select_items')
+        self.assertEqual(value['action']['type'],'select_menu')
         llm.assert_not_called()
 
 

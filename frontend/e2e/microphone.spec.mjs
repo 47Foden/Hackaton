@@ -24,13 +24,13 @@ test('records only in voice mode, stops guidance and submits only after explicit
   });
   await openVoice(page);
   const before = await page.evaluate(() => window.cancels);
-  await page.getByRole('button', { name: '음성 녹음', exact: true }).click();
+  await page.getByRole('button', { name: '주문하기', exact: true }).click();
   await expect(page.getByRole('button', { name: '녹음 종료' })).toBeVisible();
   expect(requests).toBe(0);
   expect(await page.evaluate(() => window.cancels)).toBeGreaterThan(before);
   await page.getByRole('button', { name: '녹음 종료' }).click();
   await expect(page.getByText('인식한 말: 알 수 없는 메뉴')).toBeVisible();
-  await expect(page.getByRole('button', { name: '다시 녹음' })).toBeVisible();
+  await expect(page.getByRole('button', { name: '주문하기', exact: true })).toBeEnabled();
   expect(requests).toBe(1);
 });
 
@@ -38,7 +38,7 @@ test('transcription connectivity error preserves touch ordering', async ({ page 
   await page.route('**/api/voice/interpret', route => route.fulfill({ status: 503,
     json: { detail: { code: 'TRANSCRIPTION_UNAVAILABLE', message: '음성 전사 서버에 연결하지 못했어요.' } } }));
   await openVoice(page);
-  await page.getByRole('button', { name: '음성 녹음', exact: true }).click();
+  await page.getByRole('button', { name: '주문하기', exact: true }).click();
   await page.getByRole('button', { name: '녹음 종료' }).click();
   await expect(page.getByRole('alert')).toContainText('TRANSCRIPTION_UNAVAILABLE');
   await selectCategory(page, '커피', '라떼');
@@ -49,8 +49,8 @@ test('transcription connectivity error preserves touch ordering', async ({ page 
 test('permission denied leaves touch menu usable', async ({ page }) => {
   await page.addInitScript(() => { navigator.mediaDevices.getUserMedia = async () => { throw new DOMException('denied', 'NotAllowedError'); }; });
   await openVoice(page);
-  await page.getByRole('button', { name: '음성 녹음', exact: true }).click();
-  await expect(page.getByRole('button', { name: '다시 녹음' })).toBeVisible();
+  await page.getByRole('button', { name: '주문하기', exact: true }).click();
+  await expect(page.getByRole('button', { name: '주문하기', exact: true })).toBeEnabled();
   await selectCategory(page, '커피', '라떼');
   await page.getByRole('button', { name: /카페라떼/ }).click();
   await expect(page.getByRole('button', { name: '네, 이 메뉴로 주문' })).toBeVisible();

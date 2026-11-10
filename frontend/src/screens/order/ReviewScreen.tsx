@@ -29,7 +29,7 @@ export function ReviewScreen({ draft, isMock, pending, error, onConfirm, items =
       {isMock && <p className="order-step__note">개발 모드예요. 실제 주문 접수와 결제는 진행되지 않아요.</p>}
       {error && <p role="alert" className="order-step__note">{error.message}</p>}
       <div className="cart-actions">
-      <button className="outline-button" disabled={pending || locked || items.length >= 20} onClick={onContinue}>계속 주문하기</button>
+      <button className="primary-button order-step__confirm" disabled={pending || locked || items.length >= 20} onClick={onContinue}>계속 주문하기</button>
       <button type="button" className="primary-button order-step__confirm"
         disabled={pending || error?.kind === 'conflict'} onClick={onConfirm}>
         {pending ? '주문 처리 중…' : error?.kind === 'conflict' ? '요청 정보 확인 필요' : `${confirmLabel}${isMock ? ' (개발용)' : ''}`}

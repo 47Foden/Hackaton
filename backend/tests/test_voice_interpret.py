@@ -1,7 +1,8 @@
 import asyncio
 import os
 import unittest
-from threading import Thread
+from concurrent.futures import ThreadPoolExecutor
+from threading import Event, Thread
 from unittest.mock import patch
 from urllib.error import URLError
 
@@ -121,20 +122,56 @@ class TranscriptionTransportTests(unittest.TestCase):
     def test_worker_transport_passes_raw_pcm_without_model_dependencies(self):
         received = []
 
-        def transcribe(pcm):
-            received.append(pcm)
-            return "차갑게"
+        def transcribe_batch(recordings):
+            received.extend(recordings)
+            return ["차갑게"]
 
-        with WhisperWorker(("127.0.0.1", 0), transcribe) as worker:
+        with WhisperWorker(("127.0.0.1", 0), transcribe_batch, batch_size=1) as worker:
             thread = Thread(target=worker.serve_forever, daemon=True)
             thread.start()
             try:
                 with patch.dict(os.environ, {"VOICE_TRANSCRIPTION_URL": f"http://127.0.0.1:{worker.server_port}/transcribe"}):
                     self.assertEqual(transcribe_voice(b"\x01\x00"), "차갑게")
-                    with worker.slot, self.assertRaises(TranscriptionError) as busy:
+                    with worker.slots, self.assertRaises(TranscriptionError) as busy:
                         transcribe_voice(b"\x01\x00")
                     self.assertEqual((busy.exception.status, busy.exception.code), (503, "TRANSCRIPTION_BUSY"))
                 self.assertEqual(received, [b"\x01\x00"])
+            finally:
+                worker.shutdown()
+                thread.join()
+
+    def test_two_requests_share_one_batch_and_receive_their_own_transcripts(self):
+        expected = {b"\x01\x00": "차갑게", b"\x02\x00": "따뜻하게"}
+        received = []
+        inference_started = Event()
+        release_inference = Event()
+
+        def transcribe_batch(recordings):
+            received.append(recordings)
+            inference_started.set()
+            if not release_inference.wait(timeout=5):
+                raise TimeoutError("Test did not release inference")
+            return [expected[pcm] for pcm in recordings]
+
+        with WhisperWorker(("127.0.0.1", 0), transcribe_batch) as worker:
+            thread = Thread(target=worker.serve_forever, daemon=True)
+            thread.start()
+            try:
+                url = f"http://127.0.0.1:{worker.server_port}/transcribe"
+                with patch.dict(os.environ, {"VOICE_TRANSCRIPTION_URL": url}), \
+                        patch("app.services.voice.whisper_worker.BATCH_WINDOW_SECONDS", 2), \
+                        ThreadPoolExecutor(max_workers=2) as clients:
+                    requests = {pcm: clients.submit(transcribe_voice, pcm) for pcm in expected}
+                    try:
+                        self.assertTrue(inference_started.wait(timeout=4))
+                        self.assertEqual(len(received), 1)
+                        self.assertCountEqual(received[0], expected)
+                        with self.assertRaises(TranscriptionError) as busy:
+                            transcribe_voice(b"\x03\x00")
+                        self.assertEqual((busy.exception.status, busy.exception.code), (503, "TRANSCRIPTION_BUSY"))
+                    finally:
+                        release_inference.set()
+                    self.assertEqual({pcm: request.result(timeout=5) for pcm, request in requests.items()}, expected)
             finally:
                 worker.shutdown()
                 thread.join()

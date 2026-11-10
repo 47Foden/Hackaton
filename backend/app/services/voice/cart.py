@@ -1,7 +1,8 @@
 """Extract explicit named order lines; recommendations remain on their own path."""
 import re
 from app.schemas.voice import VoiceCart, VoiceCartItem
-from app.services.voice.interpretation import _compact, TEMPERATURES
+from app.services.voice.interpretation import _compact
+from app.services.voice.options import TEMPERATURE_ALIASES as TEMPERATURES
 
 def parse_cart(text, menus):
     phrase = _compact(text)

@@ -15,6 +15,7 @@ test('start announces voice ordering, touch session remains silent without micro
   await expect(page.getByRole('button', { name: '안내 다시 듣기' })).toBeVisible();
   await page.getByRole('button', { name: '주문하기', exact: true }).click();
   await expect(page.getByRole('heading', { name: '전체 메뉴판' })).toBeVisible();
+  await expect(page.locator('.order-footer').getByRole('status')).toHaveText('메뉴와 주문 내용을 확인해 주세요.');
   await expect(page.locator('.microphone-control')).toHaveCount(0);
   await selectCategory(page, '커피', '라떼');
   await page.getByRole('button', { name: /카페라떼/ }).click();

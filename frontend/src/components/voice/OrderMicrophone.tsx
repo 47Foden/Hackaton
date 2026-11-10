@@ -20,5 +20,5 @@ export function OrderMicrophone({ disabledReason, onRecordingComplete }: {
     return <MicrophoneButton label="음성 처리 중…" disabled helpText="잠시만 기다려 주세요." />;
   }
   const helpText = state.status === 'error' ? state.message : state.status === 'ready' ? '녹음 파일을 확인했어요.' : undefined;
-  return <MicrophoneButton label={state.status === 'error' ? '다시 녹음' : '음성 녹음'} helpText={helpText} onClick={start} />;
+  return <MicrophoneButton label={state.status === 'error' ? '다시 녹음' : '음성 녹음'} helpText={helpText} onClick={() => { void start(); }} />;
 }
