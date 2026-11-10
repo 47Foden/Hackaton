@@ -1,3 +1,4 @@
+import { selectCategory } from './category-navigation.mjs';
 import { test, expect } from '@playwright/test';
 import { createMockApi } from '../src/api/mock/createMockApi.ts';
 
@@ -153,6 +154,7 @@ test('returning home from touch completion starts a fresh order', async ({ page 
   await expect(page.getByRole('region', { name: '주문 완료' })).toHaveCount(0);
   await expect(page.getByText(orderNumber, { exact: true })).toHaveCount(0);
 
+  await selectCategory(page, '커피', '라떼');
   await page.getByRole('button', { name: /카페라떼/ }).click();
   await page.getByRole('button', { name: /따뜻하게/ }).click();
   await page.getByRole('button', { name: '옵션 없이 계속' }).click();
@@ -171,6 +173,7 @@ test('customization adds the correct price and appears in confirmation and recei
     await route.fulfill({ status: 201, json: { ...order, order_id: '42', order_number: '42' } });
   });
   await startOrder(page);
+  await selectCategory(page, '커피', '라떼');
   await page.getByText('카페라떼', { exact: true }).click();
   await page.getByRole('button', { name: /따뜻하게/ }).click();
   const options = page.getByRole('region', { name: '추가 옵션 선택' });

@@ -27,7 +27,7 @@
 | 로고 | 팀 로고, frontend/public/images/brand/technica61.svg | 시작 화면 및 주문 화면에 적용 |
 | 메뉴 이미지 | 공식 메뉴 원본, frontend/public/images/menus 및 common/menu_images.json | 14파일, 메뉴 11개·온도 16개 연결 완료 |
 | 가격 | common/menu_prices.json 및 menu_price_sources.json | 11개 입력 완료. 매장 주문 페이지 기반, 에스프레소는 모바일쿠폰 가격 |
-| 간소화 목록 | common/menu_display.json | 프로젝트 초기 4종 설정. 전체 11종 전환과 독립 확대 지원 |
+| 간소화 목록 | common/menu_display.json | 프로젝트 초기 4종 설정. 전체 45종 전환과 독립 확대 지원 |
 | 브랜드 색상·글꼴 | 공식 CSS, common/brand_assets.json | 색상 확인 완료. 글꼴 로딩은 구현 시 결정 |
 | 실제 주문 화면 | frontend/src | 후속 구현. 자산 확보와 화면 구현은 별개 |
 

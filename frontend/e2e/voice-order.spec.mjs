@@ -88,9 +88,9 @@ test('voice recommendation, spoken restart, candidate selection and order comple
     return route.fulfill({ status: 201, json: { ...route.request().postDataJSON(), order_id:'52', order_number:'52', menu_name:'카페라떼', quantity:1, total_price_krw:2900, created_at:new Date().toISOString() } });
   });
   const actions = [
-    { type:'recommendation_results', menu_ids:['cafe_latte','iced_americano'] },
+    { type:'direct_recommendation', engine:'llm-direct', status:'recommend', recommendations:[{menu_id:'cafe_latte', temperature:'HOT', reason:'검증용 후보'}], questions:[], missing_information:[] },
     { type:'restart_recommendation' },
-    { type:'recommendation_results', menu_ids:['cafe_latte','iced_americano'] },
+    { type:'direct_recommendation', engine:'llm-direct', status:'recommend', recommendations:[{menu_id:'cafe_latte', temperature:'HOT', reason:'검증용 후보'}], questions:[], missing_information:[] },
     { type:'select_menu', menu_id:'cafe_latte' },
     { type:'confirm' }, { type:'set_temperature', temperature:'HOT' },
     { type:'set_service_type', service_type:'TAKEOUT' }, { type:'confirm' },
@@ -105,7 +105,7 @@ test('voice recommendation, spoken restart, candidate selection and order comple
   }
   await say();
   await expect(page.getByRole('heading',{name:'추천 메뉴',exact:true})).toBeVisible();
-  await expect(page.getByRole('region',{name:'추천 결과'}).locator('.menu-card')).toHaveCount(2);
+  await expect(page.getByRole('region',{name:'추천 결과'}).locator('.menu-card')).toHaveCount(1);
   await say();
   await expect(page.getByRole('heading',{name:'음성 주문',exact:true})).toBeVisible();
   await say();

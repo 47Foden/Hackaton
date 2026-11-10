@@ -62,10 +62,7 @@ FastAPI에는 `VOICE_TRANSCRIPTION_URL`을 지정한다. 같은 호스트에서 
 
 ### 5.3 추천 데이터와 후보 화면
 
-- [ ] Pretuning의 맛·분류 CSV를 입력 후보로 검토한다. `Pretuning` 브랜치의 CSV에는 이전 이름인 `레몬 아이스티`, `말차라떼`가 포함돼 있으므로 현재 카탈로그와의 대응을 검증한다. 매핑이 확정된 자료를 고정 `menu_id`로 변환하고, 필요한 항목은 재평가한다. 원본 CSV, 변환 내역, 데이터 버전을 구분한다.
-- [ ] 현행 카탈로그 11종과 정확히 일치하는지, ID 중복·누락이 없는지, 분류는 0/1이고 맛 점수는 유한한 0~1 값인지 검증한다. 가격·판매 여부는 현재 메뉴 DB에서 읽는다. 검증을 마친 버전으로만 추천을 계산하며, 준비 전에는 `503 DATASET_NOT_READY`를 반환한다.
-- [ ] `POST /api/recommendations`에서 검증된 조건으로 후보를 고른다. 초기 정책은 [API 명세의 추천 초안](../api-spec.md#66-post-apirecommendations)에 따라 종류·가격·판매 여부로 먼저 필터링하고, 지정한 맛 속성의 가중 거리로 최대 4개를 정렬하는 방식으로 검증한다. ‘달지 않은’은 단맛 목표를 낮게 두고, 동점은 `menu_id` 순으로 처리한다. 조합 조건의 해석과 조건에 맞는 후보가 없을 때의 안내를 테스트한다.
-- [ ] 중앙에 후보의 메뉴명·사진·가격을 표시한다. 후보 선택은 공통 메뉴 선택 함수로 이어진다. **다시 추천받기**는 현재 후보를 지우고 새 취향을 입력받으며, 후보가 없거나 데이터가 준비되지 않으면 메뉴판으로 돌아갈 수 있게 한다.
+현재 구현은 [LLM 직접 추천](../llm-direct.md)을 사용한다. 실험 CSV·속성표 생성과 순위 추천은 제거했다. LLM이 현재 메뉴에서 후보 1개를 선택하거나 질문·자료 부족을 반환한다. 재추천은 초기 입력으로 돌아간다.
 
 ### 5.4 실패 처리와 요청 수명주기
 
@@ -81,7 +78,7 @@ FastAPI에는 `VOICE_TRANSCRIPTION_URL`을 지정한다. 같은 호스트에서 
 | `frontend/src/api/` | 음성·추천 요청 타입, multipart 전송, HTTP 오류 처리 |
 | `frontend/src/screens/`, `frontend/src/components/` | 안내와 오류, 후보 표시·선택·재추천, 기존 주문 선택 연결 |
 | `backend/app/routers/`, `backend/app/schemas/` | 음성·추천 엔드포인트와 요청·응답 검증 |
-| `backend/app/services/voice/`, `backend/app/services/recommendation/` | 포맷 검사·변환, 전사 어댑터, 단계 해석, 추천 데이터 검증과 정렬 |
+| `backend/app/services/voice/`, `backend/app/services/llm_direct.py` | 포맷 검사·변환, 전사 어댑터, 단계 해석, 추천 근거와 LLM 응답 검증 |
 | `backend/tests/`, `frontend/tests/`, `frontend/e2e/` | 전사·해석·추천 계약과 주문 통합 검증 |
 
 ## 4. 인수 시나리오

@@ -40,13 +40,13 @@ class InterpretationTests(unittest.TestCase):
                          {"type": "set_service_type", "service_type": "DINE_IN"})
         self.assertEqual(action("포장해 주세요.", "service_type", "lemon_tea")["reason"], "MENU_UNAVAILABLE")
 
-    def test_menu_selection_is_exact_and_taste_phrase_returns_filters(self):
+    def test_menu_selection_is_exact_and_preferences_defer_to_llm(self):
         self.assertEqual(interpret_transcript("레몬 티 주세요.", "menu", MENUS).menu_id, "lemon_tea_alias")
         self.assertEqual(interpret_transcript("레몬차 주세요.", "menu", MENUS).reason, "MENU_UNAVAILABLE")
         self.assertEqual(interpret_transcript("레몬티 말고 카페라떼?", "menu", MENUS).reason, "UNRECOGNIZED")
         self.assertEqual(interpret_transcript("...", "menu", MENUS).reason, "EMPTY_TRANSCRIPT")
         self.assertEqual(interpret_transcript("달지 않은 차 추천해 주세요.", "menu", MENUS).model_dump(),
-                         {"type": "recommend", "filters": {"tea": 1}, "targets": {"sweetness": 0.2}})
+                         {"type": "retry", "reason": "UNRECOGNIZED"})
 
     def test_candidate_selection_cannot_escape_current_list(self):
         candidates = ("cafe_latte", "iced_americano")
@@ -66,22 +66,26 @@ class VoiceInterpretApiTests(unittest.TestCase):
             return asyncio.run(post_audio(self.audio, "recording.webm", MIME_TYPE,
                                           path="/api/voice/interpret", fields=fields))
 
-    def test_preference_audio_returns_ranked_candidates_and_restart(self):
+    def test_preference_audio_returns_direct_candidate_and_restart(self):
         with patch("app.routers.voice.transcribe_voice", return_value="덜 단 커피"), \
-                patch("app.routers.voice.recommend", return_value=["iced_americano", "cafe_latte"]):
+                patch("app.routers.voice.llm_recommend", return_value={'result': {
+                    'status': 'recommend', 'recommendations': [{'menu_id': 'iced_americano', 'temperature': 'COLD', 'reason': '검증용 후보'}],
+                    'questions': [], 'missing_information': []}}):
             status, body = self.post([("stage", "menu")])
         self.assertEqual(status, 200)
-        self.assertEqual(body["action"], {"type": "recommendation_results", "menu_ids": ["iced_americano", "cafe_latte"]})
+        self.assertEqual(body["action"], {'type': 'direct_recommendation', 'engine': 'llm-direct', 'status': 'recommend',
+                          'recommendations': [{'menu_id': 'iced_americano', 'temperature': 'COLD', 'reason': '검증용 후보'}],
+                          'questions': [], 'missing_information': []})
         with patch("app.routers.voice.transcribe_voice", return_value="다시 추천"):
             status, body = self.post([("stage", "recommendations"), ("candidate_menu_ids", "cafe_latte")])
         self.assertEqual(body["action"]["type"], "restart_recommendation")
 
-    def test_missing_45_menu_scores_returns_guidance(self):
+    def test_missing_45_menu_evidence_returns_guidance(self):
         with patch("app.routers.voice.transcribe_voice", return_value="달달한 음료 추천"), \
-                patch("app.routers.voice.recommend", side_effect=ValueError("45종 추천 점수표가 아직 준비되지 않았어요.")):
+                patch("app.routers.voice.llm_recommend", side_effect=FileNotFoundError("Missing evidence")):
             status, body = self.post([("stage", "menu")])
-        self.assertEqual(status, 422)
-        self.assertIn("45종", body["detail"]["message"])
+        self.assertEqual(status, 503)
+        self.assertEqual(body["detail"]["code"], "LLM_EVIDENCE_NOT_READY")
 
     def test_repeated_fields_keep_display_order_and_send_pcm_to_transcriber(self):
         fields = [("stage", "recommendations"), ("candidate_menu_ids", "cafe_latte"),

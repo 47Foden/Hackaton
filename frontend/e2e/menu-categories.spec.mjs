@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { createMockApi } from '../src/api/mock/createMockApi.ts';
 
 for (const width of [390, 1024]) {
-  test(`two-level menu navigation and selection at ${width}px`, async ({ page }) => {
+  test(`two-level menu navigation and selection at ${width}px`, async ({ page }, testInfo) => {
     const response = await createMockApi({ delayMs: 0 }).getMenus();
     await page.setViewportSize({ width, height: 900 });
     await page.route('**/api/menus', route => route.fulfill({ json: response }));
@@ -35,7 +35,7 @@ for (const width of [390, 1024]) {
     await page.getByRole('button', { name: '크게 보기', exact: true }).click();
     await expect(children().getByRole('button', { name: '주스', exact: true })).toHaveAttribute('aria-pressed', 'true');
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-    await page.screenshot({ path: `/tmp/menu-categories-${width}.png`, fullPage: true });
+    await page.screenshot({ path: testInfo.outputPath(`menu-categories-${width}.png`), fullPage: true });
     await page.locator('.menu-card').first().click();
     await expect(page.getByRole('region', { name: '추가 옵션 선택' })).toBeVisible();
   });

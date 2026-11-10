@@ -26,6 +26,8 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
   const [menuView, setMenuView] = useState<MenuBoardView>({ enlarged: false });
   const [error, setError] = useState('');
   const [transcript, setTranscript] = useState('');
+  const [recommendationNotice, setRecommendationNotice] = useState('');
+  const [directCandidates, setDirectCandidates] = useState<{ menu_id: string; temperature: string; reason: string }[]>([]);
   const revision = useRef(0);
   const stage = selected ? 'menu_confirmation' : order.stage === 'menu' && candidates?.length ? 'recommendations' : order.stage;
   const guide = selected ? { title: selected.name, description: '이 메뉴로 주문하시겠습니까? 네라고 말씀하시거나 버튼을 눌러 주세요.' }
@@ -48,27 +50,36 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
     const id = ++revision.current;
     setTranscript('');
     setError('');
+    setRecommendationNotice(''); setDirectCandidates([]);
     try {
       const body = new FormData();
       body.set('audio', audio, 'recording.webm'); body.set('stage', stage);
       if (stage === 'recommendations') candidates?.forEach(menuId => body.append('candidate_menu_ids', menuId));
       if (order.stage === 'temperature' || order.stage === 'service_type') body.set('selected_menu_id', order.menu.id);
       const response = await fetch('/api/voice/interpret', { method: 'POST', body,
-        signal: AbortSignal.any([signal, AbortSignal.timeout(90_000)]) });
+        signal: AbortSignal.any([signal, AbortSignal.timeout(140_000)]) });
       const data = await response.json();
       if (signal.aborted || id !== revision.current) return;
       if (!response.ok) throw new Error(`${data?.detail?.message ?? '음성을 처리하지 못했어요. 다시 시도해 주세요.'}${data?.detail?.code ? ` (${data.detail.code})` : ''}`);
       setTranscript(typeof data.transcript === 'string' ? data.transcript : '');
       voice.cancel();
       const action = data.action;
+      if (['menu', 'recommendations'].includes(stage) && action?.type === 'direct_recommendation' && catalog.status === 'ready') {
+        if (action.status === 'recommend') {
+          const recs = action.recommendations;
+          if (!Array.isArray(recs) || recs.length !== 1 || !recs.every(r =>
+            catalog.menus.some(m => m.id === r.menu_id && m.available && m.temperatures.includes(r.temperature)))) throw new Error('LLM 추천 결과를 확인하지 못했어요.');
+          interrupt(); setCandidates(recs.map(r => r.menu_id)); setDirectCandidates(recs); return;
+        }
+        if (!['clarify', 'insufficient_data'].includes(action.status)) throw new Error('LLM 응답을 확인하지 못했어요.');
+        const messages = action.status === 'clarify' ? action.questions : action.missing_information;
+        if (!Array.isArray(messages) || !messages.length || !messages.every(m => typeof m === 'string')) throw new Error('LLM 안내를 확인하지 못했어요.');
+        const message = messages.join(' ');
+        interrupt(); setCandidates(null); setRecommendationNotice(message); voice.speak(message); return;
+      }
       if (stage === 'menu_confirmation' && action?.type === 'confirm') { accept(); return; }
       if (stage === 'review' && action?.type === 'confirm') { interrupt(); await confirm(); return; }
       if (['menu', 'recommendations'].includes(stage) && action?.type === 'restart_recommendation') { interrupt(); setCandidates(null); setTranscript(''); return; }
-      if (['menu', 'recommendations'].includes(stage) && action?.type === 'recommendation_results' && catalog.status === 'ready') {
-        const ids = action.menu_ids;
-        if (!Array.isArray(ids) || ids.length > 4 || new Set(ids).size !== ids.length || !ids.every(id => catalog.menus.some(m => m.id === id && m.available))) throw new Error('추천 결과를 확인하지 못했어요.');
-        interrupt(); setCandidates(ids); return;
-      }
       if (['menu', 'recommendations'].includes(stage) && action?.type === 'select_menu' && catalog.status === 'ready') {
         const menu = catalog.menus.find(m => m.id === action.menu_id && m.available && (stage !== 'recommendations' || candidates?.includes(m.id)));
         if (menu) { choose(menu); return; }
@@ -92,6 +103,8 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
     {enabled && <p className="order-step__note">마이크를 누르고 말씀하신 뒤 ‘녹음 종료’를 눌러 주세요. 종료 후 음성을 분석합니다.</p>}
     {transcript && <p role="status" className="order-step__note">인식한 말: {transcript}</p>}
     {error && <p role="alert">{error}</p>}
+    {recommendationNotice && !selected && order.stage === 'menu' && <section aria-label="추천 추가 안내"><p role="status">{recommendationNotice}</p>
+      <p>대화 기록은 아직 이어지지 않습니다. 원래 조건과 답을 합쳐 다시 말씀해 주세요.</p></section>}
     {selected && <section className="voice-menu-confirmation" aria-label="선택 메뉴 확인">
       <div className="voice-menu-confirmation__card">
         <MenuImage src={selected.imageUrl} className="voice-menu-confirmation__image" />
@@ -103,8 +116,11 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
       </div>
     </section>}
     {candidates !== null && !selected && order.stage === 'menu' && <section aria-label="추천 결과">
+      {directCandidates.map(candidate => <p key={candidate.menu_id} className="order-step__note">
+        LLM 추천 · {candidate.temperature}: {candidate.reason}
+      </p>)}
       {catalog.status === 'ready' && candidates.length > 0 && <MenuBoard menus={candidates.flatMap(id => catalog.menus.filter(m => m.id === id))} selectedMenu={null} view={menuView} onViewChange={view => { interrupt(); setMenuView(view); }} onSelect={id => { const menu = catalog.menus.find(m => m.id === id && m.available); if(menu) choose(menu); }} />}
-      <button className="primary-button" onClick={() => { interrupt(); setCandidates(null); setTranscript(''); }}>다시 추천받기</button>
+      <button className="primary-button" onClick={() => { interrupt(); setCandidates(null); setTranscript(''); setDirectCandidates([]); setRecommendationNotice(''); }}>다시 추천받기</button>
     </section>}
     {stage === 'menu' && candidates === null && (catalog.status === 'ready'
       ? catalog.menus.length === 0 ? <CatalogStatus status="empty" onReload={reload} />

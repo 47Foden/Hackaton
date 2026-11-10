@@ -1,0 +1,2495 @@
+{
+  "schema_version": 1,
+  "menus": [
+    {
+      "menu_id": "iced_americano",
+      "name": "아메리카노",
+      "official_name": "아메리카노",
+      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "variants": {
+        "HOT": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        },
+        "COLD": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        }
+      }
+    },
+    {
+      "menu_id": "honey_americano",
+      "name": "꿀아메리카노",
+      "official_name": "꿀아메리카노",
+      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "variants": {
+        "HOT": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        },
+        "COLD": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        }
+      }
+    },
+    {
+      "menu_id": "vanilla_americano",
+      "name": "바닐라 아메리카노",
+      "official_name": "바닐라 아메리카노",
+      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "variants": {
+        "HOT": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        },
+        "COLD": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        }
+      }
+    },
+    {
+      "menu_id": "hazelnut_americano",
+      "name": "헤이즐넛 아메리카노",
+      "official_name": "헤이즐넛 아메리카노",
+      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "variants": {
+        "HOT": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        },
+        "COLD": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        }
+      }
+    },
+    {
+      "menu_id": "cafe_latte",
+      "name": "카페라떼",
+      "official_name": "카페라떼",
+      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "variants": {
+        "HOT": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        },
+        "COLD": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        }
+      }
+    },
+    {
+      "menu_id": "vanilla_latte",
+      "name": "바닐라라떼",
+      "official_name": "바닐라라떼",
+      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "variants": {
+        "HOT": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        },
+        "COLD": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        }
+      }
+    },
+    {
+      "menu_id": "condensed_milk_latte",
+      "name": "연유라떼",
+      "official_name": "연유라떼",
+      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "variants": {
+        "HOT": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        },
+        "COLD": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        }
+      }
+    },
+    {
+      "menu_id": "cappuccino",
+      "name": "카푸치노",
+      "official_name": "카푸치노",
+      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "variants": {
+        "HOT": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        },
+        "COLD": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        }
+      }
+    },
+    {
+      "menu_id": "hazelnut_latte",
+      "name": "헤이즐넛 라떼",
+      "official_name": "헤이즐넛 라떼",
+      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "variants": {
+        "HOT": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        },
+        "COLD": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        }
+      }
+    },
+    {
+      "menu_id": "cold_brew",
+      "name": "콜드브루 오리지널",
+      "official_name": "콜드브루 오리지널",
+      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "variants": {
+        "HOT": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        },
+        "COLD": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        }
+      }
+    },
+    {
+      "menu_id": "decaf_americano",
+      "name": "디카페인 아메리카노",
+      "official_name": "디카페인 아메리카노",
+      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "variants": {
+        "HOT": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        },
+        "COLD": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        }
+      }
+    },
+    {
+      "menu_id": "decaf_honey_americano",
+      "name": "디카페인 꿀 아메리카노",
+      "official_name": "디카페인 꿀 아메리카노",
+      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "variants": {
+        "HOT": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        },
+        "COLD": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        }
+      }
+    },
+    {
+      "menu_id": "decaf_vanilla_americano",
+      "name": "디카페인 바닐라 아메리카노",
+      "official_name": "디카페인 바닐라 아메리카노",
+      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "variants": {
+        "HOT": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        },
+        "COLD": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        }
+      }
+    },
+    {
+      "menu_id": "decaf_hazelnut_americano",
+      "name": "디카페인 헤이즐넛 아메리카노",
+      "official_name": "디카페인 헤이즐넛 아메리카노",
+      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "variants": {
+        "HOT": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        },
+        "COLD": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        }
+      }
+    },
+    {
+      "menu_id": "decaf_cafe_latte",
+      "name": "디카페인 카페라떼",
+      "official_name": "디카페인 카페라떼",
+      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "variants": {
+        "HOT": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        },
+        "COLD": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        }
+      }
+    },
+    {
+      "menu_id": "decaf_vanilla_latte",
+      "name": "디카페인 바닐라라떼",
+      "official_name": "디카페인 바닐라라떼",
+      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "variants": {
+        "HOT": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        },
+        "COLD": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        }
+      }
+    },
+    {
+      "menu_id": "decaf_condensed_milk_latte",
+      "name": "디카페인 연유라떼",
+      "official_name": "디카페인 연유라떼",
+      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "variants": {
+        "HOT": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        },
+        "COLD": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        }
+      }
+    },
+    {
+      "menu_id": "decaf_cappuccino",
+      "name": "디카페인 카푸치노",
+      "official_name": "디카페인 카푸치노",
+      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "variants": {
+        "HOT": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        },
+        "COLD": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        }
+      }
+    },
+    {
+      "menu_id": "decaf_hazelnut_latte",
+      "name": "디카페인 헤이즐넛라떼",
+      "official_name": "디카페인 헤이즐넛라떼",
+      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "variants": {
+        "HOT": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        },
+        "COLD": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        }
+      }
+    },
+    {
+      "menu_id": "decaf_cold_brew",
+      "name": "콜드브루 디카페인",
+      "official_name": "콜드브루 디카페인",
+      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "variants": {
+        "HOT": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        },
+        "COLD": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        }
+      }
+    },
+    {
+      "menu_id": "lemonade",
+      "name": "레몬에이드",
+      "official_name": "레몬에이드",
+      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "variants": {
+        "COLD": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        }
+      }
+    },
+    {
+      "menu_id": "grapefruit_ade",
+      "name": "자몽에이드",
+      "official_name": "자몽에이드",
+      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "variants": {
+        "COLD": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        }
+      }
+    },
+    {
+      "menu_id": "green_grape_ade",
+      "name": "청포도에이드",
+      "official_name": "청포도에이드",
+      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "variants": {
+        "COLD": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        }
+      }
+    },
+    {
+      "menu_id": "cookie_frappe",
+      "name": "쿠키프라페",
+      "official_name": "쿠키프라페",
+      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "variants": {
+        "COLD": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        }
+      }
+    },
+    {
+      "menu_id": "green_tea_frappe",
+      "name": "녹차프라페",
+      "official_name": "녹차프라페",
+      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "variants": {
+        "COLD": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        }
+      }
+    },
+    {
+      "menu_id": "coffee_frappe",
+      "name": "커피프라페",
+      "official_name": "커피프라페",
+      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "variants": {
+        "COLD": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        }
+      }
+    },
+    {
+      "menu_id": "strawberry_cookie_frappe",
+      "name": "딸기쿠키프라페",
+      "official_name": "딸기쿠키프라페",
+      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "variants": {
+        "COLD": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        }
+      }
+    },
+    {
+      "menu_id": "strawberry_yogurt_smoothie",
+      "name": "딸기요거트스무디",
+      "official_name": "딸기요거트스무디",
+      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "variants": {
+        "COLD": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        }
+      }
+    },
+    {
+      "menu_id": "plain_yogurt_smoothie",
+      "name": "플레인요거트스무디",
+      "official_name": "플레인요거트스무디",
+      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "variants": {
+        "COLD": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        }
+      }
+    },
+    {
+      "menu_id": "strawberry_banana_juice",
+      "name": "딸기바나나주스",
+      "official_name": "딸기바나나주스",
+      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "variants": {
+        "COLD": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        }
+      }
+    },
+    {
+      "menu_id": "strawberry_juice",
+      "name": "딸기주스",
+      "official_name": "딸기주스",
+      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "variants": {
+        "COLD": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        }
+      }
+    },
+    {
+      "menu_id": "mango_yogurt_smoothie",
+      "name": "망고요거트스무디",
+      "official_name": "망고요거트스무디",
+      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "variants": {
+        "COLD": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        }
+      }
+    },
+    {
+      "menu_id": "blueberry_yogurt_smoothie",
+      "name": "블루베리요거트스무디",
+      "official_name": "블루베리요거트스무디",
+      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "variants": {
+        "COLD": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        }
+      }
+    },
+    {
+      "menu_id": "strawberry_latte",
+      "name": "딸기라떼",
+      "official_name": "딸기라떼",
+      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "variants": {
+        "COLD": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        }
+      }
+    },
+    {
+      "menu_id": "oreo_chocolate_latte",
+      "name": "오레오초코라떼",
+      "official_name": "오레오초코라떼",
+      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "variants": {
+        "COLD": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        }
+      }
+    },
+    {
+      "menu_id": "green_tea_latte",
+      "name": "녹차라떼",
+      "official_name": "녹차라떼",
+      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "variants": {
+        "HOT": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        },
+        "COLD": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        }
+      }
+    },
+    {
+      "menu_id": "brown_sugar_latte",
+      "name": "흑당라떼",
+      "official_name": "흑당라떼",
+      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "variants": {
+        "COLD": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        }
+      }
+    },
+    {
+      "menu_id": "peach_iced_tea",
+      "name": "복숭아 아이스티",
+      "official_name": "복숭아 아이스티",
+      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "variants": {
+        "COLD": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        }
+      }
+    },
+    {
+      "menu_id": "zero_peach_iced_tea",
+      "name": "제로 복숭아 아이스티",
+      "official_name": "제로 복숭아 아이스티",
+      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "variants": {
+        "COLD": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        }
+      }
+    },
+    {
+      "menu_id": "apple_citron_tea",
+      "name": "사과유자차",
+      "official_name": "사과유자차",
+      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "variants": {
+        "HOT": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        },
+        "COLD": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        }
+      }
+    },
+    {
+      "menu_id": "grapefruit_tea",
+      "name": "자몽차",
+      "official_name": "자몽차",
+      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "variants": {
+        "HOT": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        },
+        "COLD": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        }
+      }
+    },
+    {
+      "menu_id": "lemon_tea",
+      "name": "레몬차",
+      "official_name": "레몬차",
+      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "variants": {
+        "HOT": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        },
+        "COLD": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        }
+      }
+    },
+    {
+      "menu_id": "citron_tea",
+      "name": "유자차",
+      "official_name": "유자차",
+      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "variants": {
+        "HOT": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        },
+        "COLD": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        }
+      }
+    },
+    {
+      "menu_id": "espresso",
+      "name": "에스프레소",
+      "official_name": "에스프레소",
+      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "variants": {
+        "HOT": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        }
+      }
+    },
+    {
+      "menu_id": "lemon_tea_alias",
+      "name": "레몬티",
+      "official_name": "레몬티",
+      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "variants": {
+        "HOT": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        },
+        "COLD": {
+          "description": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "caffeine_mg": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "milk": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          },
+          "allergens": {
+            "status": "unknown",
+            "value": null,
+            "source": null,
+            "checked_date": null,
+            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+          }
+        }
+      }
+    }
+  ]
+}

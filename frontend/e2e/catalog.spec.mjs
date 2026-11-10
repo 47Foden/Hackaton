@@ -1,3 +1,4 @@
+import { selectCategory } from './category-navigation.mjs';
 import { test, expect } from '@playwright/test';
 import { createMockApi } from '../src/api/mock/createMockApi.ts';
 
@@ -23,7 +24,7 @@ test('loading remains visible until HTTP menus arrive', async ({ page }) => {
   await expect(page.locator('.menu-card')).toHaveCount(0);
   await expect(page.getByRole('button', { name: '처음으로', exact: true })).toBeEnabled();
   release();
-  await expect(page.locator('.menu-card')).toHaveCount(4);
+  await expect(page.locator('.menu-card')).toHaveCount(response.menus.filter(menu => menu.categories[0] === '커피' && menu.categories[1] === '에스프레소').length);
   await expect(page.getByRole('heading', { name: '메뉴를 불러오는 중이에요…' })).toHaveCount(0);
 });
 
@@ -40,7 +41,7 @@ test('503 displays a retry action and a successful retry restores the menu', asy
   await expect(page.getByRole('button', { name: '다시 불러오기' })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.getByRole('button', { name: '다시 불러오기' }).click();
-  await expect(page.locator('.menu-card')).toHaveCount(4);
+  await expect(page.locator('.menu-card')).toHaveCount(response.menus.filter(menu => menu.categories[0] === '커피' && menu.categories[1] === '에스프레소').length);
   expect(calls).toBe(2);
 });
 
@@ -53,7 +54,7 @@ test('empty success is separate from failure and can reload', async ({ page }) =
   await expect(page.getByRole('alert')).toHaveCount(0);
   await expect(page.locator('.menu-card')).toHaveCount(0);
   await page.getByRole('button', { name: '다시 불러오기' }).click();
-  await expect(page.locator('.menu-card')).toHaveCount(4);
+  await expect(page.locator('.menu-card')).toHaveCount(response.menus.filter(menu => menu.categories[0] === '커피' && menu.categories[1] === '에스프레소').length);
 });
 
 test('404 images preserve card selection, prices, options and the order summary', async ({ page }) => {
@@ -64,9 +65,10 @@ test('404 images preserve card selection, prices, options and the order summary'
   await page.route('**/api/menus', route => route.fulfill({ json: response }));
   await page.route('**/images/menus/not-found.jpg', route => route.fulfill({ status: 404, body: '' }));
   await start(page);
+  await selectCategory(page, '음료', '에이드');
   const card = page.getByRole('button', { name: /레몬에이드/ });
   await expect(card).toContainText('사진 준비 중');
-  await expect(card).toContainText('3,500원');
+  await expect(card).toContainText(menu.price_krw.toLocaleString('ko-KR') + '원');
   await expect(card).toBeEnabled();
   await card.click();
   await expect(page.getByRole('heading', { name: '따뜻하게, 차갑게?' })).toHaveCount(0);
@@ -85,6 +87,7 @@ test('an empty image path has a placeholder and can still be ordered', async ({ 
   menu.variants[0].image_url = '';
   await page.route('**/api/menus', route => route.fulfill({ json: response }));
   await start(page);
+  await selectCategory(page, '음료', '에이드');
   const card = page.getByRole('button', { name: /레몬에이드/ });
   await expect(card).toContainText('사진 준비 중');
   await expect(card.locator('img')).toHaveCount(0);
