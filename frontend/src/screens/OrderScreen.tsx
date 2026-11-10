@@ -46,9 +46,9 @@ export function OrderScreen({ onHome, serviceType }: { onHome: () => void; servi
         : <MenuBoard groupByCategory menus={catalog.menus}
           selectedMenu={null} view={menuView} onViewChange={setMenuView}
           onSelect={menuId => applySelection({ type: 'select_menu', menuId })} />)}
-      {order.stage === 'temperature' && <TemperatureScreen menu={order.menu}
+      {order.stage === 'temperature' && <TemperatureScreen quantity={quantity} menu={order.menu}
         onSelect={temperature => applySelection({ type: 'set_temperature', temperature })} />}
-      {order.stage === 'customization' && <CustomizationScreen menu={order.menu} temperature={order.temperature}
+      {order.stage === 'customization' && <CustomizationScreen quantity={quantity} menu={order.menu} temperature={order.temperature}
         onContinue={ids => dispatch({ type: 'set_options', ids })} />}
       {order.stage === 'service_type' && <ServiceTypeScreen quantity={quantity} items={items} menu={order.menu} temperature={order.temperature}
         selectedOptions={order.selectedOptions}

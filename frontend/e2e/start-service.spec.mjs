@@ -54,6 +54,9 @@ test('multiple voice items ignore conflicting spoken service and use start selec
  await page.getByRole('button',{name:'음성으로 주문하기'}).click();
  await page.getByRole('button',{name:'주문하기',exact:true}).click();
  await page.getByRole('button',{name:'녹음 종료'}).click();
+ const options = page.getByRole('region',{name:'추가 옵션 선택'});
+ await expect(options.locator('.order-summary')).toContainText('2잔');
+ await expect(options.locator('.order-step__total')).toContainText('6,000원');
  await page.getByRole('button',{name:'옵션 없이 계속'}).click();
  await page.getByRole('button',{name:'옵션 없이 계속'}).click();
  await page.getByRole('button',{name:'주문 확정',exact:true}).click();

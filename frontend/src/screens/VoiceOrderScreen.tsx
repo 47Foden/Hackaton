@@ -221,10 +221,10 @@ export function VoiceOrderScreen({ onHome, serviceType }: { onHome: () => void; 
           onSelect={menuId => { const menu = catalog.menus.find(m => m.id === menuId && m.available); if (menu) choose(menu); }} />
       : catalog.status === 'loading' ? <CatalogStatus status="loading" />
         : <CatalogStatus status="error" message={catalog.message} onReload={() => { interrupt(); reload(); }} />)}
-    {order.stage === 'temperature' && <TemperatureScreen menu={order.menu} onSelect={temperature => {
+    {order.stage === 'temperature' && <TemperatureScreen quantity={quantity} menu={order.menu} onSelect={temperature => {
       interrupt(); const next = save(mergeVoiceOptions(sessionRef.current, { temperature }));
       dispatch({ type: 'set_temperature', temperature, voiceOptions: next }); }} />}
-    {order.stage === 'customization' && <CustomizationScreen menu={order.menu} temperature={order.temperature}
+    {order.stage === 'customization' && <CustomizationScreen quantity={quantity} menu={order.menu} temperature={order.temperature}
       key={order.menu.id + queue.length + JSON.stringify(validated.customization)}
       initialSelectedIds={validated.customization?.option_ids ??
         resolveOrderOptions(order.menu.optionGroups[order.temperature] ?? [], activeItem?.option_ids ?? [])?.map(option => option.id) ?? []}

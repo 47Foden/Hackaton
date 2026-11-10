@@ -4,14 +4,14 @@ import { OrderSummary } from '../../components/order/OrderSummary';
 import type { Menu, Temperature } from '../../data/menuCatalog';
 import { resolveOrderOptions } from '../../state/orderOptions';
 
-export function CustomizationScreen({ menu, temperature, onContinue, initialSelectedIds = [], onSelectionChange }: {
-  menu: Menu; temperature: Temperature; onContinue: (ids: string[]) => void;
+export function CustomizationScreen({ menu, temperature, quantity = 1, onContinue, initialSelectedIds = [], onSelectionChange }: {
+  quantity?: number; menu: Menu; temperature: Temperature; onContinue: (ids: string[]) => void;
   initialSelectedIds?: string[]; onSelectionChange?: (ids: string[]) => void;
 }) {
   const groups = menu.optionGroups[temperature] ?? [];
   const [selectedIds, setSelectedIds] = useState<string[]>(initialSelectedIds);
   const selected = resolveOrderOptions(groups, selectedIds) ?? [];
-  const total = menu.price + selected.reduce((sum, choice) => sum + choice.price_delta_krw, 0);
+  const total = (menu.price + selected.reduce((sum, choice) => sum + choice.price_delta_krw, 0)) * quantity;
 
   function toggle(group: MenuOptionGroup, id: string) {
     const next = ((ids: string[]) => {
@@ -25,7 +25,7 @@ export function CustomizationScreen({ menu, temperature, onContinue, initialSele
 
   return (
     <section className="order-step" aria-label="추가 옵션 선택">
-      <OrderSummary menu={menu} temperature={temperature} />
+      <OrderSummary quantity={quantity} menu={menu} temperature={temperature} />
       {groups.map(group => (
         <fieldset className="customization-group" key={group.id}>
           <legend>{group.label}</legend>
