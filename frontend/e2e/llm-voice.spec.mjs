@@ -20,7 +20,7 @@ async function setup(page, action, status = 200) {
   });
   await page.goto('/');
   await page.getByRole('button', { name: '음성으로 주문하기' }).click();
-  await page.getByRole('button', { name: '음성 녹음', exact: true }).click();
+  await page.getByRole('button', { name: '메뉴 추천받기', exact: true }).click();
   await expect(page.getByRole('button', { name: '녹음 종료' })).toBeVisible();
   await page.getByRole('button', { name: '녹음 종료' }).click();
   return () => calls;

@@ -6,6 +6,7 @@ import { MenuBoard, type MenuBoardView } from '../components/menu/MenuBoard';
 import { CatalogStatus } from '../components/menu/CatalogStatus';
 import { MenuImage } from '../components/menu/MenuImage';
 import { OrderMicrophone } from '../components/voice/OrderMicrophone';
+import { VoiceIntentMicrophone, type VoiceIntent } from '../components/voice/VoiceIntentMicrophone';
 import { useMenus } from '../hooks/useMenus';
 import { useOrderFlow } from '../hooks/useOrderFlow';
 import { useVoiceGuidance } from '../hooks/useVoiceGuidance';
@@ -59,7 +60,7 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
     setSelected(null);
     setCandidates(null);
   }
-  async function record(audio: Blob, signal: AbortSignal) {
+  async function record(audio: Blob, signal: AbortSignal, intent?: VoiceIntent) {
     pending.current?.abort();
     const controller = new AbortController();
     pending.current = controller;
@@ -69,6 +70,7 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
     try {
       const body = new FormData();
       body.set('audio', audio, 'recording.webm'); body.set('stage', stage);
+      if (intent) body.set('intent', intent);
       if (stage === 'recommendations') candidates?.forEach(menuId => body.append('candidate_menu_ids', menuId));
       if (contextMenu && ['menu_confirmation', 'temperature', 'customization', 'service_type'].includes(stage)) {
         body.set('selected_menu_id', contextMenu.id);
@@ -84,7 +86,7 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
       voice.cancel();
       const action = data.action;
       const incoming = readVoiceOptions(data.recognized_options);
-      const options = mergeVoiceOptions(sessionRef.current, incoming);
+      const options = mergeVoiceOptions(intent === 'recommend' ? {} : sessionRef.current, incoming);
       if (['menu', 'recommendations'].includes(stage) && action?.type === 'direct_recommendation' && catalog.status === 'ready') {
         if (action.status === 'recommend') {
           const recs = action.recommendations;
@@ -132,7 +134,9 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
   }
   return <KioskLayout {...guide} status={isMockOrderApi ? '개발용 주문입니다.' : '음성 또는 터치로 주문해 주세요.'}
     onHome={order.stage === 'submitting' ? undefined : home}
-    microphone={<OrderMicrophone key={stage} disabledReason={enabled ? undefined : '현재 단계에서는 녹음할 수 없어요.'} onRecordingComplete={record} />}>
+    microphone={['menu', 'recommendations'].includes(stage)
+      ? <VoiceIntentMicrophone key={stage} onRecordingComplete={record} />
+      : <OrderMicrophone key={stage} disabledReason={enabled ? undefined : '현재 단계에서는 녹음할 수 없어요.'} onRecordingComplete={record} />}>
     {enabled && <p className="order-step__note">마이크를 누르고 말씀하신 뒤 ‘녹음 종료’를 눌러 주세요. 종료 후 음성을 분석합니다.</p>}
     {transcript && <p role="status" className="order-step__note">인식한 말: {transcript}</p>}
     {error && <p role="alert">{error}</p>}

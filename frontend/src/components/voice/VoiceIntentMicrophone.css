@@ -1,0 +1,9 @@
+.voice-intent-control { width: 100%; min-width: 0; }
+.voice-intent-control__buttons { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.voice-intent-control .microphone-control { min-width: 0; }
+.voice-intent-control .microphone-button { width: 100%; justify-content: center; }
+.voice-intent-control .microphone-button svg { flex-shrink: 0; }
+.voice-intent-control__help { margin: 8px 0 0; text-align: center; font-size: 15px; }
+@media (max-width: 600px) {
+  .voice-intent-control .microphone-button { padding: 12px 10px; font-size: 16px; gap: 8px; }
+}

@@ -8,8 +8,9 @@ const customization = { status: 'pending', option_ids: [],
   intents: [{ expression: '샷추가', candidate_option_ids: ['shot:extra'] }], unresolved: [] };
 const recommendation = { type: 'direct_recommendation', status: 'recommend', recommendations: [
   { menu_id: 'cafe_latte', temperature: 'COLD' }] };
-async function say(page) {
-  await page.getByRole('button', { name: '음성 녹음', exact: true }).click();
+async function say(page, intent = 'order') {
+  await page.getByRole('button', { name: '음성 녹음', exact: true })
+    .or(page.getByRole('button', { name: intent === 'recommend' ? '메뉴 추천받기' : '주문하기', exact: true })).click();
   await page.getByRole('button', { name: '녹음 종료' }).click();
 }
 async function setup(page, responses) {
@@ -36,7 +37,7 @@ test('recommendation intent survives touch selection and confirmation into final
     await route.fulfill({ status: 201, json: { ...submitted, order_id: '42', order_number: '42', menu_name: '카페라떼',
       quantity: 1, total_price_krw: 4600, selected_options: [], created_at: new Date().toISOString() } });
   });
-  await say(page);
+  await say(page, 'recommend');
   await page.getByRole('region', { name: '추천 결과' }).getByRole('button', { name: /카페라떼/ }).click();
   await say(page);
   await page.getByRole('button', { name: /따뜻하게/ }).click();
@@ -52,7 +53,7 @@ test('recommendation intent survives touch selection and confirmation into final
 
 test('restart clears prior temperature and customization', async ({ page }) => {
   await setup(page, [{ action: recommendation, recognized_options: { temperature: 'COLD', service_type: 'TAKEOUT', customization } }]);
-  await say(page);
+  await say(page, 'recommend');
   await page.getByRole('button', { name: '다시 추천받기' }).click();
   await page.getByRole('button', { name: '라떼', exact: true }).click();
   await page.getByRole('button', { name: /카페라떼/ }).first().click();

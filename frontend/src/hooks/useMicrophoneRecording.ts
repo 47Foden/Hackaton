@@ -11,6 +11,7 @@ export type RecordingComplete = (audio: Blob, signal: AbortSignal) => void | Pro
 interface RecordingRequest {
   controller: AbortController;
   recording?: MicrophoneRecording;
+  complete: RecordingComplete;
 }
 
 export function useMicrophoneRecording(onRecordingComplete: RecordingComplete) {
@@ -22,12 +23,12 @@ export function useMicrophoneRecording(onRecordingComplete: RecordingComplete) {
     active.current = null;
   }, []);
 
-  async function start() {
+  async function start(complete: RecordingComplete = onRecordingComplete) {
     if (active.current) return;
     browserVoiceGuidance.cancel();
 
     const controller = new AbortController();
-    const request: RecordingRequest = { controller };
+    const request: RecordingRequest = { controller, complete };
     active.current = request;
     setState({ status: 'requesting' });
     try {
@@ -55,7 +56,7 @@ export function useMicrophoneRecording(onRecordingComplete: RecordingComplete) {
     try {
       const audio = await recording.finish();
       if (signal.aborted) return;
-      await onRecordingComplete(audio, signal);
+      await request.complete(audio, signal);
       if (!signal.aborted) setState({ status: 'ready' });
     } catch (error) {
       if (!signal.aborted) {
@@ -66,5 +67,5 @@ export function useMicrophoneRecording(onRecordingComplete: RecordingComplete) {
     }
   }
 
-  return { state, start, stop };
+  return { state, start, stop, isActive: () => active.current !== null };
 }
