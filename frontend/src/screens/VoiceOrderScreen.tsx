@@ -23,7 +23,7 @@ import { getOrderGuidance } from '../data/orderGuidance';
 import './order/OrderFlow.css';
 
 export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
-  const { order, dispatch, confirm, items, continueOrder, changeQuantity, setQuantity, locked } = useOrderFlow(kioskApi);
+  const { order, dispatch, confirm, items, continueOrder, deferService, changeQuantity, quantity, setQuantity, locked } = useOrderFlow(kioskApi);
   const { state: catalog, reload } = useMenus(kioskApi);
   const [candidates, setCandidates] = useState<string[] | null>(null);
   const [recommendationsExpanded, setRecommendationsExpanded] = useState(false);
@@ -43,6 +43,8 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
       dispatch({type: 'select_menu', menu});
     } else if (order.stage === 'temperature' && activeItem?.temperature) {
       dispatch({type: 'set_temperature', temperature: activeItem.temperature});
+    } else if (order.stage === 'service_type' && queue.length) {
+      deferService(); setActiveItem(null);
     } else if (order.stage === 'review' && queue.length) {
       continueOrder(); setActiveItem(null);
     }
@@ -206,7 +208,7 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
       onSelectionChange={ids => { interrupt(); save({ ...sessionRef.current, customization: selectedCustomization(ids) }); }}
       onContinue={ids => { interrupt(); const next = save({ ...sessionRef.current, customization: selectedCustomization(ids) });
         dispatch({ type: 'set_options', ids, voiceOptions: next }); }} />}
-    {order.stage === 'service_type' && <ServiceTypeScreen menu={order.menu} temperature={order.temperature} selectedOptions={order.selectedOptions}
+    {order.stage === 'service_type' && queue.length === 0 && <ServiceTypeScreen quantity={quantity} items={items} menu={order.menu} temperature={order.temperature} selectedOptions={order.selectedOptions}
       onSelect={serviceType => { interrupt(); const next = save(mergeVoiceOptions(sessionRef.current, { service_type: serviceType }));
         dispatch({ type: 'set_service_type', serviceType, voiceOptions: next }); }} />}
     {(order.stage === 'review' || order.stage === 'submitting') && <ReviewScreen items={items} onQuantity={changeQuantity} locked={locked}

@@ -16,7 +16,7 @@ import './order/OrderFlow.css';
 
 
 export function OrderScreen({ onHome }: { onHome: () => void }) {
-  const { order, dispatch, confirm, items, continueOrder, changeQuantity, locked } = useOrderFlow(kioskApi);
+  const { order, dispatch, confirm, items, continueOrder, changeQuantity, quantity, locked } = useOrderFlow(kioskApi);
   const { state: catalog, reload } = useMenus(kioskApi);
   const [menuView, setMenuView] = useState<MenuBoardView>({ enlarged: false });
 
@@ -49,7 +49,7 @@ export function OrderScreen({ onHome }: { onHome: () => void }) {
         onSelect={temperature => applySelection({ type: 'set_temperature', temperature })} />}
       {order.stage === 'customization' && <CustomizationScreen menu={order.menu} temperature={order.temperature}
         onContinue={ids => dispatch({ type: 'set_options', ids })} />}
-      {order.stage === 'service_type' && <ServiceTypeScreen menu={order.menu} temperature={order.temperature}
+      {order.stage === 'service_type' && <ServiceTypeScreen quantity={quantity} items={items} menu={order.menu} temperature={order.temperature}
         selectedOptions={order.selectedOptions}
         onSelect={serviceType => applySelection({ type: 'set_service_type', serviceType })} />}
       {(order.stage === 'review' || order.stage === 'submitting') && <ReviewScreen items={items} onContinue={continueOrder} onQuantity={changeQuantity} locked={locked} draft={order.draft}

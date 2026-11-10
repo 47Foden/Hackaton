@@ -144,7 +144,7 @@ test('spoken multiple menus configure sequentially and preserve counts', async (
   await page.getByRole('button',{name:'주문하기',exact:true}).click();
   await page.getByRole('button',{name:'녹음 종료'}).click();
   await page.getByRole('button',{name:'옵션 없이 계속'}).click();
-  await page.getByRole('button',{name:/포장해서/}).click();
+  await expect(page.getByRole('region',{name:'매장 또는 포장 선택'})).toHaveCount(0);
   await page.getByRole('button',{name:/따뜻하게/}).click();
   await page.getByRole('button',{name:'옵션 없이 계속'}).click();
   await page.getByRole('button',{name:/포장해서/}).click();
@@ -152,5 +152,6 @@ test('spoken multiple menus configure sequentially and preserve counts', async (
   await expect(page.getByRole('heading',{name:'카페라떼',exact:true})).toBeVisible();
   await page.getByRole('button',{name:'주문 확정',exact:true}).click();
   await expect(page.getByRole('region',{name:'주문 완료'})).toBeVisible();
+  expect(sent.items.every(i => i.service_type === 'TAKEOUT')).toBe(true);
   expect(sent.items.map(i=>[i.menu_id,i.quantity])).toEqual([['iced_americano',2],['cafe_latte',1]]);
 });

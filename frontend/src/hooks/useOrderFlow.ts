@@ -7,7 +7,13 @@ export function useOrderFlow(api: KioskApi) {
   const [order, dispatch] = useReducer((state: Parameters<typeof orderReducer>[0], action: Parameters<typeof orderReducer>[1] | {type: 'continue'}) => action.type === 'continue' ? initialOrderState : orderReducer(state, action), initialOrderState);
   const [cart, setCart] = useState<OrderDraft[]>([]);
   const [quantity, setQuantity] = useState(1);
-  const items = 'draft' in order ? [...cart, {...order.draft, quantity}] : cart;
+  const items = 'draft' in order ? [...cart, {...order.draft, quantity}].map(item => ({...item, serviceType: order.draft.serviceType})) : cart;
+  function deferService() {
+    if (order.stage !== 'service_type' || submittedRequest.current) return;
+    setCart([...cart, {menu: order.menu, temperature: order.temperature,
+      selectedOptions: order.selectedOptions, quantity, serviceType: 'DINE_IN'}]);
+    setQuantity(1); dispatch({type: 'continue'});
+  }
   function continueOrder() {
     if (order.stage !== 'review' || submittedRequest.current) return;
     setCart(items); setQuantity(1); dispatch({type: 'continue'});
@@ -46,5 +52,5 @@ export function useOrderFlow(api: KioskApi) {
       if (pending.current === controller) pending.current = null;
     }
   }
-  return { order, dispatch, confirm, items, continueOrder, changeQuantity, setQuantity, locked: !!submittedRequest.current };
+  return { order, dispatch, confirm, items, continueOrder, deferService, changeQuantity, quantity, setQuantity, locked: !!submittedRequest.current };
 }
