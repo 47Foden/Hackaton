@@ -1,11 +1,12 @@
+import type { ReactNode } from 'react';
 import type { Menu, Temperature } from '../../data/menuCatalog';
 import type { MenuOption } from '../../api/contracts';
 import { serviceTypeLabels, temperatureLabels, type ServiceType } from '../../state/order';
 import { MenuImage } from '../menu/MenuImage';
 
-interface OrderSummaryProps { menu: Menu; temperature?: Temperature; serviceType?: ServiceType; selectedOptions?: MenuOption[]; quantity?: number; }
+interface OrderSummaryProps { menu: Menu; temperature?: Temperature; serviceType?: ServiceType; selectedOptions?: MenuOption[]; quantity?: number; action?: ReactNode; }
 
-export function OrderSummary({ menu, temperature, serviceType, selectedOptions = [], quantity = 1 }: OrderSummaryProps) {
+export function OrderSummary({ menu, temperature, serviceType, selectedOptions = [], quantity = 1, action }: OrderSummaryProps) {
   const imageUrl = (temperature && menu.imageUrls[temperature]) || menu.imageUrl;
   return (
     <div className="order-summary">
@@ -24,6 +25,7 @@ export function OrderSummary({ menu, temperature, serviceType, selectedOptions =
           </li>)}
         </ul>}
       </div>
+      {action}
     </div>
   );
 }

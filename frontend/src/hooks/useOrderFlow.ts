@@ -23,6 +23,17 @@ export function useOrderFlow(api: KioskApi, serviceType: ServiceType) {
     if (index === cart.length) setQuantity(value);
     else setCart(cart.map((item, i) => i === index ? {...item, quantity: value} : item));
   }
+  function removeItem(index: number) {
+    if (order.stage !== 'review' || submittedRequest.current || index < 0 || index > cart.length) return;
+    if (index < cart.length) {
+      setCart(cart.filter((_, itemIndex) => itemIndex !== index));
+      return;
+    }
+    const previousItem = cart.at(-1);
+    setCart(cart.slice(0, -1));
+    setQuantity(previousItem?.quantity ?? 1);
+    dispatch({ type: 'remove_current_item', previousItem });
+  }
   const pending = useRef<AbortController | null>(null);
   const submittedRequest = useRef<CreateOrderRequest | null>(null);
   useEffect(() => () => { pending.current?.abort(); }, []);
@@ -52,5 +63,5 @@ export function useOrderFlow(api: KioskApi, serviceType: ServiceType) {
       if (pending.current === controller) pending.current = null;
     }
   }
-  return { order, dispatch, confirm, items, continueOrder, deferService, changeQuantity, quantity, setQuantity, locked: !!submittedRequest.current };
+  return { order, dispatch, confirm, items, continueOrder, deferService, changeQuantity, removeItem, quantity, setQuantity, locked: !!submittedRequest.current };
 }

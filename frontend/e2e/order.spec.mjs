@@ -211,3 +211,24 @@ test('continue ordering preserves both lines and quantity including options', as
   await expect(page.getByRole('region', {name:'주문 완료'})).toBeVisible();
   expect(sent.items.map(i => i.quantity)).toEqual([2,1]);
 });
+
+test('delete removes only the selected item and returns to the menu when empty', async ({ page }) => {
+  await startOrder(page);
+  const remove = page.getByRole('button', { name: '아메리카노 삭제', exact: true });
+  await chooseIcedAmericano(page);
+  await page.getByRole('button', { name: '아메리카노 수량 늘리기', exact: true }).click();
+  await page.getByRole('button', { name: '계속 주문하기' }).click();
+  await chooseIcedAmericano(page);
+  await expect(remove).toHaveCount(2);
+  await remove.last().click();
+  await expect(remove).toHaveCount(1);
+  await expect(page.getByText('2잔', { exact: true })).toBeVisible();
+  await page.getByRole('button', { name: '계속 주문하기' }).click();
+  await chooseIcedAmericano(page);
+  await remove.first().click();
+  await expect(remove).toHaveCount(1);
+  await expect(page.getByText('1잔', { exact: true })).toBeVisible();
+  await remove.click();
+  await expect(page.getByRole('heading', { name: '전체 메뉴판' })).toBeVisible();
+  await expect(page.getByRole('button', { name: '주문 확정', exact: true })).toHaveCount(0);
+});

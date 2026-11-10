@@ -7,18 +7,20 @@ interface ReviewScreenProps {
   locked?: boolean;
   onContinue?: () => void;
   onQuantity?: (index: number, value: number) => void;
+  onRemove: (index: number) => void;
   isMock: boolean;
   pending: boolean;
   error?: OrderFailure;
   onConfirm: () => void;
 }
-export function ReviewScreen({ draft, isMock, pending, error, onConfirm, items = [draft], locked, onContinue, onQuantity }: ReviewScreenProps) {
+export function ReviewScreen({ draft, isMock, pending, error, onConfirm, items = [draft], locked, onContinue, onQuantity, onRemove }: ReviewScreenProps) {
   const confirmLabel = error?.kind === 'uncertain' ? '같은 주문 다시 시도' : error ? '다시 시도' : '주문 확정';
   const total = items.reduce((sum, item) => sum + (item.menu.price + item.selectedOptions.reduce((s, c) => s + c.price_delta_krw, 0)) * (item.quantity ?? 1), 0);
   return (
     <section className="order-step" aria-label="최종 주문 확인" aria-busy={pending}>
       {items.map((item, index) => <div key={index}>
-        <OrderSummary {...item} />
+        <OrderSummary {...item} action={<button type="button" className="outline-button order-summary__remove"
+          disabled={pending || locked} aria-label={item.menu.name + ' 삭제'} onClick={() => onRemove(index)}>삭제</button>} />
         <div className="quantity-control" aria-label={item.menu.name + ' 수량'}>
           <button disabled={pending || locked || (item.quantity ?? 1) <= 1} onClick={() => onQuantity?.(index, (item.quantity ?? 1) - 1)} aria-label={item.menu.name + ' 수량 줄이기'}>−</button>
           <span aria-live="polite">{item.quantity ?? 1}잔</span>

@@ -4,6 +4,7 @@
 .order-summary h2 { font-size: 28px; margin-bottom: 12px; word-break: keep-all; }
 .order-summary p { font-size: 22px; line-height: 1.6; }
 .order-summary__options { color: #62625a; }
+.order-summary__remove { margin-inline-start: auto; flex: none; min-height: 44px; white-space: nowrap; }
 .order-summary__selections { margin: 8px 0 0; padding-left: 24px; font-size: 18px; line-height: 1.5; }
 .customization-group { min-width: 0; padding: 14px 16px 16px; margin: 20px 0 0; border: 1px solid var(--border); border-radius: 12px; }
 .customization-group legend { padding: 0 6px; font-size: 20px; font-weight: 800; }

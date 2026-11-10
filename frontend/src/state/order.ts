@@ -22,6 +22,7 @@ export type OrderAction =
   | { type: 'set_options'; ids: string[]; voiceOptions?: VoiceOptions }
   | { type: 'set_service_type'; serviceType: ServiceType; voiceOptions?: VoiceOptions }
   | { type: 'apply_voice_options'; voiceOptions: VoiceOptions }
+  | { type: 'remove_current_item'; previousItem?: OrderDraft }
   | { type: 'submit' }
   | { type: 'submitted'; result: OrderResponse }
   | { type: 'failed'; error: OrderFailure };
@@ -96,6 +97,9 @@ export function orderReducer(state: OrderState, action: OrderAction): OrderState
       return state.stage === 'service_type' && ['DINE_IN', 'TAKEOUT'].includes(action.serviceType)
         ? nextOrderStage(state.menu, mergeVoiceOptions(selectionOptions(state, action.voiceOptions), { service_type: action.serviceType }))
         : state;
+    case 'remove_current_item':
+      if (state.stage !== 'review') return state;
+      return action.previousItem ? { stage: 'review', draft: action.previousItem } : initialOrderState;
     case 'submit':
       return state.stage === 'review' && state.error?.kind !== 'conflict' ? { stage: 'submitting', draft: state.draft } : state;
     case 'submitted':

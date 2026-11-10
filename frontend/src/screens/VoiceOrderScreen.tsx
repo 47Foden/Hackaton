@@ -25,7 +25,7 @@ import { getOrderGuidance } from '../data/orderGuidance';
 import './order/OrderFlow.css';
 
 export function VoiceOrderScreen({ onHome, serviceType }: { onHome: () => void; serviceType: ServiceType }) {
-  const { order, dispatch, confirm, items, continueOrder, deferService, changeQuantity, quantity, setQuantity, locked } = useOrderFlow(kioskApi, serviceType);
+  const { order, dispatch, confirm, items, continueOrder, deferService, changeQuantity, removeItem, quantity, setQuantity, locked } = useOrderFlow(kioskApi, serviceType);
   const { state: catalog, reload } = useMenus(kioskApi);
   const [candidates, setCandidates] = useState<string[] | null>(null);
   const [recommendationsExpanded, setRecommendationsExpanded] = useState(false);
@@ -234,6 +234,7 @@ export function VoiceOrderScreen({ onHome, serviceType }: { onHome: () => void; 
       onSelect={serviceType => { interrupt(); const next = save(mergeVoiceOptions(sessionRef.current, { service_type: serviceType }));
         dispatch({ type: 'set_service_type', serviceType, voiceOptions: next }); }} />}
     {((order.stage === 'review' && !advancingQueue) || order.stage === 'submitting') && <ReviewScreen items={items} onQuantity={changeQuantity} locked={locked}
+      onRemove={index => { if (items.length === 1) restart(); else interrupt(); removeItem(index); }}
       onContinue={() => { interrupt(); save({}); setActiveItem(null); setCandidates(null); setTranscript(''); continueOrder(); }} draft={order.draft} isMock={isMockOrderApi} pending={order.stage === 'submitting'}
       error={order.stage === 'review' ? order.error : undefined} onConfirm={() => { interrupt(); void confirm(); }} />}
     {order.stage === 'complete' && <CompletionScreen items={items} draft={order.draft} result={order.result} isMock={isMockOrderApi} onHome={home} />}
