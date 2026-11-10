@@ -22,12 +22,11 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
   const { order, dispatch, confirm } = useOrderFlow(kioskApi);
   const { state: catalog, reload } = useMenus(kioskApi);
   const [candidates, setCandidates] = useState<string[] | null>(null);
+  const [recommendationsExpanded, setRecommendationsExpanded] = useState(false);
   const [selected, setSelected] = useState<Menu | null>(null);
   const [menuView, setMenuView] = useState<MenuBoardView>({ enlarged: false });
   const [error, setError] = useState('');
   const [transcript, setTranscript] = useState('');
-  const [recommendationNotice, setRecommendationNotice] = useState('');
-  const [directCandidates, setDirectCandidates] = useState<{ menu_id: string; temperature: string; reason: string }[]>([]);
   const revision = useRef(0);
   const stage = selected ? 'menu_confirmation' : order.stage === 'menu' && candidates?.length ? 'recommendations' : order.stage;
   const guide = selected ? { title: selected.name, description: '이 메뉴로 주문하시겠습니까? 네라고 말씀하시거나 버튼을 눌러 주세요.' }
@@ -50,7 +49,6 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
     const id = ++revision.current;
     setTranscript('');
     setError('');
-    setRecommendationNotice(''); setDirectCandidates([]);
     try {
       const body = new FormData();
       body.set('audio', audio, 'recording.webm'); body.set('stage', stage);
@@ -67,19 +65,17 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
       if (['menu', 'recommendations'].includes(stage) && action?.type === 'direct_recommendation' && catalog.status === 'ready') {
         if (action.status === 'recommend') {
           const recs = action.recommendations;
-          if (!Array.isArray(recs) || recs.length !== 1 || !recs.every(r =>
+          if (!Array.isArray(recs) || recs.length === 0 || recs.length > catalog.menus.length
+            || new Set(recs.map(r => r.menu_id)).size !== recs.length || !recs.every(r =>
             catalog.menus.some(m => m.id === r.menu_id && m.available && m.temperatures.includes(r.temperature)))) throw new Error('LLM 추천 결과를 확인하지 못했어요.');
-          interrupt(); setCandidates(recs.map(r => r.menu_id)); setDirectCandidates(recs); return;
+          interrupt(); setRecommendationsExpanded(false); setCandidates(recs.slice(0, 6).map(r => r.menu_id)); return;
         }
-        if (!['clarify', 'insufficient_data'].includes(action.status)) throw new Error('LLM 응답을 확인하지 못했어요.');
-        const messages = action.status === 'clarify' ? action.questions : action.missing_information;
-        if (!Array.isArray(messages) || !messages.length || !messages.every(m => typeof m === 'string')) throw new Error('LLM 안내를 확인하지 못했어요.');
-        const message = messages.join(' ');
-        interrupt(); setCandidates(null); setRecommendationNotice(message); voice.speak(message); return;
+        if (action.status !== 'insufficient_data') throw new Error('LLM 응답을 확인하지 못했어요.');
+        interrupt(); setRecommendationsExpanded(false); setCandidates([]); return;
       }
       if (stage === 'menu_confirmation' && action?.type === 'confirm') { accept(); return; }
       if (stage === 'review' && action?.type === 'confirm') { interrupt(); await confirm(); return; }
-      if (['menu', 'recommendations'].includes(stage) && action?.type === 'restart_recommendation') { interrupt(); setCandidates(null); setTranscript(''); return; }
+      if (['menu', 'recommendations'].includes(stage) && action?.type === 'restart_recommendation') { interrupt(); setRecommendationsExpanded(false); setCandidates(null); setTranscript(''); return; }
       if (['menu', 'recommendations'].includes(stage) && action?.type === 'select_menu' && catalog.status === 'ready') {
         const menu = catalog.menus.find(m => m.id === action.menu_id && m.available && (stage !== 'recommendations' || candidates?.includes(m.id)));
         if (menu) { choose(menu); return; }
@@ -90,7 +86,7 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
       if (order.stage === 'service_type' && action?.type === 'set_service_type' && ['DINE_IN', 'TAKEOUT'].includes(action.service_type)) {
         interrupt(); dispatch({ type: 'set_service_type', serviceType: action.service_type }); return;
       }
-      throw new Error(action?.type === 'recommend' ? '추천은 준비 중이에요. 메뉴 이름이나 원하는 맛과 음료 종류를 말씀해 주세요.' : '입력을 이해하지 못했어요. 다시 말씀하시거나 화면에서 선택해 주세요.');
+      throw new Error('입력을 이해하지 못했어요. 다시 말씀하시거나 화면에서 선택해 주세요.');
     } catch (failure) {
       if (signal.aborted || id !== revision.current) return;
       const message = failure instanceof Error ? failure.message : '음성 처리에 실패했어요.';
@@ -103,8 +99,6 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
     {enabled && <p className="order-step__note">마이크를 누르고 말씀하신 뒤 ‘녹음 종료’를 눌러 주세요. 종료 후 음성을 분석합니다.</p>}
     {transcript && <p role="status" className="order-step__note">인식한 말: {transcript}</p>}
     {error && <p role="alert">{error}</p>}
-    {recommendationNotice && !selected && order.stage === 'menu' && <section aria-label="추천 추가 안내"><p role="status">{recommendationNotice}</p>
-      <p>대화 기록은 아직 이어지지 않습니다. 원래 조건과 답을 합쳐 다시 말씀해 주세요.</p></section>}
     {selected && <section className="voice-menu-confirmation" aria-label="선택 메뉴 확인">
       <div className="voice-menu-confirmation__card">
         <MenuImage src={selected.imageUrl} className="voice-menu-confirmation__image" />
@@ -116,11 +110,9 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
       </div>
     </section>}
     {candidates !== null && !selected && order.stage === 'menu' && <section aria-label="추천 결과">
-      {directCandidates.map(candidate => <p key={candidate.menu_id} className="order-step__note">
-        LLM 추천 · {candidate.temperature}: {candidate.reason}
-      </p>)}
-      {catalog.status === 'ready' && candidates.length > 0 && <MenuBoard menus={candidates.flatMap(id => catalog.menus.filter(m => m.id === id))} selectedMenu={null} view={menuView} onViewChange={view => { interrupt(); setMenuView(view); }} onSelect={id => { const menu = catalog.menus.find(m => m.id === id && m.available); if(menu) choose(menu); }} />}
-      <button className="primary-button" onClick={() => { interrupt(); setCandidates(null); setTranscript(''); setDirectCandidates([]); setRecommendationNotice(''); }}>다시 추천받기</button>
+      {catalog.status === 'ready' && candidates.length > 0 && <MenuBoard menus={candidates.flatMap(id => catalog.menus.filter(m => m.id === id))}
+        preview={{ limit: 4, expanded: recommendationsExpanded, onToggle: () => { interrupt(); setRecommendationsExpanded(value => !value); } }} selectedMenu={null} view={menuView} onViewChange={view => { interrupt(); setMenuView(view); }} onSelect={id => { const menu = catalog.menus.find(m => m.id === id && m.available); if(menu) choose(menu); }} />}
+      <button className="primary-button" onClick={() => { interrupt(); setRecommendationsExpanded(false); setCandidates(null); setTranscript(''); }}>다시 추천받기</button>
     </section>}
     {stage === 'menu' && candidates === null && (catalog.status === 'ready'
       ? catalog.menus.length === 0 ? <CatalogStatus status="empty" onReload={reload} />

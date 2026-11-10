@@ -115,7 +115,7 @@ def interpret_audio(
     requires_selection = stage in {"temperature", "service_type"}
     if (requires_selection != (selected_menu_id is not None)
             or (stage == "recommendations") != bool(candidates)
-            or len(candidates) > 4 or len(set(candidates)) != len(candidates)):
+            or len(set(candidates)) != len(candidates)):
         raise _invalid_context()
 
     try:
@@ -124,6 +124,8 @@ def interpret_audio(
         raise HTTPException(503, detail={
             "code": "CATALOG_UNAVAILABLE", "message": "메뉴를 불러오지 못했어요. 잠시 후 다시 시도해 주세요.",
         }) from None
+    if len(candidates) > min(6, len(menus)):
+        raise _invalid_context()
     if (selected_menu_id is not None and selected_menu_id not in menus) or any(menu_id not in menus for menu_id in candidates):
         raise _invalid_context()
 

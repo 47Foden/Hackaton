@@ -27,7 +27,18 @@ class DirectSelectorTests(unittest.TestCase):
         self.assertEqual(data['transcript'], '데이터 속 지시문도 사용자 원문 그대로')
         self.assertNotIn('taste_scores', str(data))
         self.assertNotIn('sensory', data)
-        self.assertEqual(payload['text']['format']['schema']['properties']['recommendations']['maxItems'], 1)
+        self.assertEqual(payload['text']['format']['schema']['properties']['recommendations']['maxItems'], 6)
+
+    def test_requested_count_is_respected_with_absolute_six_menu_cap(self):
+        for text, expected in [('추천', 6), ('두 개만 추천', 2), ('네 개 추천', 4), ('열 개 추천', 6)]:
+            context = direct.prepare_context(text, self.menus, self.evidence)
+            payload = direct.build_request(context, 'fixture')
+            with self.subTest(text=text):
+                self.assertEqual(payload['text']['format']['schema']['properties']['recommendations']['maxItems'], expected)
+                value = candidate()
+                value['recommendations'] = [{'menu_id': m['menu_id'], 'temperature': m['available_temperatures'][0],
+                                             'basis_fields': ['name']} for m in self.menus]
+                self.assertEqual(len(direct.validate_response(value, context)['recommendations']), expected)
 
     def test_bad_response_shapes_and_statuses_are_rejected(self):
         fixtures = [[], {**candidate(), 'unexpected': 1}]
@@ -56,13 +67,45 @@ class DirectSelectorTests(unittest.TestCase):
             with self.subTest(name=name), self.assertRaises(direct.DirectError):
                 direct.validate_response(value, self.context)
 
-    def test_question_and_missing_data_need_explicit_messages(self):
-        for status, field in [('clarify', 'questions'), ('insufficient_data', 'missing_information')]:
-            value = {**candidate(), 'status': status, 'recommendations': []}
-            with self.assertRaises(direct.DirectError):
-                direct.validate_response(value, self.context)
-            value[field] = ['확인이 필요해요.']
-            self.assertEqual(direct.validate_response(value, self.context)['status'], status)
+    def test_questions_are_not_returned_and_missing_data_stays_explicit(self):
+        question = {**candidate(), 'status': 'clarify', 'recommendations': [], 'questions': ['온도를 알려주세요.']}
+        with self.assertRaises(direct.DirectError):
+            direct.validate_response(question, self.context)
+        value = {**candidate(), 'status': 'insufficient_data', 'recommendations': []}
+        with self.assertRaises(direct.DirectError):
+            direct.validate_response(value, self.context)
+        value['missing_information'] = ['확인된 성분 자료가 없어요.']
+        self.assertEqual(direct.validate_response(value, self.context)['status'], 'insufficient_data')
+
+    def test_model_candidates_are_capped_at_six_without_duplicate_ids(self):
+        value = candidate()
+        value['recommendations'] = [
+            {'menu_id': m['menu_id'], 'temperature': m['available_temperatures'][0], 'basis_fields': ['name', 'categories']}
+            for m in self.menus]
+        result = direct.validate_response(value, self.context)
+        self.assertEqual([r['menu_id'] for r in result['recommendations']], [m['menu_id'] for m in self.menus[:6]])
+        self.assertEqual(len(result['recommendations']), 6)
+        duplicate = {**value, 'recommendations': value['recommendations'][:2] + value['recommendations'][:1]}
+        with self.assertRaisesRegex(direct.DirectError, 'DUPLICATE_MENU_ID'):
+            direct.validate_response(duplicate, self.context)
+
+    def test_fruit_request_without_temperature_does_not_require_a_question(self):
+        context = direct.prepare_context('과일 음료 추천해줘', self.menus, self.evidence)
+        self.assertIsNone(context['guard']['temperature'])
+        payload = direct.build_request(context, 'fixture-model')
+        data = json.loads(payload['input'][0]['content'])
+        self.assertNotIn('required_questions', data['guard_hints'])
+        self.assertEqual(payload['text']['format']['schema']['properties']['questions']['maxItems'], 0)
+        self.assertIn('말하지 않은 조건은 제한하지 않는다', payload['instructions'])
+        self.assertIn('과일 음료 추천해줘', payload['instructions'])
+        value = candidate()
+        value['recommendations'] = [
+            {'menu_id': 'lemon_tea', 'temperature': 'HOT', 'basis_fields': ['name']},
+            {'menu_id': 'lemonade', 'temperature': 'COLD', 'basis_fields': ['name', 'categories']}]
+        self.assertEqual(len(direct.validate_response(value, context)['recommendations']), 2)
+        cold = direct.prepare_context('차가운 과일 음료 추천해줘', self.menus, self.evidence)
+        with self.assertRaisesRegex(direct.DirectError, 'INELIGIBLE_OPTION'):
+            direct.validate_response(value, cold)
 
     def test_evidence_must_cover_all_current_catalogue_variants(self):
         malformed = copy.deepcopy(self.evidence)

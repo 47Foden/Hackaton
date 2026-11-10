@@ -1,0 +1,21 @@
+﻿audio_file,split,draft_reference_NOT_human_verified,base_asr,small_asr,vocabulary_hint_asr,draft_expected_conditions,review_note
+speech13_20261107081646862.mp3,prompt,5000원 이하로 추천해주세요,"5,000원 이하로 추천해주세요.",5000원 이하로 추천해주세요,,"{""max_price_krw"": 5000}",
+speech17_20261107081708001.mp3,prompt,만원 정도 생각하고 있어요,만원 정도 생각하고 있어요.,만원 정도 생각하고 있어요,,"{""approx_price_krw"": 10000, ""max_price_krw"": null, ""sort_by"": ""closest_price""}",정도는 단일 가격 상한이 아니라 가까운 가격 선호다.
+speech18_20261107081721846.mp3,prompt,3천원에서 5천원 사이요,"3,000원에서 5,000원 사이요.",3천원에서 5천원 사이요,,"{""min_price_krw"": 3000, ""max_price_krw"": 5000}",
+speech30_20261107081744943.mp3,prompt,쓴맛이 약한 커피 있을까요?,스마시 약한 커피 있을까요?,쓴맛이 약한 커피 있을까요?,,"{""included_categories"": [""커피""], ""preferences"": [""쓴맛 낮음""]}",
+speech31_20261107081758792.mp3,prompt,딸기맛 나는 음료 주세요.,딸기만 나는 음료 주세요,딸기맛 나는 음료 주세요.,,"{""flavors"": [""딸기""]}",
+speech32_20261107081814485.mp3,prompt_holdout,과일향이 나는 음료를 추천해줘요.,과일 양이 나는 음료를 추천해줘요,과일향이 나는 음료를 추천해줘요.,,"{""flavors"": [""과일""], ""preferences"": [""과일향""]}",
+speech43_20261107081835138.mp3,prompt_holdout,디카페인 커피 추천해주세요.,기카페인 커피 추천해주세요,기카페인 커피 추천해주세요.,디카페인 커피 추천해주세요.,"{""included_categories"": [""디카페인"", ""커피""], ""max_caffeine_mg"": null}",디카페인 분류와 카페인 0mg은 다르다. 어휘 힌트 재전사 결과도 저장했다.
+speech47_20261107081906063.mp3,prompt_holdout,유제품 알레르기가 있어요.,유제품 알레르기가 있어요.,유제품 알레르기가 있어요.,,"{""unsupported_conditions"": [""검증된 전체 성분·교차접촉 자료 필요""]}",
+speech49_20261107081851047.mp3,prompt,두유로 바꿀 수 있는 라떼 있나요?,도위로 바꿀 수 있는 라떼 있나요?,두유로 바꿀 수 있는 라떼 있나요?,,"{""included_categories"": [""라떼""], ""required_options"": [""두유""]}",두유 변경은 실제 옵션 목록에 있어야 가능하다.
+speech52_20261107081923188.mp3,prompt_holdout,차 중에서 카페인 없는 거요,차중에서 카페인 없는 거예요.,차 중에서 카페인 없는 거요,,"{""included_categories"": [""티""], ""max_caffeine_mg"": 0}",
+speech58_20261107082000383.mp3,prompt,"쓴맛 덜한 커피를 7,500원 안으로요.",스마터랑 커피를 7500원 안으로요,"쓴맛 덜한 커피를 7,500원 안으로요.",,"{""included_categories"": [""커피""], ""max_price_krw"": 7500, ""preferences"": [""쓴맛 낮음""]}",
+speech65_20261107082037815.mp3,prompt_holdout,너무 달지 않고 새콤한 아이스 에이드여.,너무 달지 않고 새콤한 아이스 에이드여,너무 달지 않고 새콤한 아이스 에이드여.,,"{""included_categories"": [""에이드""], ""temperature"": ""COLD"", ""preferences"": [""단맛 낮음"", ""상큼함""]}",
+speech67_20261107082022980.mp3,prompt,차갑고 상큼한 레몬맛인데 커피는 아니었으면 해요,차갑고 상큼한 레몬 맛인데 커피는 아니었으면 해요.,차갑고 상큼한 레몬맛인데 커피는 아니었으면 해요,,"{""temperature"": ""COLD"", ""excluded_categories"": [""커피""], ""flavors"": [""레몬""]}",
+speech68_20261107082054509.mp3,prompt,커피도 차도 싫어요. 다른 거 추천해줘요.,커피도 차도 싫어요. 다른 거 추천해줘요.,커피도 차도 싫어요. 다른 거 추천해줘요.,,"{""included_categories"": [], ""excluded_categories"": [""커피"", ""티""]}",커피 제외는 디카페인 커피도 제외하지만 티 제외와 무카페인은 별개다.
+speech6_20261107081531360.mp3,prompt_holdout,달달한 프라페 좀 골라줘.,달달한 프라페 좀 골라줘,달달한 풀앞에 좀 골라줘,달달한 프라페 좀 골라줘.,"{""included_categories"": [""프라페""], ""preferences"": [""단맛 높음""]}",
+speech70_20261107082117793.mp3,prompt_holdout,"4,000원 이하로 뜨거운 디카페인 음료","4,000원 이하로 뜨거운 디카페인 음료","4,000원 이하로 뜨거운 디카페인 음료",,"{""max_price_krw"": 4000, ""temperature"": ""HOT"", ""included_categories"": [""디카페인""]}",
+speech71_20261107082150080.mp3,prompt,"두 잔 합쳐서 8,000원 안으로 추천해줘.",두 잔 합쳐서 8000원 안으로 추천해줘,"두 잔 합쳐서 8,000원 안으로 추천해줘.",,"{""order_quantity"": 2, ""total_budget_krw"": 8000, ""max_price_krw"": null, ""requested_count"": null, ""unsupported_conditions"": [""현재 주문은 한 메뉴·한 잔만 지원함""]}",두 잔 합계 예산을 한 잔 예산 또는 두 추천 후보로 오해하지 않는다. 현재 단일 주문 구조에서는 조합 주문을 지원한다고 안내하지 않는다.
+speech74_20261107082212141.mp3,prompt_holdout,아이고 더워라. 뭐 시원한 것 없어?,"아이고 더워라, 뭐 시원한 거 없어?",아이고 더워라. 뭐 시원한 것 없어?,,"{""temperature"": ""COLD""}",
+speech85_20261107082234885.mp3,prompt,적당한 걸로 알아서 주세요.,적당한 걸로 알아서 주세요.,적당한 걸로 알아서 주세요.,,"{""max_price_krw"": null, ""temperature"": null, ""requested_count"": null}",제시하지 않은 예산·온도를 묻거나 인기 순위를 만들어내지 않는다.
+speech92_20261107082252892.mp3,prompt,"그거 있잖아요. 그거, 그거요.",그거 있잖아요. 그거 그거요.,"그거 있잖아요. 그거, 그거요.",,"{""unsupported_conditions"": [""추천 조건 또는 지칭 대상 없음""]}",지칭 대상이 없으므로 임의 메뉴를 맞힌 척하지 않는다.

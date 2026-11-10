@@ -1,0 +1,10 @@
+{
+  "mode": "offline",
+  "reference_human_verified": false,
+  "recommendation_quality": "not_measured_no_human_menu_relevance_labels",
+  "case_count": 20,
+  "api_calls_attempted": 0,
+  "guard_case_matches": 20,
+  "baseline_guard_case_matches": 3,
+  "warning": "Prompt holdout is not an independent test set: developer inspected all 20. Draft references and constraint labels need human review. No live LLM accuracy has been measured."
+}

@@ -50,9 +50,9 @@ class DirectCandidate(BaseModel):
 
 class DirectRecommendation(BaseModel):
     type: Literal['direct_recommendation'] = 'direct_recommendation'
-    status: Literal['recommend', 'clarify', 'insufficient_data']
-    recommendations: list[DirectCandidate] = Field(max_length=1)
-    questions: list[str] = Field(max_length=1)
+    status: Literal['recommend', 'insufficient_data']
+    recommendations: list[DirectCandidate] = Field(max_length=6)
+    questions: list[str] = Field(max_length=0)
     missing_information: list[str]
     engine: Literal['llm-direct'] = 'llm-direct'
 

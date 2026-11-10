@@ -10,8 +10,13 @@ async function setup(page, action, status = 200) {
   await page.route('**/api/menus', async route => route.fulfill({ json: await api.getMenus() }));
   await page.route('**/api/voice/interpret', async route => {
     calls++;
-    await route.fulfill({ status, json: status === 200 ? { transcript: '차가운 음료 추천', action }
+    await route.fulfill({ status, json: status === 200 ? { transcript: '과일 음료 추천해줘', action }
       : { detail: { code: 'LLM_RECOMMENDATION_FAILED', message: 'LLM 추천을 확인하지 못했어요.' } } });
+  });
+  await page.addInitScript(() => {
+    window.spokenPrompts = [];
+    window.speechSynthesis.speak = utterance => window.spokenPrompts.push(utterance.text);
+    window.speechSynthesis.cancel = () => {};
   });
   await page.goto('/');
   await page.getByRole('button', { name: '음성으로 주문하기' }).click();
@@ -21,25 +26,64 @@ async function setup(page, action, status = 200) {
   return () => calls;
 }
 
-test('direct candidate shows a current menu name and grounded reason without a text test panel', async ({ page }) => {
-  const calls = await setup(page, { type: 'direct_recommendation', engine: 'llm-direct', status: 'recommend',
-    recommendations: [{ menu_id: 'iced_americano', temperature: 'COLD', reason: '확인 가격과 온도로 선택한 mock 후보입니다.' }], questions: [], missing_information: [] });
-  await expect(page.getByText(/LLM 추천 · COLD: 확인 가격과 온도/)).toBeVisible();
-  await expect(page.locator('.menu-card__name', { hasText: '아메리카노' })).toBeVisible();
-  await expect(page.getByText('텍스트로 추천 시험 (개발용)', { exact: true })).toHaveCount(0);
-  expect(calls()).toBe(1);
-});
-
-for (const status of ['clarify', 'insufficient_data']) {
-  test(`direct ${status} is shown without silently choosing a menu`, async ({ page }) => {
-    const message = status === 'clarify' ? '원하는 온도를 알려주세요.' : '확인된 우유 성분 자료가 필요해요.';
-    const calls = await setup(page, { type: 'direct_recommendation', engine: 'llm-direct', status,
-      recommendations: [], questions: status === 'clarify' ? [message] : [], missing_information: status === 'insufficient_data' ? [message] : [] });
-    await expect(page.getByRole('region', { name: '추천 추가 안내' })).toContainText(message);
-    await expect(page.getByRole('region', { name: '선택 메뉴 확인' })).toHaveCount(0);
+for (const size of [1, 4, 5, 6]) {
+  test(`${size} recommendations use a four-menu preview without questions`, async ({ page }) => {
+    const response = await createMockApi({ delayMs: 0 }).getMenus();
+    const selected = response.menus.slice(0, size);
+    const calls = await setup(page, { type: 'direct_recommendation', engine: 'llm-direct', status: 'recommend',
+      recommendations: selected.map(m => ({ menu_id: m.menu_id,
+        temperature: m.available_temperatures[0], reason: '검증용 모델 후보' })), questions: [], missing_information: [] });
+    const results = page.getByRole('region', { name: '추천 결과' });
+    await expect(results.locator('.menu-card')).toHaveCount(Math.min(size, 4));
+    const expand = results.getByRole('button', { name: '전체보기', exact: true });
+    if (size > 4) {
+      await expect(expand).toHaveAttribute('aria-expanded', 'false');
+      await expect(results.getByRole('status')).toContainText(`총 ${size}개`);
+      await expand.click();
+      await expect(results.locator('.menu-card')).toHaveCount(size);
+      await results.getByRole('button', { name: '크게 보기', exact: true }).click();
+      await expect(results.locator('.menu-card')).toHaveCount(size);
+      await results.getByRole('button', { name: '간단히 보기', exact: true }).click();
+      await expect(results.locator('.menu-card')).toHaveCount(4);
+      await results.getByRole('button', { name: '전체보기', exact: true }).click();
+    } else {
+      await expect(expand).toHaveCount(0);
+    }
+    for (const menu of selected) await expect(results.locator('.menu-card__name', { hasText: menu.name })).not.toHaveCount(0);
+    await expect(page.getByText(/대화 기록은 아직|원래 조건과 답을|과일차도 괜찮/)).toHaveCount(0);
+    await expect(page.getByRole('region', { name: '추천 추가 안내' })).toHaveCount(0);
+    expect((await page.evaluate(() => window.spokenPrompts)).join(' ')).not.toMatch(/대화 기록|원래 조건과 답|과일차도 괜찮/);
     expect(calls()).toBe(1);
+    // A candidate beyond the former 4-menu limit is still selectable.
+    await results.locator('.menu-card').last().click();
+    await expect(page.getByRole('region', { name: '선택 메뉴 확인' })).toContainText(selected.at(-1).name);
   });
 }
+
+test('a fresh recommendation returns to the four-menu preview', async ({ page }) => {
+  const response = await createMockApi({ delayMs: 0 }).getMenus();
+  await setup(page, { type: 'direct_recommendation', engine: 'llm-direct', status: 'recommend',
+    recommendations: response.menus.slice(0, 6).map(m => ({ menu_id: m.menu_id,
+      temperature: m.available_temperatures[0], reason: '검증용 후보' })), questions: [], missing_information: [] });
+  const results = page.getByRole('region', { name: '추천 결과' });
+  await results.getByRole('button', { name: '전체보기', exact: true }).click();
+  await expect(results.locator('.menu-card')).toHaveCount(6);
+  await page.getByRole('button', { name: '음성 녹음', exact: true }).click();
+  await page.getByRole('button', { name: '녹음 종료' }).click();
+  await expect(results.locator('.menu-card')).toHaveCount(4);
+  await expect(results.getByRole('button', { name: '전체보기', exact: true })).toHaveAttribute('aria-expanded', 'false');
+});
+
+test('no supported match shows an empty result and restart without dialogue instructions', async ({ page }) => {
+  const calls = await setup(page, { type: 'direct_recommendation', engine: 'llm-direct', status: 'insufficient_data',
+    recommendations: [], questions: [], missing_information: ['확인된 성분 자료가 없어요.'] });
+  await expect(page.getByRole('heading', { name: '조건에 맞는 메뉴가 없어요.' })).toBeVisible();
+  await expect(page.locator('.menu-card')).toHaveCount(0);
+  await expect(page.getByText(/대화 기록은 아직|원래 조건과 답을/)).toHaveCount(0);
+  expect(calls()).toBe(1);
+  await page.getByRole('button', { name: '다시 추천받기' }).click();
+  await expect(page.getByRole('heading', { name: '음성 주문', exact: true })).toBeVisible();
+});
 
 test('failed direct recommendation reports error once without retry or fallback', async ({ page }) => {
   const calls = await setup(page, null, 502);

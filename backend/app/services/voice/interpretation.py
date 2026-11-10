@@ -1,3 +1,4 @@
+import re
 from unicodedata import normalize
 
 from app.schemas.voice import Confirm, Retry, SelectMenu, SetServiceType, SetTemperature, VoiceAction, VoiceStage
@@ -51,8 +52,9 @@ def interpret_transcript(
         service_type = SERVICE_TYPES.get(phrase)
         return SetServiceType(service_type=service_type) if service_type else Retry(reason="UNRECOGNIZED")
 
-    if stage == "recommendations" and phrase in ORDINALS:
-        index = ORDINALS[phrase]
+    number = re.fullmatch(r"([1-9][0-9]*)번", phrase)
+    if stage == "recommendations" and (phrase in ORDINALS or number):
+        index = ORDINALS[phrase] if phrase in ORDINALS else int(number[1]) - 1
         if index >= len(candidate_menu_ids):
             return Retry(reason="OUTSIDE_CANDIDATES")
         matches = [candidate_menu_ids[index]]
