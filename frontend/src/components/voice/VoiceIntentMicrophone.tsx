@@ -3,8 +3,9 @@ import { useMicrophoneRecording } from '../../hooks/useMicrophoneRecording';
 import { microphoneUnavailableReason } from '../../voice/microphoneRecording';
 import { MicrophoneButton } from './MicrophoneButton';
 import './VoiceIntentMicrophone.css';
+import type { VoiceIntent } from '../../voice/voiceIntent';
 
-export type VoiceIntent = 'order' | 'recommend';
+export type { VoiceIntent } from '../../voice/voiceIntent';
 export type IntentRecordingComplete = (audio: Blob, signal: AbortSignal, intent: VoiceIntent) => void | Promise<void>;
 
 export function VoiceIntentMicrophone({ disabledReason, onRecordingComplete }: {

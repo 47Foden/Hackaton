@@ -26,7 +26,7 @@ test('independent voice session mixes speech and touch and submits only after co
   });
   await page.goto('/');
   await page.getByRole('button', { name: '음성으로 주문하기' }).click();
-  await expect.poll(() => page.evaluate(() => window.prompts.join(' '))).toContain('아래 마이크 버튼');
+  await expect.poll(() => page.evaluate(() => window.prompts.join(' '))).toContain('메뉴 추천받기를');
   async function say() {
     await page.getByRole('button', { name: '음성 녹음', exact: true })
       .or(page.getByRole('button', { name: '주문하기', exact: true })).click();

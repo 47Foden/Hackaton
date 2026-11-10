@@ -177,7 +177,11 @@ multipart 요청 전체는 오디오 제한에 헤더 여유 16 KiB를 더해 �
 
 `recognized_options`는 기존 계약을 유지한다. 명시적 `recommend`에서는 정확한 메뉴명이 있어도 메뉴가 선택된 것으로 보지 않으므로 커스터마이징 의도는 `pending`으로 보존한다(명시적 추가 옵션 없음은 `resolved`의 빈 선택). 사용자 발화 온도·이용 방식은 그대로 추출하고, 추천 모델의 후보 온도를 사용자 선택으로 복사하지 않는다. 실제 제공 온도 및 사용자 요청 온도와 충돌하는 추천은 기존 `502 LLM_RECOMMENDATION_FAILED`다.
 
-예: 같은 “아이스 카페라떼 샷 추가 포장” 발화라도 `intent=order`는 `select_menu`와 검증된 샷 옵션을 반환하고, `intent=recommend`는 추천 결과와 아직 확정되지 않은 샷 의도를 반환한다. 이 단계의 서버 변경만으로 기존 프론트 버튼은 바뀌지 않는다. 후속 두 버튼 UI는 메뉴/추천 단계에서 목적을 명시적으로 전송한다.
+예: 같은 “아이스 카페라떼 샷 추가 포장” 발화라도 `intent=order`는 `select_menu`와 검증된 샷 옵션을 반환하고, `intent=recommend`는 추천 결과와 아직 확정되지 않은 샷 의도를 반환한다.
+
+현재 프론트의 두 버튼은 녹음 시작 때 고정한 목적을 전송한다. `order`는 `select_menu`, `recommend`는 `direct_recommendation`만 진행 행동으로 허용하며 `retry`/`restart_recommendation`은 공통으로 허용한다. 목적과 다른 응답은 기존 화면·후보·옵션을 변경하지 않고 오류로 처리한다. 이후 메뉴 확인·옵션·최종 확인 단계의 단일 녹음은 `intent`를 보내지 않는다.
+
+새 추천은 성공한 후보 목록 또는 빈 `insufficient_data` 결과를 검증한 뒤 기존 추천 세션을 교체한다. 요청 실패·취소·잘못된 응답·`retry`에서는 이전 세션을 유지하며, 이때 새 추천의 `unresolved_fields`도 이전 선택에 적용하지 않는다. 주문/옵션 선택 중의 `retry`는 기존 계약대로 충돌한 선택의 자동 확정을 막는다.
 
 ```sh
 curl -F 'audio=@recording.webm;type=audio/webm' -F 'stage=recommendations' \

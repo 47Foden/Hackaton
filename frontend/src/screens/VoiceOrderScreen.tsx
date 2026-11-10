@@ -11,6 +11,7 @@ import { useMenus } from '../hooks/useMenus';
 import { useOrderFlow } from '../hooks/useOrderFlow';
 import { useVoiceGuidance } from '../hooks/useVoiceGuidance';
 import { browserVoiceGuidance as voice } from '../voice/browserVoiceGuidance';
+import { acceptsVoiceAction, voiceRetryMessage } from '../voice/voiceIntent';
 import { kioskApi, isMockOrderApi } from '../api';
 import type { Menu } from '../data/menuCatalog';
 import { TemperatureScreen } from './order/TemperatureScreen';
@@ -42,8 +43,8 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
     ? '말씀하신 옵션 중 확인이 필요한 항목이 있어요. 가능한 선택은 유지했으니 화면에서 확인해 주세요.' : '';
   const stage = selected ? 'menu_confirmation' : order.stage === 'menu' && candidates?.length ? 'recommendations' : order.stage;
   const guide = selected ? { title: selected.name, description: '이 메뉴로 주문하시겠습니까? 네라고 말씀하시거나 버튼을 눌러 주세요.' }
-    : candidates !== null && order.stage === 'menu' ? { title: candidates.length ? '추천 메뉴' : '조건에 맞는 메뉴가 없어요.', description: '추천 메뉴를 확인해 주세요. 재추천을 원하시면 다시 추천이라고 말씀하시거나 버튼을 누르면 초기 음성 입력 화면으로 돌아갑니다.' }
-    : order.stage === 'menu' ? { title: '음성 주문', description: '아래 마이크 버튼을 누르시면 음성 주문이 가능합니다. 메뉴 이름이나 원하는 맛과 음료 종류를 말씀해 주세요.' }
+    : candidates !== null && order.stage === 'menu' ? { title: candidates.length ? '추천 메뉴' : '조건에 맞는 메뉴가 없어요.', description: '추천 메뉴를 터치하거나 주문하기를 눌러 선택해 주세요. 새 조건으로 추천받으려면 메뉴 추천받기를 눌러 주세요. 다시 추천받기는 초기 화면으로 돌아갑니다.' }
+    : order.stage === 'menu' ? { title: '음성 주문', description: '메뉴를 정하셨다면 주문하기를, 추천이 필요하면 메뉴 추천받기를 눌러 말씀해 주세요.' }
     : order.stage === 'review' ? { title: '주문 내용을 확인해 주세요.', description: '주문 확정이라고 말씀하시거나 주문 확정 버튼을 눌러 주세요.' }
     : order.stage === 'complete' ? { title: '주문이 접수되었어요.', description: `주문번호는 ${order.result.order_number}번입니다.` }
     : getOrderGuidance(order, isMockOrderApi);
@@ -85,17 +86,22 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
       setTranscript(typeof data.transcript === 'string' ? data.transcript : '');
       voice.cancel();
       const action = data.action;
+      if (intent && !acceptsVoiceAction(intent, action?.type)) {
+        throw new Error('선택한 입력 목적에 맞는 응답을 받지 못했어요. 같은 버튼을 눌러 다시 말씀해 주세요.');
+      }
       const incoming = readVoiceOptions(data.recognized_options);
       const options = mergeVoiceOptions(intent === 'recommend' ? {} : sessionRef.current, incoming);
       if (['menu', 'recommendations'].includes(stage) && action?.type === 'direct_recommendation' && catalog.status === 'ready') {
         if (action.status === 'recommend') {
           const recs = action.recommendations;
           if (!Array.isArray(recs) || recs.length === 0 || recs.length > catalog.menus.length
-            || new Set(recs.map(r => r.menu_id)).size !== recs.length || !recs.every(r =>
-            catalog.menus.some(m => m.id === r.menu_id && m.available && m.temperatures.includes(r.temperature)))) throw new Error('LLM 추천 결과를 확인하지 못했어요.');
+            || !recs.every(r => r && catalog.menus.some(m => m.id === r.menu_id && m.available
+              && m.temperatures.includes(r.temperature) && (!options.temperature || r.temperature === options.temperature)))
+            || new Set(recs.map(r => r.menu_id)).size !== recs.length) throw new Error('LLM 추천 결과를 확인하지 못했어요.');
           interrupt(); save(options); setCandidates(recs.map(r => r.menu_id)); return;
         }
-        if (action.status !== 'insufficient_data') throw new Error('LLM 응답을 확인하지 못했어요.');
+        if (action.status !== 'insufficient_data' || !Array.isArray(action.recommendations)
+          || action.recommendations.length !== 0) throw new Error('LLM 응답을 확인하지 못했어요.');
         interrupt(); save(options); setCandidates([]); return;
       }
       if (stage === 'menu_confirmation' && action?.type === 'confirm') { accept(options); return; }
@@ -120,10 +126,11 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
         const next = save(mergeVoiceOptions(options, { service_type: action.service_type }));
         dispatch({ type: 'apply_voice_options', voiceOptions: next }); return;
       }
-      if (action?.type === 'retry' && incoming?.unresolved_fields?.length) {
+      // A failed new recommendation must not invalidate the current session.
+      if (intent !== 'recommend' && action?.type === 'retry' && incoming?.unresolved_fields?.length) {
         save(mergeVoiceOptions(sessionRef.current, { unresolved_fields: incoming.unresolved_fields }));
       }
-      throw new Error('입력을 이해하지 못했어요. 다시 말씀하시거나 화면에서 선택해 주세요.');
+      throw new Error(voiceRetryMessage(intent, action?.reason));
     } catch (failure) {
       if (signal.aborted || controller.signal.aborted || id !== revision.current) return;
       const message = failure instanceof Error ? failure.message : '음성 처리에 실패했어요.';
@@ -137,7 +144,9 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
     microphone={['menu', 'recommendations'].includes(stage)
       ? <VoiceIntentMicrophone key={stage} onRecordingComplete={record} />
       : <OrderMicrophone key={stage} disabledReason={enabled ? undefined : '현재 단계에서는 녹음할 수 없어요.'} onRecordingComplete={record} />}>
-    {enabled && <p className="order-step__note">마이크를 누르고 말씀하신 뒤 ‘녹음 종료’를 눌러 주세요. 종료 후 음성을 분석합니다.</p>}
+    {enabled && <p className="order-step__note">{['menu', 'recommendations'].includes(stage)
+      ? '주문하기 또는 메뉴 추천받기를 누르고 말씀하신 뒤 ‘녹음 종료’를 눌러 주세요. 종료 후 음성을 분석합니다.'
+      : '마이크를 누르고 말씀하신 뒤 ‘녹음 종료’를 눌러 주세요. 종료 후 음성을 분석합니다.'}</p>}
     {transcript && <p role="status" className="order-step__note">인식한 말: {transcript}</p>}
     {error && <p role="alert">{error}</p>}
     {optionNotice && <p role="status">{optionNotice}</p>}
