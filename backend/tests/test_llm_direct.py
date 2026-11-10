@@ -53,7 +53,7 @@ class DirectSelectorTests(unittest.TestCase):
 
     def test_invalid_menu_temperature_and_evidence_are_rejected(self):
         for change in [{'menu_id': 'invented'}, {'temperature': 'WARM'},
-                       {'basis_fields': ['description']}, {'basis_fields': ['temperature', 'temperature']},
+                       {'basis_fields': ['milk']}, {'basis_fields': ['temperature', 'temperature']},
                        {'basis_fields': []}, {'basis_fields': ['invented']}]:
             value = candidate()
             value['recommendations'][0].update(change)
@@ -100,8 +100,8 @@ class DirectSelectorTests(unittest.TestCase):
         self.assertIn('과일 음료 추천해줘', payload['instructions'])
         value = candidate()
         value['recommendations'] = [
-            {'menu_id': 'lemon_tea', 'temperature': 'HOT', 'basis_fields': ['name']},
-            {'menu_id': 'lemonade', 'temperature': 'COLD', 'basis_fields': ['name', 'categories']}]
+            {'menu_id': 'lemon_tea', 'temperature': 'HOT', 'basis_fields': ['name', 'description']},
+            {'menu_id': 'lemonade', 'temperature': 'COLD', 'basis_fields': ['name', 'categories', 'description']}]
         self.assertEqual(len(direct.validate_response(value, context)['recommendations']), 2)
         cold = direct.prepare_context('차가운 과일 음료 추천해줘', self.menus, self.evidence)
         with self.assertRaisesRegex(direct.DirectError, 'INELIGIBLE_OPTION'):
