@@ -72,8 +72,11 @@ class CurrentCatalogueTests(unittest.TestCase):
             direct.recommend('추천', self.rows, transport=lambda _: envelope(candidate(mid, self.rows[0]['available_temperatures'][0])))
 
     def test_unknown_recipe_is_not_imported_from_old_menu_name(self):
+        evidence = json.loads(direct.DEFAULT_EVIDENCE.read_text())
+        evidence['menus'][0]['variants']['COLD']['description'] = {
+            'status': 'unknown', 'value': None, 'source': None, 'checked_date': None, 'note': 'Test-only unknown recipe'}
         with self.assertRaisesRegex(DirectError, 'EVIDENCE_SCOPE_MISMATCH'):
-            direct.recommend('추천', self.rows, transport=lambda _: envelope(candidate(fields=['description'])))
+            direct.recommend('추천', self.rows, evidence=evidence, transport=lambda _: envelope(candidate(fields=['description'])))
         for text in ('우유 빼주세요', '카페인 없는 음료'):
             with self.subTest(text=text), self.assertRaisesRegex(DirectError, 'INELIGIBLE_OPTION'):
                 direct.recommend(text, self.rows, transport=lambda _: envelope(candidate()))
@@ -118,7 +121,7 @@ class VoiceRouteIntegrationTests(unittest.TestCase):
         self.assertEqual(value['action']['status'], 'insufficient_data')
         self.assertEqual(value['action']['questions'], [])
 
-    def test_all_45_candidates_pass_api_contract_and_last_candidate_can_be_selected(self):
+    def test_recommendations_are_capped_at_six_and_sixth_candidate_can_be_selected(self):
         rows = menus()
         result = candidate()
         result['recommendations'] = [{'menu_id': m['menu_id'], 'temperature': m['available_temperatures'][0],
@@ -127,13 +130,13 @@ class VoiceRouteIntegrationTests(unittest.TestCase):
                 patch.object(direct, 'openai_transport', return_value=envelope(result)):
             status, value = self.post()
         self.assertEqual(status, 200)
-        self.assertEqual(len(value['action']['recommendations']), 45)
-        fields = [('stage', 'recommendations')] + [('candidate_menu_ids', m['menu_id']) for m in rows]
-        with patch.object(voice, 'transcribe_voice', return_value='45번 주세요'):
+        self.assertEqual(len(value['action']['recommendations']), 6)
+        fields = [('stage', 'recommendations')] + [('candidate_menu_ids', m['menu_id']) for m in rows[:6]]
+        with patch.object(voice, 'transcribe_voice', return_value='6번 주세요'):
             status, value = asyncio.run(post_audio(b'fixture', 'sample.webm', MIME_TYPE,
                                                   path='/api/voice/interpret', fields=fields))
         self.assertEqual(status, 200)
-        self.assertEqual(value['action'], {'type': 'select_menu', 'menu_id': rows[-1]['menu_id']})
+        self.assertEqual(value['action'], {'type': 'select_menu', 'menu_id': rows[5]['menu_id']})
 
     def test_failure_no_legacy_fallback_or_retry(self):
         os.environ['RECOMMENDATION_ENGINE'] = 'llm-direct'

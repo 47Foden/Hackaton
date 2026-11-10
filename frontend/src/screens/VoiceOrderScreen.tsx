@@ -26,6 +26,7 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
   const { order, dispatch, confirm } = useOrderFlow(kioskApi);
   const { state: catalog, reload } = useMenus(kioskApi);
   const [candidates, setCandidates] = useState<string[] | null>(null);
+  const [recommendationsExpanded, setRecommendationsExpanded] = useState(false);
   const [selected, setSelected] = useState<Menu | null>(null);
   const [menuView, setMenuView] = useState<MenuBoardView>({ enlarged: false });
   const [error, setError] = useState('');
@@ -51,7 +52,10 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
   useVoiceGuidance(`${guide.title} ${guide.description}`);
   const enabled = !['submitting', 'complete'].includes(stage) && !(order.stage === 'review' && order.error?.kind === 'conflict');
   function interrupt() { ++revision.current; pending.current?.abort(); voice.cancel(); setError(''); }
-  function restart() { interrupt(); save({}); setSelected(null); setCandidates(null); setTranscript(''); }
+  function restart() {
+    interrupt(); save({}); setSelected(null); setCandidates(null); setTranscript('');
+    setRecommendationsExpanded(false);
+  }
   function home() { interrupt(); save({}); onHome(); }
   function choose(menu: Menu, options = sessionRef.current) { interrupt(); save(options); setSelected(menu); }
   function accept(options = sessionRef.current) {
@@ -98,11 +102,12 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
             || !recs.every(r => r && catalog.menus.some(m => m.id === r.menu_id && m.available
               && m.temperatures.includes(r.temperature) && (!options.temperature || r.temperature === options.temperature)))
             || new Set(recs.map(r => r.menu_id)).size !== recs.length) throw new Error('LLM 추천 결과를 확인하지 못했어요.');
-          interrupt(); save(options); setCandidates(recs.map(r => r.menu_id)); return;
+          interrupt(); save(options); setRecommendationsExpanded(false);
+          setCandidates(recs.slice(0, 6).map(r => r.menu_id)); return;
         }
         if (action.status !== 'insufficient_data' || !Array.isArray(action.recommendations)
           || action.recommendations.length !== 0) throw new Error('LLM 응답을 확인하지 못했어요.');
-        interrupt(); save(options); setCandidates([]); return;
+        interrupt(); save(options); setRecommendationsExpanded(false); setCandidates([]); return;
       }
       if (stage === 'menu_confirmation' && action?.type === 'confirm') { accept(options); return; }
       if (stage === 'review' && action?.type === 'confirm') { interrupt(); await confirm(); return; }
@@ -161,7 +166,8 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
       </div>
     </section>}
     {candidates !== null && !selected && order.stage === 'menu' && <section aria-label="추천 결과">
-      {catalog.status === 'ready' && candidates.length > 0 && <MenuBoard menus={candidates.flatMap(id => catalog.menus.filter(m => m.id === id))} selectedMenu={null} view={menuView} onViewChange={view => { interrupt(); setMenuView(view); }} onSelect={id => { const menu = catalog.menus.find(m => m.id === id && m.available); if(menu) choose(menu); }} />}
+      {catalog.status === 'ready' && candidates.length > 0 && <MenuBoard menus={candidates.flatMap(id => catalog.menus.filter(m => m.id === id))}
+        preview={{ limit: 4, expanded: recommendationsExpanded, onToggle: () => { interrupt(); setRecommendationsExpanded(value => !value); } }} selectedMenu={null} view={menuView} onViewChange={view => { interrupt(); setMenuView(view); }} onSelect={id => { const menu = catalog.menus.find(m => m.id === id && m.available); if(menu) choose(menu); }} />}
       <button className="primary-button" onClick={restart}>다시 추천받기</button>
     </section>}
     {stage === 'menu' && candidates === null && (catalog.status === 'ready'

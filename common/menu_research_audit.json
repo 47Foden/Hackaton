@@ -1,0 +1,576 @@
+{
+  "checked_date": "2026-11-10",
+  "source_kind": "official_website",
+  "local_price_or_category_changes": false,
+  "matched": [
+    {
+      "official_name": "아메리카노",
+      "temperature": "HOT",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=5",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610105645_1717984605982_8i5CoHU2NV.jpg",
+      "page_sha256": "dea23f5bf295763f47abd0e4b14d2cd86746bc4445dd2690188d59a4b23f0882",
+      "menu_id": "iced_americano"
+    },
+    {
+      "official_name": "아메리카노",
+      "temperature": "COLD",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=7",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610133007_1717993807130_nwB5CATOJJ.jpg",
+      "page_sha256": "80c1a3f57b95601d490fb44c33946500e402b3b46032eff7eb426f085d408066",
+      "menu_id": "iced_americano"
+    },
+    {
+      "official_name": "꿀아메리카노",
+      "temperature": "HOT",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=6",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610104349_1717983829122_YzOyiQAOOg.jpg",
+      "page_sha256": "a24b90da48358d86451c29750cdab500c56d0decccc835ff55cd632a88f5f5b2",
+      "menu_id": "honey_americano"
+    },
+    {
+      "official_name": "꿀아메리카노",
+      "temperature": "COLD",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=6",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610133054_1717993854434_bTty_9u3br.jpg",
+      "page_sha256": "a24b90da48358d86451c29750cdab500c56d0decccc835ff55cd632a88f5f5b2",
+      "menu_id": "honey_americano"
+    },
+    {
+      "official_name": "바닐라아메리카노",
+      "temperature": "HOT",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=6",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610104740_1717984060714__tk3s9Kb_s.jpg",
+      "page_sha256": "a24b90da48358d86451c29750cdab500c56d0decccc835ff55cd632a88f5f5b2",
+      "menu_id": "vanilla_americano"
+    },
+    {
+      "official_name": "바닐라아메리카노",
+      "temperature": "COLD",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=6",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610133038_1717993838652__Ax_Xwuz6T.jpg",
+      "page_sha256": "a24b90da48358d86451c29750cdab500c56d0decccc835ff55cd632a88f5f5b2",
+      "menu_id": "vanilla_americano"
+    },
+    {
+      "official_name": "헤이즐넛아메리카노",
+      "temperature": "HOT",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=6",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610110133_1717984893137_AqJAuHaq0t.jpg",
+      "page_sha256": "a24b90da48358d86451c29750cdab500c56d0decccc835ff55cd632a88f5f5b2",
+      "menu_id": "hazelnut_americano"
+    },
+    {
+      "official_name": "헤이즐넛아메리카노",
+      "temperature": "COLD",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=7",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610133023_1717993823204_vNvExvVODX.jpg",
+      "page_sha256": "80c1a3f57b95601d490fb44c33946500e402b3b46032eff7eb426f085d408066",
+      "menu_id": "hazelnut_americano"
+    },
+    {
+      "official_name": "카페라떼",
+      "temperature": "HOT",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=6",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610105821_1717984701991_RUKCqSZ_HO.jpg",
+      "page_sha256": "a24b90da48358d86451c29750cdab500c56d0decccc835ff55cd632a88f5f5b2",
+      "menu_id": "cafe_latte"
+    },
+    {
+      "official_name": "카페라떼",
+      "temperature": "COLD",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=6",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610132819_1717993699956_cEyZRaBZh5.jpg",
+      "page_sha256": "a24b90da48358d86451c29750cdab500c56d0decccc835ff55cd632a88f5f5b2",
+      "menu_id": "cafe_latte"
+    },
+    {
+      "official_name": "바닐라라떼",
+      "temperature": "HOT",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=6",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610104603_1717983963750_lApih2z1h0.jpg",
+      "page_sha256": "a24b90da48358d86451c29750cdab500c56d0decccc835ff55cd632a88f5f5b2",
+      "menu_id": "vanilla_latte"
+    },
+    {
+      "official_name": "바닐라라떼",
+      "temperature": "COLD",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=6",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610132249_1717993369864_VIG6IR2byt.jpg",
+      "page_sha256": "a24b90da48358d86451c29750cdab500c56d0decccc835ff55cd632a88f5f5b2",
+      "menu_id": "vanilla_latte"
+    },
+    {
+      "official_name": "연유라떼",
+      "temperature": "HOT",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=6",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610105712_1717984632188_Lqh27degWu.jpg",
+      "page_sha256": "a24b90da48358d86451c29750cdab500c56d0decccc835ff55cd632a88f5f5b2",
+      "menu_id": "condensed_milk_latte"
+    },
+    {
+      "official_name": "연유라떼",
+      "temperature": "COLD",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=3",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610132459_1717993499610_KiXcTR2q5P.jpg",
+      "page_sha256": "8c4774e0769657a5fdade175e733cf5156cc0e55bf3c5c8268280670363dfd05",
+      "menu_id": "condensed_milk_latte"
+    },
+    {
+      "official_name": "카푸치노",
+      "temperature": "HOT",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=6",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610105852_1717984732750_WEt0KXVcnQ.jpg",
+      "page_sha256": "a24b90da48358d86451c29750cdab500c56d0decccc835ff55cd632a88f5f5b2",
+      "menu_id": "cappuccino"
+    },
+    {
+      "official_name": "카푸치노",
+      "temperature": "COLD",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=6",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610132739_1717993659672_JFeCQ5qV53.jpg",
+      "page_sha256": "a24b90da48358d86451c29750cdab500c56d0decccc835ff55cd632a88f5f5b2",
+      "menu_id": "cappuccino"
+    },
+    {
+      "official_name": "헤이즐넛라떼",
+      "temperature": "HOT",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=6",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610110117_1717984877061_sLiVRNPq6J.jpg",
+      "page_sha256": "a24b90da48358d86451c29750cdab500c56d0decccc835ff55cd632a88f5f5b2",
+      "menu_id": "hazelnut_latte"
+    },
+    {
+      "official_name": "헤이즐넛라떼",
+      "temperature": "COLD",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=7",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240430104100_1714441260123_buRoeWVyce.jpg",
+      "page_sha256": "80c1a3f57b95601d490fb44c33946500e402b3b46032eff7eb426f085d408066",
+      "menu_id": "hazelnut_latte"
+    },
+    {
+      "official_name": "콜드브루오리지널",
+      "temperature": "HOT",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=6",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610105941_1717984781078_rdCUXhwycL.jpg",
+      "page_sha256": "a24b90da48358d86451c29750cdab500c56d0decccc835ff55cd632a88f5f5b2",
+      "menu_id": "cold_brew"
+    },
+    {
+      "official_name": "콜드브루오리지널",
+      "temperature": "COLD",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=7",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610132948_1717993788811_j_eYzA1Esd.jpg",
+      "page_sha256": "80c1a3f57b95601d490fb44c33946500e402b3b46032eff7eb426f085d408066",
+      "menu_id": "cold_brew"
+    },
+    {
+      "official_name": "디카페인 아메리카노",
+      "temperature": "HOT",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=3",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610105207_1717984327186_Sgj9kfKYCi.jpg",
+      "page_sha256": "8c4774e0769657a5fdade175e733cf5156cc0e55bf3c5c8268280670363dfd05",
+      "menu_id": "decaf_americano"
+    },
+    {
+      "official_name": "디카페인 아메리카노",
+      "temperature": "COLD",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=4",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240612101052_1718154652699_a0ElVTNb16.jpg",
+      "page_sha256": "3db149dc204862d8218fa1cb998ce1f36c89a6486964033ae41894e5a427e6b0",
+      "menu_id": "decaf_americano"
+    },
+    {
+      "official_name": "디카페인 꿀아메리카노",
+      "temperature": "HOT",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=3",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610104414_1717983854651_gNaXxjR35W.jpg",
+      "page_sha256": "8c4774e0769657a5fdade175e733cf5156cc0e55bf3c5c8268280670363dfd05",
+      "menu_id": "decaf_honey_americano"
+    },
+    {
+      "official_name": "디카페인 꿀아메리카노",
+      "temperature": "COLD",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=4",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610131949_1717993189396_pb_H77_7AM.jpg",
+      "page_sha256": "3db149dc204862d8218fa1cb998ce1f36c89a6486964033ae41894e5a427e6b0",
+      "menu_id": "decaf_honey_americano"
+    },
+    {
+      "official_name": "디카페인 바닐라 아메리카노",
+      "temperature": "HOT",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=3",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610104650_1717984010944__Ck8jyuaDL.jpg",
+      "page_sha256": "8c4774e0769657a5fdade175e733cf5156cc0e55bf3c5c8268280670363dfd05",
+      "menu_id": "decaf_vanilla_americano"
+    },
+    {
+      "official_name": "디카페인 바닐라 아메리카노",
+      "temperature": "COLD",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=4",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610131932_1717993172929_VUtwLd_LyN.jpg",
+      "page_sha256": "3db149dc204862d8218fa1cb998ce1f36c89a6486964033ae41894e5a427e6b0",
+      "menu_id": "decaf_vanilla_americano"
+    },
+    {
+      "official_name": "디카페인 헤이즐넛 아메리카노",
+      "temperature": "HOT",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=3",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610105046_1717984246492_KeavFH2VTO.jpg",
+      "page_sha256": "8c4774e0769657a5fdade175e733cf5156cc0e55bf3c5c8268280670363dfd05",
+      "menu_id": "decaf_hazelnut_americano"
+    },
+    {
+      "official_name": "디카페인 헤이즐넛 아메리카노",
+      "temperature": "COLD",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=4",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610131835_1717993115036_XaPndW7UkR.jpg",
+      "page_sha256": "3db149dc204862d8218fa1cb998ce1f36c89a6486964033ae41894e5a427e6b0",
+      "menu_id": "decaf_hazelnut_americano"
+    },
+    {
+      "official_name": "디카페인 카페라떼",
+      "temperature": "HOT",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=3",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610105117_1717984277710_7BjonXSBFE.jpg",
+      "page_sha256": "8c4774e0769657a5fdade175e733cf5156cc0e55bf3c5c8268280670363dfd05",
+      "menu_id": "decaf_cafe_latte"
+    },
+    {
+      "official_name": "디카페인 카페라떼",
+      "temperature": "COLD",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=4",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610132005_1717993205762_9xKCxaSb9P.jpg",
+      "page_sha256": "3db149dc204862d8218fa1cb998ce1f36c89a6486964033ae41894e5a427e6b0",
+      "menu_id": "decaf_cafe_latte"
+    },
+    {
+      "official_name": "디카페인 바닐라라떼",
+      "temperature": "HOT",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=3",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610104630_1717983990934_v3HPYN93uK.jpg",
+      "page_sha256": "8c4774e0769657a5fdade175e733cf5156cc0e55bf3c5c8268280670363dfd05",
+      "menu_id": "decaf_vanilla_latte"
+    },
+    {
+      "official_name": "디카페인 바닐라라떼",
+      "temperature": "COLD",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=4",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610113234_1717986754069_tSPQqoiPj6.jpg",
+      "page_sha256": "3db149dc204862d8218fa1cb998ce1f36c89a6486964033ae41894e5a427e6b0",
+      "menu_id": "decaf_vanilla_latte"
+    },
+    {
+      "official_name": "디카페인 연유라떼",
+      "temperature": "HOT",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=4",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610105224_1717984344775_9iKsKownRh.jpg",
+      "page_sha256": "3db149dc204862d8218fa1cb998ce1f36c89a6486964033ae41894e5a427e6b0",
+      "menu_id": "decaf_condensed_milk_latte"
+    },
+    {
+      "official_name": "디카페인 연유라떼",
+      "temperature": "COLD",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=4",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610131759_1717993079921_A7Gr7qp0g2.jpg",
+      "page_sha256": "3db149dc204862d8218fa1cb998ce1f36c89a6486964033ae41894e5a427e6b0",
+      "menu_id": "decaf_condensed_milk_latte"
+    },
+    {
+      "official_name": "디카페인 카푸치노",
+      "temperature": "HOT",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=3",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610105545_1717984545629_CaGhOpvAnm.jpg",
+      "page_sha256": "8c4774e0769657a5fdade175e733cf5156cc0e55bf3c5c8268280670363dfd05",
+      "menu_id": "decaf_cappuccino"
+    },
+    {
+      "official_name": "디카페인 카푸치노",
+      "temperature": "COLD",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=4",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610132018_1717993218605_64Ij4AhmCE.jpg",
+      "page_sha256": "3db149dc204862d8218fa1cb998ce1f36c89a6486964033ae41894e5a427e6b0",
+      "menu_id": "decaf_cappuccino"
+    },
+    {
+      "official_name": "디카페인 헤이즐넛 라떼",
+      "temperature": "HOT",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=3",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610105007_1717984207073_HqCto2mw3y.jpg",
+      "page_sha256": "8c4774e0769657a5fdade175e733cf5156cc0e55bf3c5c8268280670363dfd05",
+      "menu_id": "decaf_hazelnut_latte"
+    },
+    {
+      "official_name": "디카페인 헤이즐넛 라떼",
+      "temperature": "COLD",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=4",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610132034_1717993234457_aGDHQ0U0Ap.jpg",
+      "page_sha256": "3db149dc204862d8218fa1cb998ce1f36c89a6486964033ae41894e5a427e6b0",
+      "menu_id": "decaf_hazelnut_latte"
+    },
+    {
+      "official_name": "콜드브루디카페인",
+      "temperature": "HOT",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=4",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610105522_1717984522154_Wf1ds9riaV.jpg",
+      "page_sha256": "3db149dc204862d8218fa1cb998ce1f36c89a6486964033ae41894e5a427e6b0",
+      "menu_id": "decaf_cold_brew"
+    },
+    {
+      "official_name": "콜드브루디카페인",
+      "temperature": "COLD",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=4",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610132920_1717993760751_69WHioWjnb.jpg",
+      "page_sha256": "3db149dc204862d8218fa1cb998ce1f36c89a6486964033ae41894e5a427e6b0",
+      "menu_id": "decaf_cold_brew"
+    },
+    {
+      "official_name": "레몬에이드",
+      "temperature": "COLD",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=7",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610114557_1717987557279_GKXThr0HAc.jpg",
+      "page_sha256": "80c1a3f57b95601d490fb44c33946500e402b3b46032eff7eb426f085d408066",
+      "menu_id": "lemonade"
+    },
+    {
+      "official_name": "자몽에이드",
+      "temperature": "COLD",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=8",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20260318150836_1773814116733_8c9H4Rw3gH.png",
+      "page_sha256": "b4a468bfe16bce483d11eab033f6546b296d6ddec64889dc062acced4e4be0bb",
+      "menu_id": "grapefruit_ade"
+    },
+    {
+      "official_name": "청포도에이드",
+      "temperature": "COLD",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=8",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610115123_1717987883226_DMMQB84jmS.jpg",
+      "page_sha256": "b4a468bfe16bce483d11eab033f6546b296d6ddec64889dc062acced4e4be0bb",
+      "menu_id": "green_grape_ade"
+    },
+    {
+      "official_name": "쿠키프라페",
+      "temperature": "COLD",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=5",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610115315_1717987995816_oiPZ2u5dJr.jpg",
+      "page_sha256": "dea23f5bf295763f47abd0e4b14d2cd86746bc4445dd2690188d59a4b23f0882",
+      "menu_id": "cookie_frappe"
+    },
+    {
+      "official_name": "녹차프라페",
+      "temperature": "COLD",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=7",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20260318150847_1773814127229_oIDmdAQwND.png",
+      "page_sha256": "80c1a3f57b95601d490fb44c33946500e402b3b46032eff7eb426f085d408066",
+      "menu_id": "green_tea_frappe"
+    },
+    {
+      "official_name": "커피프라페",
+      "temperature": "COLD",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=7",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610132804_1717993684465__jH6f5a2VM.jpg",
+      "page_sha256": "80c1a3f57b95601d490fb44c33946500e402b3b46032eff7eb426f085d408066",
+      "menu_id": "coffee_frappe"
+    },
+    {
+      "official_name": "딸기쿠키프라페",
+      "temperature": "COLD",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=4",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610132048_1717993248890_NW1QEUmFtQ.jpg",
+      "page_sha256": "3db149dc204862d8218fa1cb998ce1f36c89a6486964033ae41894e5a427e6b0",
+      "menu_id": "strawberry_cookie_frappe"
+    },
+    {
+      "official_name": "딸기요거트스무디",
+      "temperature": "COLD",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=7",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610132117_1717993277823_KRGDVA4aeJ.jpg",
+      "page_sha256": "80c1a3f57b95601d490fb44c33946500e402b3b46032eff7eb426f085d408066",
+      "menu_id": "strawberry_yogurt_smoothie"
+    },
+    {
+      "official_name": "플레인요거트스무디",
+      "temperature": "COLD",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=7",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240612101151_1718154711606_iC5h64zrID.jpg",
+      "page_sha256": "80c1a3f57b95601d490fb44c33946500e402b3b46032eff7eb426f085d408066",
+      "menu_id": "plain_yogurt_smoothie"
+    },
+    {
+      "official_name": "딸기바나나주스",
+      "temperature": "COLD",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=3",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610114817_1717987697259_APSvRawmJi.jpg",
+      "page_sha256": "8c4774e0769657a5fdade175e733cf5156cc0e55bf3c5c8268280670363dfd05",
+      "menu_id": "strawberry_banana_juice"
+    },
+    {
+      "official_name": "딸기주스",
+      "temperature": "COLD",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=3",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610114741_1717987661472_LqJw6WITHO.jpg",
+      "page_sha256": "8c4774e0769657a5fdade175e733cf5156cc0e55bf3c5c8268280670363dfd05",
+      "menu_id": "strawberry_juice"
+    },
+    {
+      "official_name": "망고요거트스무디",
+      "temperature": "COLD",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=7",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610132210_1717993330781_04rKlgIKk6.jpg",
+      "page_sha256": "80c1a3f57b95601d490fb44c33946500e402b3b46032eff7eb426f085d408066",
+      "menu_id": "mango_yogurt_smoothie"
+    },
+    {
+      "official_name": "블루베리요거트스무디",
+      "temperature": "COLD",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=2",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20250320003134_1742398294871_z9t_oXfbA6.jpg",
+      "page_sha256": "ae7f56c02195811da8226b9bc28610bb3349c065f68703884a84164e58d110fc",
+      "menu_id": "blueberry_yogurt_smoothie"
+    },
+    {
+      "official_name": "딸기라떼",
+      "temperature": "COLD",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=1",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20250116001724_1736954244791_8qDsY0gj14.jpg",
+      "page_sha256": "5f350c1e793254a029ced512a484c666570d51c9381ca20d66170008b3f2cbe8",
+      "menu_id": "strawberry_latte"
+    },
+    {
+      "official_name": "오레오초코라떼",
+      "temperature": "COLD",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=5",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610132638_1717993598875_AQ4q6GUaJD.jpg",
+      "page_sha256": "dea23f5bf295763f47abd0e4b14d2cd86746bc4445dd2690188d59a4b23f0882",
+      "menu_id": "oreo_chocolate_latte"
+    },
+    {
+      "official_name": "녹차라떼",
+      "temperature": "HOT",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=5",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610104456_1717983896154_TxgXQHRHiM.jpg",
+      "page_sha256": "dea23f5bf295763f47abd0e4b14d2cd86746bc4445dd2690188d59a4b23f0882",
+      "menu_id": "green_tea_latte"
+    },
+    {
+      "official_name": "녹차라떼",
+      "temperature": "COLD",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=5",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610112917_1717986557781__XIcwRbg0h.jpg",
+      "page_sha256": "dea23f5bf295763f47abd0e4b14d2cd86746bc4445dd2690188d59a4b23f0882",
+      "menu_id": "green_tea_latte"
+    },
+    {
+      "official_name": "흑당라떼",
+      "temperature": "COLD",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=5",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610113159_1717986719673_UjpcQYhtmh.jpg",
+      "page_sha256": "dea23f5bf295763f47abd0e4b14d2cd86746bc4445dd2690188d59a4b23f0882",
+      "menu_id": "brown_sugar_latte"
+    },
+    {
+      "official_name": "복숭아아이스티",
+      "temperature": "COLD",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=8",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610132446_1717993486995_hvfli27vPn.jpg",
+      "page_sha256": "b4a468bfe16bce483d11eab033f6546b296d6ddec64889dc062acced4e4be0bb",
+      "menu_id": "peach_iced_tea"
+    },
+    {
+      "official_name": "제로 복숭아 아이스티",
+      "temperature": "COLD",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=3",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610113548_1717986948917_wK8B5fR4h5.jpg",
+      "page_sha256": "8c4774e0769657a5fdade175e733cf5156cc0e55bf3c5c8268280670363dfd05",
+      "menu_id": "zero_peach_iced_tea"
+    },
+    {
+      "official_name": "사과유자차",
+      "temperature": "HOT",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=8",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610105629_1717984589552_V9ta2Qw90q.jpg",
+      "page_sha256": "b4a468bfe16bce483d11eab033f6546b296d6ddec64889dc062acced4e4be0bb",
+      "menu_id": "apple_citron_tea"
+    },
+    {
+      "official_name": "사과유자차",
+      "temperature": "COLD",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=8",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610132332_1717993412234_5kkTR1DkNH.jpg",
+      "page_sha256": "b4a468bfe16bce483d11eab033f6546b296d6ddec64889dc062acced4e4be0bb",
+      "menu_id": "apple_citron_tea"
+    },
+    {
+      "official_name": "자몽차",
+      "temperature": "HOT",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=8",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610105747_1717984667913_eDh3AjWACb.jpg",
+      "page_sha256": "b4a468bfe16bce483d11eab033f6546b296d6ddec64889dc062acced4e4be0bb",
+      "menu_id": "grapefruit_tea"
+    },
+    {
+      "official_name": "자몽차",
+      "temperature": "COLD",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=9",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610132550_1717993550755_D158pZtb1K.jpg",
+      "page_sha256": "e8175f7d9bd01adbac99cc1cb26a471017547650be3e24b2d0b15915f7055554",
+      "menu_id": "grapefruit_tea"
+    },
+    {
+      "official_name": "레몬차",
+      "temperature": "HOT",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=8",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610105600_1717984560889__UGBqFya7F.jpg",
+      "page_sha256": "b4a468bfe16bce483d11eab033f6546b296d6ddec64889dc062acced4e4be0bb",
+      "menu_id": "lemon_tea"
+    },
+    {
+      "official_name": "레몬차",
+      "temperature": "COLD",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=9",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610114530_1717987530809_R6DsXnSZN_.jpg",
+      "page_sha256": "e8175f7d9bd01adbac99cc1cb26a471017547650be3e24b2d0b15915f7055554",
+      "menu_id": "lemon_tea"
+    },
+    {
+      "official_name": "유자차",
+      "temperature": "HOT",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=8",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610105725_1717984645282_YfXeYsJzVV.jpg",
+      "page_sha256": "b4a468bfe16bce483d11eab033f6546b296d6ddec64889dc062acced4e4be0bb",
+      "menu_id": "citron_tea"
+    },
+    {
+      "official_name": "유자차",
+      "temperature": "COLD",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=8",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610115050_1717987850728_2zPgDAyVmu.jpg",
+      "page_sha256": "b4a468bfe16bce483d11eab033f6546b296d6ddec64889dc062acced4e4be0bb",
+      "menu_id": "citron_tea"
+    },
+    {
+      "official_name": "에스프레소",
+      "temperature": "HOT",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=4",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610105357_1717984437294_AduuhU3VyW.jpg",
+      "page_sha256": "3db149dc204862d8218fa1cb998ce1f36c89a6486964033ae41894e5a427e6b0",
+      "menu_id": "espresso"
+    },
+    {
+      "official_name": "레몬차",
+      "temperature": "HOT",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=8",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610105600_1717984560889__UGBqFya7F.jpg",
+      "page_sha256": "b4a468bfe16bce483d11eab033f6546b296d6ddec64889dc062acced4e4be0bb",
+      "menu_id": "lemon_tea_alias"
+    },
+    {
+      "official_name": "레몬차",
+      "temperature": "COLD",
+      "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=9",
+      "image_source_url": "https://img.mega-mgccoffee.com/megahp/manager/upload/menu/20240610114530_1717987530809_R6DsXnSZN_.jpg",
+      "page_sha256": "e8175f7d9bd01adbac99cc1cb26a471017547650be3e24b2d0b15915f7055554",
+      "menu_id": "lemon_tea_alias"
+    }
+  ],
+  "unmatched": []
+}

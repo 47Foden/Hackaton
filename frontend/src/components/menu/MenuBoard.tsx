@@ -11,6 +11,7 @@ export interface MenuBoardView {
 interface MenuBoardProps {
   menus: Menu[];
   groupByCategory?: boolean;
+  preview?: { limit: number; expanded: boolean; onToggle: () => void };
   selectedMenu: string | null;
   view: MenuBoardView;
   onViewChange: (view: MenuBoardView) => void;
@@ -19,15 +20,17 @@ interface MenuBoardProps {
 
 /** 전체 메뉴를 표시하며, 확대 상태는 주문 화면이 유지한다. */
 export function MenuBoard({
-  menus, groupByCategory = false, selectedMenu, view, onViewChange, onSelect,
+  menus, groupByCategory = false, preview, selectedMenu, view, onViewChange, onSelect,
 }: MenuBoardProps) {
   const [category, setCategory] = useState('커피');
   const [subcategory, setSubcategory] = useState('에스프레소');
   const headingId = useId();
   const gridId = useId();
-  const visibleMenus = groupByCategory
+  const matchingMenus = groupByCategory
     ? menus.filter(menu => matchesCategory(menu, category, subcategory))
     : menus;
+  const visibleMenus = preview && !preview.expanded ? matchingMenus.slice(0, preview.limit) : matchingMenus;
+  const canExpand = preview !== undefined && matchingMenus.length > preview.limit;
   const selectedOutsideList = selectedMenu !== null
     && !visibleMenus.some(menu => menu.name === selectedMenu);
 
@@ -42,9 +45,13 @@ export function MenuBoard({
       <div className="menu-board__heading">
         <div>
           <span className="eyebrow">MENU</span>
-          <h2 id={headingId}>전체 메뉴판</h2>
+          <h2 id={headingId}>{preview ? '추천 메뉴판' : '전체 메뉴판'}</h2>
         </div>
         <div className="menu-board__controls">
+          {canExpand && <button type="button" className="outline-button" aria-controls={gridId}
+            aria-expanded={preview.expanded} onClick={preview.onToggle}>
+            {preview.expanded ? '간단히 보기' : '전체보기'}
+          </button>}
           <button type="button" className="outline-button" aria-controls={gridId}
             aria-pressed={view.enlarged}
             onClick={() => onViewChange({ ...view, enlarged: !view.enlarged })}>
@@ -65,8 +72,9 @@ export function MenuBoard({
         </div>
       </div>}
       <p className="menu-board__summary" role="status">
-        총 <strong>{visibleMenus.length}</strong>개
-        <span> · {groupByCategory ? `${category} / ${subcategory}` : '전체 메뉴'}
+        총 <strong>{matchingMenus.length}</strong>개
+        <span> · {groupByCategory ? `${category} / ${subcategory}` : preview ? '추천 메뉴' : '전체 메뉴'}
+          {canExpand && !preview.expanded && ` · ${visibleMenus.length}개 표시`}
           {view.enlarged && ' · 확대 크기'}</span>
         {selectedOutsideList && ` · 선택한 ${selectedMenu} 메뉴는 다른 분류에 있어요.`}
       </p>

@@ -281,6 +281,6 @@ Whisper는 공용 서버의 전사 워커에서 미리 로드한다. 워커는 �
 {"transcript":"차가운 음료 추천", "action":{"type":"direct_recommendation","engine":"llm-direct","status":"recommend","recommendations":[{"menu_id":"iced_americano","temperature":"COLD","reason":"확인된 자료에 기반한 근거"}],"questions":[],"missing_information":[]}, "recognized_options":{"temperature":"COLD","unresolved_fields":[]}}
 ```
 
-`status`는 `recommend`, `insufficient_data`다. 추천 개수를 말하면 그 개수를 상한으로 사용하고, 말하지 않으면 현재 메뉴 수까지 적합한 후보를 반환한다. 같은 메뉴 ID는 중복하지 않는다. `questions`는 항상 빈 배열이다. 자료 부족은 후보 없이 반환하고 화면에는 빈 추천 목록과 재추천 버튼을 표시한다. 추천 단계의 `candidate_menu_ids`도 전체 후보 수를 허용한다. 재추천은 `restart_recommendation`, 정확한 메뉴 선택은 `select_menu`, 단계별 옵션과 주문 확인은 기존 행동을 사용한다. LLM 실패는 502 `LLM_RECOMMENDATION_FAILED`, 근거 자료 미준비는 503 `LLM_EVIDENCE_NOT_READY`다. 성공처럼 보이는 기본 후보나 점수 추천으로 대체하지 않는다.
+`status`는 `recommend`, `insufficient_data`다. 추천 개수를 말하면 그 개수를 상한으로 사용하고, 말하지 않으면 적합한 후보를 최대 6개 반환한다. 명시한 개수도 6개를 넘을 수 없다. 같은 메뉴 ID는 중복하지 않는다. `questions`는 항상 빈 배열이다. 자료 부족은 후보 없이 반환하고 화면에는 빈 추천 목록과 재추천 버튼을 표시한다. 추천 단계의 `candidate_menu_ids`는 최대 6개다. 5~6개 결과는 4개 미리보기와 전체보기로 표시한다. 재추천은 `restart_recommendation`, 정확한 메뉴 선택은 `select_menu`, 단계별 옵션과 주문 확인은 기존 행동을 사용한다. LLM 실패는 502 `LLM_RECOMMENDATION_FAILED`, 근거 자료 미준비는 503 `LLM_EVIDENCE_NOT_READY`다. 성공처럼 보이는 기본 후보나 점수 추천으로 대체하지 않는다.
 
 현재 자료 상태·모델 설정은 [LLM 직접 추천 안내](llm-direct.md)를 참고한다.

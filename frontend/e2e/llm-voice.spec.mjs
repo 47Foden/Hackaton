@@ -26,15 +26,29 @@ async function setup(page, action, status = 200) {
   return () => calls;
 }
 
-for (const size of [5, 45]) {
-  test(`all ${size} matching menus appear without questions or conversation notices`, async ({ page }) => {
+for (const size of [1, 4, 5, 6]) {
+  test(`${size} recommendations use a four-menu preview without questions`, async ({ page }) => {
     const response = await createMockApi({ delayMs: 0 }).getMenus();
     const selected = response.menus.slice(0, size);
     const calls = await setup(page, { type: 'direct_recommendation', engine: 'llm-direct', status: 'recommend',
       recommendations: selected.map(m => ({ menu_id: m.menu_id,
         temperature: m.available_temperatures[0], reason: '검증용 모델 후보' })), questions: [], missing_information: [] });
     const results = page.getByRole('region', { name: '추천 결과' });
-    await expect(results.locator('.menu-card')).toHaveCount(size);
+    await expect(results.locator('.menu-card')).toHaveCount(Math.min(size, 4));
+    const expand = results.getByRole('button', { name: '전체보기', exact: true });
+    if (size > 4) {
+      await expect(expand).toHaveAttribute('aria-expanded', 'false');
+      await expect(results.getByRole('status')).toContainText(`총 ${size}개`);
+      await expand.click();
+      await expect(results.locator('.menu-card')).toHaveCount(size);
+      await results.getByRole('button', { name: '크게 보기', exact: true }).click();
+      await expect(results.locator('.menu-card')).toHaveCount(size);
+      await results.getByRole('button', { name: '간단히 보기', exact: true }).click();
+      await expect(results.locator('.menu-card')).toHaveCount(4);
+      await results.getByRole('button', { name: '전체보기', exact: true }).click();
+    } else {
+      await expect(expand).toHaveCount(0);
+    }
     for (const menu of selected) await expect(results.locator('.menu-card__name', { hasText: menu.name })).not.toHaveCount(0);
     await expect(page.getByText(/대화 기록은 아직|원래 조건과 답을|과일차도 괜찮/)).toHaveCount(0);
     await expect(page.getByRole('region', { name: '추천 추가 안내' })).toHaveCount(0);
@@ -45,6 +59,21 @@ for (const size of [5, 45]) {
     await expect(page.getByRole('region', { name: '선택 메뉴 확인' })).toContainText(selected.at(-1).name);
   });
 }
+
+test('a fresh recommendation returns to the four-menu preview', async ({ page }) => {
+  const response = await createMockApi({ delayMs: 0 }).getMenus();
+  await setup(page, { type: 'direct_recommendation', engine: 'llm-direct', status: 'recommend',
+    recommendations: response.menus.slice(0, 6).map(m => ({ menu_id: m.menu_id,
+      temperature: m.available_temperatures[0], reason: '검증용 후보' })), questions: [], missing_information: [] });
+  const results = page.getByRole('region', { name: '추천 결과' });
+  await results.getByRole('button', { name: '전체보기', exact: true }).click();
+  await expect(results.locator('.menu-card')).toHaveCount(6);
+  await page.getByRole('button', { name: '메뉴 추천받기', exact: true }).click();
+  await expect(page.getByRole('button', { name: '녹음 종료' })).toBeVisible();
+  await page.getByRole('button', { name: '녹음 종료' }).click();
+  await expect(results.locator('.menu-card')).toHaveCount(4);
+  await expect(results.getByRole('button', { name: '전체보기', exact: true })).toHaveAttribute('aria-expanded', 'false');
+});
 
 test('no supported match shows an empty result and restart without dialogue instructions', async ({ page }) => {
   const calls = await setup(page, { type: 'direct_recommendation', engine: 'llm-direct', status: 'insufficient_data',
