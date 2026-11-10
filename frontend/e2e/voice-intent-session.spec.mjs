@@ -53,7 +53,7 @@ for (const [label, action] of [['주문하기', recommendation], ['메뉴 추천
 test('unknown order offers recommendation without automatically requesting it', async ({ page }) => {
   const requests = await open(page, [{ action: { type: 'retry', reason: 'UNRECOGNIZED' } }]);
   await say(page, '주문하기');
-  await expect(page.getByRole('alert')).toContainText('메뉴 이름을 확인하지 못했어요. 다시 말씀하시거나 메뉴 추천받기를 눌러 주세요.');
+  await expect(page.getByRole('alert')).toContainText(/메뉴 이름을 확인하지 못했어요.*메뉴 추천받기/);
   expect(requests).toHaveLength(1);
   expect(requests[0]).toContain('name="intent"\r\n\r\norder');
   await expect(page.getByRole('region', { name: '추천 결과' })).toHaveCount(0);

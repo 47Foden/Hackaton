@@ -71,20 +71,6 @@ class Confirm(BaseModel):
     type: Literal["confirm"] = "confirm"
 
 
-class VoiceCartItem(BaseModel):
-    menu_id: MenuId
-    temperature: Temperature | None = None
-    quantity: int = Field(default=1, ge=1, le=99)
-    option_ids: list[str] = Field(default_factory=list)
-
-class VoiceCart(BaseModel):
-    type: Literal["select_items"] = "select_items"
-    items: list[VoiceCartItem] = Field(min_length=1, max_length=20)
-
-
-VoiceAction = Annotated[VoiceCart | DirectRecommendation | RestartRecommendation | Confirm | SelectMenu | SetTemperature | SetServiceType | SetOptions | Retry, Field(discriminator="type")]
-
-
 OptionId = Annotated[str, StringConstraints(pattern=r'^[a-z_]+:[a-z_]+$')]
 
 
@@ -106,6 +92,22 @@ class RecognizedOptions(BaseModel):
     customization: RecognizedCustomization | None = None
     # A conflicting/unsupported field must not silently retain a previous value.
     unresolved_fields: list[Literal['temperature', 'service_type']] = Field(default_factory=list)
+
+
+class VoiceCartItem(BaseModel):
+    menu_id: MenuId
+    temperature: Temperature | None = None
+    quantity: int = Field(default=1, ge=1, le=99)
+    option_ids: list[str] = Field(default_factory=list)
+    recognized_options: RecognizedOptions | None = None
+
+
+class VoiceCart(BaseModel):
+    type: Literal["select_items"] = "select_items"
+    items: list[VoiceCartItem] = Field(min_length=1, max_length=20)
+
+
+VoiceAction = Annotated[VoiceCart | DirectRecommendation | RestartRecommendation | Confirm | SelectMenu | SetTemperature | SetServiceType | SetOptions | Retry, Field(discriminator="type")]
 
 
 class VoiceInterpretResponse(BaseModel):

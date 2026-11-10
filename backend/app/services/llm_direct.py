@@ -283,7 +283,7 @@ def validate_response(value, context):
     return {**value, 'recommendations': rendered}
 
 
-def openai_transport(payload):
+def openai_transport(payload, *, timeout=45):
     key = os.environ.get('OPENAI_API_KEY')
     if not key:
         raise DirectError('MISSING_API_KEY')
@@ -291,13 +291,25 @@ def openai_transport(payload):
                       data=json.dumps(payload).encode('utf-8'),
                       headers={'Authorization': 'Bearer ' + key, 'Content-Type': 'application/json'})
     try:
-        with urlopen(request, timeout=45) as response:
+        with urlopen(request, timeout=timeout) as response:
             return json.load(response)
     except HTTPError as error:
         error.close()
         raise DirectError('PROVIDER_HTTP_' + str(error.code)) from None
     except (URLError, TimeoutError, OSError, ValueError):
         raise DirectError('PROVIDER_UNAVAILABLE') from None
+
+
+def response_text(envelope):
+    if envelope.get('status') != 'completed':
+        raise DirectError('INCOMPLETE_RESPONSE')
+    content = [c for item in envelope.get('output', []) if item.get('type') == 'message' for c in item.get('content', [])]
+    if any(c.get('type') == 'refusal' for c in content):
+        raise DirectError('PROVIDER_REFUSAL')
+    parts = [c['text'] for c in content if c.get('type') == 'output_text']
+    if len(parts) != 1:
+        raise DirectError('INVALID_RESPONSE')
+    return parts[0]
 
 
 def recommend(text, menus, transport=None, evidence=None, model=None):
@@ -311,12 +323,7 @@ def recommend(text, menus, transport=None, evidence=None, model=None):
     envelope, candidate = None, None
     try:
         envelope = (transport or openai_transport)(request)
-        if envelope.get('status') != 'completed': raise DirectError('INCOMPLETE_RESPONSE')
-        content = [c for item in envelope.get('output', []) if item.get('type') == 'message' for c in item.get('content', [])]
-        if any(c.get('type') == 'refusal' for c in content): raise DirectError('PROVIDER_REFUSAL')
-        parts = [c['text'] for c in content if c.get('type') == 'output_text']
-        if len(parts) != 1: raise DirectError('INVALID_RESPONSE')
-        candidate = json.loads(parts[0])
+        candidate = json.loads(response_text(envelope))
         return {'result': validate_response(candidate, context), 'usage': envelope.get('usage'),
                 'model': envelope.get('model', model)}
     except (ValueError, KeyError, TypeError, AttributeError) as error:

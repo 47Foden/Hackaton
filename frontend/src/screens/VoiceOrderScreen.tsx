@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { mergeVoiceOptions, readVoiceOptions, selectedCustomization, validateVoiceOptions } from '../state/voiceOptions';
 import type { VoiceOptions } from '../state/voiceOptions';
+import { resolveOrderOptions } from '../state/orderOptions';
 import { KioskLayout } from '../components/layout/KioskLayout';
 import { MenuBoard, type MenuBoardView } from '../components/menu/MenuBoard';
 import { CatalogStatus } from '../components/menu/CatalogStatus';
@@ -31,7 +32,8 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
   const [menuView, setMenuView] = useState<MenuBoardView>({ enlarged: false });
   const [error, setError] = useState('');
   const [transcript, setTranscript] = useState('');
-  type PendingItem = { menu_id: string; quantity: number; temperature?: 'HOT' | 'COLD'; option_ids: string[] };
+  type PendingItem = { menu_id: string; quantity: number; temperature?: 'HOT' | 'COLD'; option_ids: string[];
+    recognized_options?: VoiceOptions };
   const [queue, setQueue] = useState<PendingItem[]>([]);
   const [activeItem, setActiveItem] = useState<PendingItem | null>(null);
   useEffect(() => {
@@ -39,10 +41,12 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
       const [next, ...rest] = queue;
       const menu = catalog.menus.find(m => m.id === next.menu_id);
       if (!menu) return;
-      setQueue(rest); setActiveItem(next); setQuantity(next.quantity); save({});
-      dispatch({type: 'select_menu', menu});
-    } else if (order.stage === 'temperature' && activeItem?.temperature) {
-      dispatch({type: 'set_temperature', temperature: activeItem.temperature});
+      const { service_type, unresolved_fields } = sessionRef.current;
+      const options = mergeVoiceOptions(next.recognized_options ?? { temperature: next.temperature }, {
+        service_type, unresolved_fields: unresolved_fields?.filter(field => field === 'service_type'),
+      });
+      setQueue(rest); setActiveItem(next); setQuantity(next.quantity); save(options);
+      dispatch({type: 'select_menu', menu, voiceOptions: options});
     } else if (order.stage === 'service_type' && queue.length) {
       deferService(); setActiveItem(null);
     } else if (order.stage === 'review' && queue.length) {
@@ -68,7 +72,9 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
     : order.stage === 'complete' ? { title: '주문이 접수되었어요.', description: `주문번호는 ${order.result.order_number}번입니다.` }
     : getOrderGuidance(order, isMockOrderApi);
   useVoiceGuidance(`${guide.title} ${guide.description}`);
-  const enabled = !['submitting', 'complete'].includes(stage) && !(order.stage === 'review' && order.error?.kind === 'conflict');
+  const advancingQueue = queue.length > 0 && ['menu', 'service_type', 'review'].includes(order.stage);
+  const enabled = !advancingQueue && !['submitting', 'complete'].includes(stage)
+    && !(order.stage === 'review' && order.error?.kind === 'conflict');
   function interrupt() { ++revision.current; pending.current?.abort(); voice.cancel(); setError(''); }
   function restart() {
     interrupt(); save({}); setSelected(null); setCandidates(null); setTranscript('');
@@ -108,15 +114,28 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
       setTranscript(typeof data.transcript === 'string' ? data.transcript : '');
       voice.cancel();
       const action = data.action;
-      if (stage === 'menu' && action?.type === 'select_items' && catalog.status === 'ready') {
-        if (!Array.isArray(action.items) || action.items.length + items.length > 20 ||
-          !action.items.every((item: PendingItem) => catalog.menus.some(m => m.id === item.menu_id && m.available) && Number.isInteger(item.quantity) && item.quantity >= 1 && item.quantity <= 99)) throw new Error('주문 메뉴를 확인해 주세요.');
-        interrupt(); setQueue(action.items); setSelected(null); setCandidates(null); return;
-      }
       if (intent && !acceptsVoiceAction(intent, action?.type)) {
         throw new Error('선택한 입력 목적에 맞는 응답을 받지 못했어요. 같은 버튼을 눌러 다시 말씀해 주세요.');
       }
       const incoming = readVoiceOptions(data.recognized_options);
+      if (['menu', 'recommendations'].includes(stage) && action?.type === 'select_items' && catalog.status === 'ready') {
+        if (!Array.isArray(action.items) || !action.items.length || action.items.length + items.length > 20 ||
+          !action.items.every((item: PendingItem) => item && catalog.menus.some(m => m.id === item.menu_id && m.available)
+            && (stage !== 'recommendations' || candidates?.includes(item.menu_id))
+            && Number.isInteger(item.quantity) && item.quantity >= 1 && item.quantity <= 99
+            && (item.temperature === undefined || ['HOT', 'COLD'].includes(item.temperature))
+            && Array.isArray(item.option_ids) && item.option_ids.every(id => typeof id === 'string'))) {
+          throw new Error('주문 메뉴를 확인해 주세요.');
+        }
+        const pendingItems = action.items.map((item: PendingItem) => ({
+          ...item, recognized_options: readVoiceOptions(item.recognized_options),
+        }));
+        interrupt(); save({
+          service_type: incoming?.service_type,
+          unresolved_fields: incoming?.unresolved_fields?.filter(field => field === 'service_type'),
+        });
+        setQueue(pendingItems); setSelected(null); setCandidates(null); return;
+      }
       const options = mergeVoiceOptions(intent === 'recommend' ? {} : sessionRef.current, incoming);
       if (['menu', 'recommendations'].includes(stage) && action?.type === 'direct_recommendation' && catalog.status === 'ready') {
         if (action.status === 'recommend') {
@@ -169,7 +188,7 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
   }
   return <KioskLayout {...guide} status={isMockOrderApi ? '개발용 주문입니다.' : undefined}
     onHome={order.stage === 'submitting' ? undefined : home}
-    microphone={['menu', 'recommendations'].includes(stage)
+    microphone={advancingQueue ? undefined : ['menu', 'recommendations'].includes(stage)
       ? <VoiceIntentMicrophone key={stage} onRecordingComplete={record} />
       : <OrderMicrophone key={stage} disabledReason={enabled ? undefined : '현재 단계에서는 녹음할 수 없어요.'} onRecordingComplete={record} />}>
     {enabled && <p className="order-step__note">{['menu', 'recommendations'].includes(stage)
@@ -204,14 +223,16 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
       interrupt(); const next = save(mergeVoiceOptions(sessionRef.current, { temperature }));
       dispatch({ type: 'set_temperature', temperature, voiceOptions: next }); }} />}
     {order.stage === 'customization' && <CustomizationScreen menu={order.menu} temperature={order.temperature}
-      key={order.menu.id + queue.length + JSON.stringify(validated.customization)} initialSelectedIds={validated.customization?.option_ids ?? activeItem?.option_ids ?? []}
+      key={order.menu.id + queue.length + JSON.stringify(validated.customization)}
+      initialSelectedIds={validated.customization?.option_ids ??
+        resolveOrderOptions(order.menu.optionGroups[order.temperature] ?? [], activeItem?.option_ids ?? [])?.map(option => option.id) ?? []}
       onSelectionChange={ids => { interrupt(); save({ ...sessionRef.current, customization: selectedCustomization(ids) }); }}
       onContinue={ids => { interrupt(); const next = save({ ...sessionRef.current, customization: selectedCustomization(ids) });
         dispatch({ type: 'set_options', ids, voiceOptions: next }); }} />}
     {order.stage === 'service_type' && queue.length === 0 && <ServiceTypeScreen quantity={quantity} items={items} menu={order.menu} temperature={order.temperature} selectedOptions={order.selectedOptions}
       onSelect={serviceType => { interrupt(); const next = save(mergeVoiceOptions(sessionRef.current, { service_type: serviceType }));
         dispatch({ type: 'set_service_type', serviceType, voiceOptions: next }); }} />}
-    {(order.stage === 'review' || order.stage === 'submitting') && <ReviewScreen items={items} onQuantity={changeQuantity} locked={locked}
+    {((order.stage === 'review' && !advancingQueue) || order.stage === 'submitting') && <ReviewScreen items={items} onQuantity={changeQuantity} locked={locked}
       onContinue={() => { interrupt(); save({}); setActiveItem(null); setCandidates(null); setTranscript(''); continueOrder(); }} draft={order.draft} isMock={isMockOrderApi} pending={order.stage === 'submitting'}
       error={order.stage === 'review' ? order.error : undefined} onConfirm={() => { interrupt(); void confirm(); }} />}
     {order.stage === 'complete' && <CompletionScreen items={items} draft={order.draft} result={order.result} isMock={isMockOrderApi} onHome={home} />}
