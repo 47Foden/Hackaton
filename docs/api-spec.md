@@ -163,8 +163,25 @@ multipart 요청 전체는 오디오 제한에 헤더 여유 16 KiB를 더해 �
 
 메뉴 ID는 등록된 고정 ID를 사용한다. 단계에 해당하지 않는 맥락 필드와 중복 후보는 거부한다. 추천 화면의 메뉴 선택은 현재 후보 안에서만 가능하다. 판매 여부와 제공 온도는 DB 카탈로그를 기준으로 확인한다.
 
+#### 음성 요청 목적 (`intent`)
+
+`intent`는 선택적 multipart 문자열이며 `order` 또는 `recommend`를 사용한다. 화면 단계인 `stage`와 별개의 필드다. 명시적 목적은 `menu`, `recommendations` 단계에서만 허용하며, 나머지 단계에 전달하면 전사 전에 `422 INVALID_VOICE_CONTEXT`로 거부한다. 정의하지 않은 문자열은 FastAPI의 `422 detail` 검증 오류다.
+
+| 요청 목적 | 처리 및 응답 |
+| --- | --- |
+| `order` | 등록 메뉴명 또는 현재 후보를 직접 선택한다. 해석하지 못하면 `retry/UNRECOGNIZED`이며 LLM 추천을 호출하지 않는다. 판매 중지·후보 밖 메뉴 검증도 유지한다. |
+| `recommend` | 메뉴명이나 후보 순서를 말해도 바로 주문으로 선택하지 않고 추천 서비스를 호출한다. `direct_recommendation` 또는 기존 추천 오류를 반환하며 직접 주문으로 대체하지 않는다. |
+| 필드 생략 | 기존 클라이언트 호환: 직접 메뉴 선택을 먼저 시도하고, 메뉴/추천 단계의 `UNRECOGNIZED`에서만 LLM 추천을 호출한다. |
+
+빈 전사·공백·구두점만 있는 입력은 두 목적 모두 `retry/EMPTY_TRANSCRIPT`이며 LLM을 호출하지 않는다. “다시 추천”은 목적과 관계없이 `restart_recommendation`으로 먼저 처리하고 옵션을 초기화한다. 정상 추천 요청은 LLM을 한 번 호출하며 별도 자동 재시도나 주문 fallback이 없다.
+
+`recognized_options`는 기존 계약을 유지한다. 명시적 `recommend`에서는 정확한 메뉴명이 있어도 메뉴가 선택된 것으로 보지 않으므로 커스터마이징 의도는 `pending`으로 보존한다(명시적 추가 옵션 없음은 `resolved`의 빈 선택). 사용자 발화 온도·이용 방식은 그대로 추출하고, 추천 모델의 후보 온도를 사용자 선택으로 복사하지 않는다. 실제 제공 온도 및 사용자 요청 온도와 충돌하는 추천은 기존 `502 LLM_RECOMMENDATION_FAILED`다.
+
+예: 같은 “아이스 카페라떼 샷 추가 포장” 발화라도 `intent=order`는 `select_menu`와 검증된 샷 옵션을 반환하고, `intent=recommend`는 추천 결과와 아직 확정되지 않은 샷 의도를 반환한다. 이 단계의 서버 변경만으로 기존 프론트 버튼은 바뀌지 않는다. 후속 두 버튼 UI는 메뉴/추천 단계에서 목적을 명시적으로 전송한다.
+
 ```sh
 curl -F 'audio=@recording.webm;type=audio/webm' -F 'stage=recommendations' \
+  -F 'intent=order' \
   -F 'candidate_menu_ids=cafe_latte' -F 'candidate_menu_ids=green_tea_latte' \
   http://localhost:8000/api/voice/interpret
 ```

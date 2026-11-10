@@ -15,10 +15,10 @@ from app.services.voice.audio import (
     AUDIO_TOO_LARGE_MESSAGE, MAX_AUDIO_BYTES, SAMPLE_RATE_HZ, PreparedVoiceAudio, VoiceAudioError, prepare_voice_audio,
 )
 from app.services.voice.interpretation import interpret_transcript
-from app.services.voice.options import extract_options
+from app.services.voice.options import compact, extract_options
 from app.schemas.menus import Temperature
 from app.services.voice.transcription import TranscriptionError, transcribe_voice
-from app.schemas.voice import DirectRecommendation, SetOptions
+from app.schemas.voice import DirectRecommendation, SetOptions, Retry, VoiceIntent
 from app.services.llm_direct import recommend as llm_recommend
 from app.services.llm_direct import DirectError
 
@@ -114,10 +114,12 @@ def interpret_audio(
     selected_menu_id: Annotated[MenuId | None, Form()] = None,
     candidate_menu_ids: Annotated[list[MenuId] | None, Form()] = None,
     selected_temperature: Annotated[Temperature | None, Form()] = None,
+    intent: Annotated[VoiceIntent | None, Form()] = None,
 ) -> VoiceInterpretResponse:
     candidates = tuple(candidate_menu_ids or ())
     requires_selection = stage in {"temperature", "customization", "service_type"}
     if ((requires_selection and selected_menu_id is None)
+            or (intent is not None and stage not in {'menu', 'recommendations'})
             or (not requires_selection and stage != 'menu_confirmation' and selected_menu_id is not None)
             or (stage == 'customization' and selected_temperature is None)
             or (stage == "recommendations") != bool(candidates)
@@ -145,7 +147,11 @@ def interpret_audio(
     except TranscriptionError as error:
         raise HTTPException(error.status, detail={"code": error.code, "message": str(error)}) from None
 
-    action = interpret_transcript(transcript, stage, menus, selected_menu_id=selected_menu_id, candidate_menu_ids=candidates)
+    # Explicit recommendation never selects a menu, even for an exact name or
+    # ordinal. Keep customization pending until a candidate is actually chosen.
+    action = (Retry(reason='UNRECOGNIZED' if compact(transcript) else 'EMPTY_TRANSCRIPT')
+              if intent == 'recommend' else
+              interpret_transcript(transcript, stage, menus, selected_menu_id=selected_menu_id, candidate_menu_ids=candidates))
     option_menu = menus.get(action.menu_id) if action.type == 'select_menu' else menus.get(selected_menu_id or '')
     option_transcript = re.sub(r'^\s*(?:네|예|맞아요)[,\s]+', '', transcript) if stage == 'menu_confirmation' else transcript
     recognized = extract_options(option_transcript, menu=option_menu, temperature=selected_temperature)
@@ -154,7 +160,8 @@ def interpret_audio(
     if stage in {"menu", "recommendations"} and any(word in transcript.replace(" ", "") for word in ("재추천", "다시추천", "다른추천")):
         action = RestartRecommendation()
         recognized = None
-    elif stage in {"menu", "recommendations"} and (action.type == "retry" and action.reason == "UNRECOGNIZED"):
+    elif (intent != 'order' and stage in {"menu", "recommendations"}
+          and action.type == "retry" and action.reason == "UNRECOGNIZED"):
         try:
             result = llm_recommend(transcript, list(menus.values()))['result']
             action = DirectRecommendation(**{k: result[k] for k in ('status', 'recommendations', 'questions', 'missing_information')})

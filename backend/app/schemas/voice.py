@@ -6,6 +6,7 @@ from app.schemas.menus import Temperature
 from app.schemas.orders import ServiceType
 
 VoiceStage = Literal["menu", "temperature", "customization", "service_type", "recommendations", "menu_confirmation", "review"]
+VoiceIntent = Literal['order', 'recommend']
 MenuId = Annotated[str, StringConstraints(pattern=r"^[a-z0-9_]{1,64}$")]
 RetryReason = Literal["EMPTY_TRANSCRIPT", "UNRECOGNIZED", "MENU_UNAVAILABLE", "INVALID_OPTION", "OUTSIDE_CANDIDATES"]
 
