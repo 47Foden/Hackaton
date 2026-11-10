@@ -139,7 +139,7 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
       if (pending.current === controller) pending.current = null;
     }
   }
-  return <KioskLayout {...guide} status={isMockOrderApi ? '개발용 주문입니다.' : '음성 또는 터치로 주문해 주세요.'}
+  return <KioskLayout {...guide} status={isMockOrderApi ? '개발용 주문입니다.' : undefined}
     onHome={order.stage === 'submitting' ? undefined : home}
     microphone={['menu', 'recommendations'].includes(stage)
       ? <VoiceIntentMicrophone key={stage} onRecordingComplete={record} />

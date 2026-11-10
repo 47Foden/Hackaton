@@ -11,6 +11,36 @@ async function open(page) {
   await page.getByRole('button', { name: '음성으로 주문하기' }).click();
 }
 
+for (const viewport of [{ width: 320, height: 600 }, { width: 390, height: 844 }, { width: 1440, height: 900 }]) {
+  test(`voice footer keeps equal controls in two columns at ${viewport.width}px`, async ({ page }) => {
+    await page.setViewportSize(viewport);
+    await open(page);
+    const footer = page.locator('.order-footer');
+    const left = footer.getByRole('button', { name: '주문하기', exact: true });
+    const right = footer.getByRole('button', { name: '메뉴 추천받기', exact: true });
+    await expect(footer.getByRole('status')).toHaveCount(0);
+    await expect(page.getByText('음성 또는 터치로 주문해 주세요.', { exact: true })).toHaveCount(0);
+    await expect(footer.locator('button svg[aria-hidden="true"]')).toHaveCount(2);
+    await right.scrollIntoViewIfNeeded();
+    const a = await left.boundingBox();
+    const b = await right.boundingBox();
+    expect(a.x + a.width).toBeLessThan(b.x);
+    expect(a.y).toBeCloseTo(b.y);
+    expect(a.width).toBeCloseTo(b.width);
+    expect(a.height).toBeCloseTo(b.height);
+    expect(a.height).toBeGreaterThanOrEqual(68);
+    expect(b.x + b.width).toBeLessThanOrEqual(viewport.width);
+    expect(await footer.evaluate(node => node.scrollWidth <= node.clientWidth)).toBe(true);
+    const content = await page.locator('.kiosk-layout__content').boundingBox();
+    const footerBox = await footer.boundingBox();
+    expect(content.y + content.height).toBeLessThanOrEqual(footerBox.y + 1);
+    await left.focus();
+    await page.keyboard.press('Tab');
+    await expect(right).toBeFocused();
+    await expect(right).toHaveCSS('outline-style', 'solid');
+  });
+}
+
 test('two buttons share one locked recording and preserve the first clicked intent', async ({ page }) => {
   await page.addInitScript(() => {
     window.micCalls = 0;
