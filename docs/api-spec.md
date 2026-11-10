@@ -173,7 +173,7 @@ curl -F 'audio=@recording.webm;type=audio/webm' -F 'stage=recommendations' \
 | `select_menu` | `menu_id` |
 | `set_temperature` | `temperature` (`HOT` 또는 `COLD`) |
 | `set_service_type` | `service_type` (`DINE_IN` 또는 `TAKEOUT`) |
-| `direct_recommendation` | LLM이 결정한 후보 1개 또는 확인 질문·자료 부족 안내. |
+| `direct_recommendation` | LLM이 결정한 조건에 맞는 전체 후보 또는 자료 부족. |
 | `retry` | `reason` (`EMPTY_TRANSCRIPT`, `UNRECOGNIZED`, `MENU_UNAVAILABLE`, `INVALID_OPTION`, `OUTSIDE_CANDIDATES`) |
 
 빈 전사와 모호한 발화는 `200`의 `retry`로 안내한다. 단일 발화는 현재 단계의 행동 하나만 반환한다. `recommend`는 추천 API에 전달할 조건이며, 주문 확정은 화면의 주문 확정 버튼에서 수행한다.
@@ -198,6 +198,6 @@ Whisper는 공용 서버의 전사 워커에서 미리 로드한다. FastAPI는 
 {"transcript":"차가운 음료 추천", "action":{"type":"direct_recommendation","engine":"llm-direct","status":"recommend","recommendations":[{"menu_id":"iced_americano","temperature":"COLD","reason":"확인된 자료에 기반한 근거"}],"questions":[],"missing_information":[]}}
 ```
 
-`status`는 `recommend`, `clarify`, `insufficient_data`다. 후보는 최대 1개다. 질문·자료 부족은 후보 없이 해당 배열로 전달한다. 재추천은 `restart_recommendation`, 정확한 메뉴 선택은 `select_menu`, 단계별 옵션과 주문 확인은 기존 행동을 사용한다. LLM 실패는 502 `LLM_RECOMMENDATION_FAILED`, 근거 자료 미준비는 503 `LLM_EVIDENCE_NOT_READY`다. 성공처럼 보이는 기본 후보나 점수 추천으로 대체하지 않는다.
+`status`는 `recommend`, `insufficient_data`다. 현재 메뉴 수까지 적합한 후보를 모두 반환하며 같은 메뉴 ID는 중복하지 않는다. `questions`는 항상 빈 배열이다. 자료 부족은 후보 없이 반환하고 화면에는 빈 추천 목록과 재추천 버튼을 표시한다. 추천 단계의 `candidate_menu_ids`도 전체 후보 수를 허용한다. 재추천은 `restart_recommendation`, 정확한 메뉴 선택은 `select_menu`, 단계별 옵션과 주문 확인은 기존 행동을 사용한다. LLM 실패는 502 `LLM_RECOMMENDATION_FAILED`, 근거 자료 미준비는 503 `LLM_EVIDENCE_NOT_READY`다. 성공처럼 보이는 기본 후보나 점수 추천으로 대체하지 않는다.
 
 현재 자료 상태·모델 설정은 [LLM 직접 추천 안내](llm-direct.md)를 참고한다.
