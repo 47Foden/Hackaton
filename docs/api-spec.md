@@ -136,7 +136,7 @@ multipart `audio` 필드로 `.webm` 파일을 받는다. 브라우저 MIME인 `a
 
 성공 `200`은 `mime_type`, `container`, `codec`, `duration_seconds`, `size_bytes`, `source_sample_rate_hz`, `source_channels`, `sample_rate_hz`, `channels`를 반환한다. 원본과 변환 데이터는 요청 종료 시 정리한다. Docker 백엔드 이미지가 FFmpeg와 ffprobe를 제공한다.
 
-multipart 요청 전체는 오디오 제한에 헤더 여유 16 KiB를 더해 파싱 전에 제한한다. 프로세스당 음성 요청 한 건을 업로드부터 변환 완료까지 처리한다. 업로드 수신은 5초, ffprobe와 FFmpeg에는 합쳐서 5초, 브라우저 요청에는 15초를 적용한다. 초과 시 화면은 **다시 녹음**을 제공한다.
+multipart 요청 전체는 오디오 제한에 헤더 여유 16 KiB를 더해 파싱 전에 제한한다. API 프로세스는 두 음성 경로를 합쳐 동시에 두 건까지 처리한다. 업로드 수신은 5초, ffprobe와 FFmpeg에는 합쳐서 5초, 브라우저 요청에는 15초를 적용한다. 초과 시 화면은 **다시 녹음**을 제공한다.
 
 | HTTP | code | 조건 |
 | --- | --- | --- |
@@ -144,7 +144,7 @@ multipart 요청 전체는 오디오 제한에 헤더 여유 16 KiB를 더해 �
 | 413 | `AUDIO_TOO_LARGE`, `AUDIO_TOO_LONG` | 파일 크기 또는 변환된 길이 초과 |
 | 415 | `UNSUPPORTED_AUDIO`, `AUDIO_FORMAT_MISMATCH` | 확장자·MIME 오류 또는 실제 컨테이너·코덱 불일치 |
 | 422 | `EMPTY_AUDIO`, `INVALID_AUDIO` | 빈 파일 또는 디코딩 실패 |
-| 503 | `AUDIO_BUSY`, `AUDIO_TOOLS_UNAVAILABLE` | 다른 요청 처리 중이거나 FFmpeg 또는 ffprobe가 설치되지 않음 |
+| 503 | `AUDIO_BUSY`, `AUDIO_TOOLS_UNAVAILABLE` | 음성 요청 두 건을 처리 중이거나 FFmpeg 또는 ffprobe가 설치되지 않음 |
 | 504 | `AUDIO_TIMEOUT` | 검사 또는 변환 도구 타임아웃 |
 
 ### 7.2 `POST /api/voice/interpret` — 전사와 주문 단계 해석
@@ -178,6 +178,46 @@ curl -F 'audio=@recording.webm;type=audio/webm' -F 'stage=recommendations' \
 
 빈 전사와 모호한 발화는 `200`의 `retry`로 안내한다. 단일 발화는 현재 단계의 행동 하나만 반환한다. `recommend`는 추천 API에 전달할 조건이며, 주문 확정은 화면의 주문 확정 버튼에서 수행한다.
 
+#### 발화에서 인식한 옵션 (`recognized_options`)
+
+기존 `action`은 유지하고, 발화에 옵션이 포함되면 응답 최상위에 `recognized_options`를 추가한다. 옵션 미언급 시 필드 자체를 생략하며, 내부의 미인식 온도·이용 방식도 `null` 대신 생략한다. 추천 후보의 온도는 사용자 발화의 선택값으로 복사하지 않는다.
+
+| 필드 | 의미 |
+| --- | --- |
+| `temperature` | `HOT` 또는 `COLD`. “시원한”, “차가운”, “아이스”는 `COLD` |
+| `service_type` | `DINE_IN` 또는 `TAKEOUT` |
+| `unresolved_fields` | 모호하거나 제공하지 않는 `temperature`/`service_type` 목록. 해당 필드는 기존 세션 값으로 조용히 확정하면 안 됨 |
+| `customization.status` | `resolved`: 요청한 옵션 검증 완료, `pending`: 메뉴·온도 확정 대기, `needs_clarification`: 지원하지 않는 옵션·충돌·모호한 표현 있음 |
+| `customization.option_ids` | 선택 메뉴·온도의 실제 옵션 그룹에서 검증한 ID 목록. `pending`에서는 빈 배열 |
+| `customization.intents` | `{ expression, candidate_option_ids }` 목록. 메뉴·온도 확정 후 재검증할 발화 의도이며 후보 ID를 곧바로 주문에 사용하면 안 됨 |
+| `customization.unresolved` | 추가 확인이 필요한 표현·사유 목록 |
+
+예: “아이스 카페라떼 샷 추가하고 포장해 주세요”는 아래와 같이 반환한다.
+
+```json
+{
+  "transcript": "아이스 카페라떼 샷 추가하고 포장해 주세요",
+  "action": { "type": "select_menu", "menu_id": "cafe_latte" },
+  "recognized_options": {
+    "temperature": "COLD",
+    "service_type": "TAKEOUT",
+    "unresolved_fields": [],
+    "customization": {
+      "status": "resolved",
+      "option_ids": ["shot:extra"],
+      "intents": [{ "expression": "샷추가", "candidate_option_ids": ["shot:extra"] }],
+      "unresolved": []
+    }
+  }
+}
+```
+
+“샷 추가”만 말하고 메뉴 또는 온도가 아직 정해지지 않았으면 `pending`으로 보존한다. “추가 옵션 없이”는 `resolved`와 빈 `option_ids`이며 커스터마이징 미언급과 구분한다. “샷 추가하고 시럽도”는 유효한 샷 선택을 유지하고 시럽을 `unresolved`에 넣는다. “핫 말고 아이스”, “샷 추가 말고 연하게”는 명확한 정정을 반영하고, “핫이나 아이스”, 부정 표현, 중복 옵션, 그룹별 선택 개수 초과는 자동 확정하지 않는다.
+
+`temperature`/`service_type` 단계에서는 선택적 폼 필드 `selected_temperature=HOT|COLD`를 전달해 커스터마이징을 검증할 수 있다. 메뉴 맥락 없이 온도를 보내거나 메뉴가 제공하지 않는 온도를 보내면 `422 INVALID_VOICE_CONTEXT`다. 메뉴 직접 선택은 해당 메뉴와 발화 온도(또는 유일한 제공 온도)로 검증한다. 추천 경로는 메뉴 확정 전이므로 커스터마이징 의도를 보존하며, 추천이 발화 온도 또는 실제 제공 온도와 충돌하면 `502 LLM_RECOMMENDATION_FAILED`다.
+
+현재 단계의 `action` 검증과 별도로 옵션을 반환한다. `retry` 응답의 옵션만으로 주문을 진행하면 안 된다. 재추천 행동에는 이전 요청 옵션을 전달하지 않는다. 메뉴 확인 단계는 “네, 포장이요” 같은 복합 확인을 지원하지만 최종 주문 확정의 기존 명시적 확인 규칙은 유지한다. 프론트 세션 보존 및 화면 생략은 후속 구현이다.
+
 7.1의 오디오 오류와 처리량 제한을 공유하며, 다음 오류를 추가한다.
 
 | HTTP | code | 조건 |
@@ -185,10 +225,10 @@ curl -F 'audio=@recording.webm;type=audio/webm' -F 'stage=recommendations' \
 | 422 | FastAPI 기본 `detail` 배열 | 필수 폼 필드 누락, `stage` 값 오류 또는 메뉴 ID 형식 오류 |
 | 422 | `INVALID_VOICE_CONTEXT` | 단계에 필요한 메뉴 ID 누락, 미등록 ID, 중복 후보 또는 단계와 맥락 불일치 |
 | 502 | `TRANSCRIPTION_FAILED` | 전사 워커가 실패했거나 유효한 응답을 반환하지 않음 |
-| 503 | `TRANSCRIPTION_UNAVAILABLE`, `TRANSCRIPTION_BUSY`, `CATALOG_UNAVAILABLE` | 워커 미설정·연결 불가, 워커가 다른 녹음을 처리 중, 또는 DB 카탈로그 조회 실패 |
+| 503 | `TRANSCRIPTION_UNAVAILABLE`, `TRANSCRIPTION_BUSY`, `CATALOG_UNAVAILABLE` | 워커 미설정·연결 불가, 워커의 동시 요청 한도 초과, 또는 DB 카탈로그 조회 실패 |
 | 504 | `TRANSCRIPTION_TIMEOUT` | 전사 워커 응답 대기 시간이 75초 초과 |
 
-Whisper는 공용 서버의 전사 워커에서 미리 로드한다. FastAPI는 내부 `VOICE_TRANSCRIPTION_URL`로 변환된 PCM을 보내고 전사 텍스트를 받는다. 브라우저 전체 요청 제한은 전사와 LLM 요청을 포함해 140초다.
+Whisper는 공용 서버의 전사 워커에서 미리 로드한다. 워커는 기본으로 두 건을 받고, 첫 녹음 도착 후 150 ms 안에 두 번째 녹음이 준비되면 한 배치로 전사한다. FastAPI는 내부 `VOICE_TRANSCRIPTION_URL`로 변환된 PCM을 보내고 전사 텍스트를 받는다. 브라우저 전체 요청 제한은 전사와 LLM 요청을 포함해 140초다.
 
 ## LLM 직접 추천 결과
 

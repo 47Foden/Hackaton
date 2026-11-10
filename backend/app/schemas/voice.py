@@ -68,6 +68,30 @@ class Confirm(BaseModel):
 VoiceAction = Annotated[DirectRecommendation | RestartRecommendation | Confirm | SelectMenu | SetTemperature | SetServiceType | Retry, Field(discriminator="type")]
 
 
+OptionId = Annotated[str, StringConstraints(pattern=r'^[a-z_]+:[a-z_]+$')]
+
+
+class CustomizationIntent(BaseModel):
+    expression: str
+    candidate_option_ids: list[OptionId]
+
+
+class RecognizedCustomization(BaseModel):
+    status: Literal['resolved', 'pending', 'needs_clarification']
+    option_ids: list[OptionId] = Field(default_factory=list)
+    intents: list[CustomizationIntent] = Field(default_factory=list)
+    unresolved: list[str] = Field(default_factory=list)
+
+
+class RecognizedOptions(BaseModel):
+    temperature: Temperature | None = None
+    service_type: ServiceType | None = None
+    customization: RecognizedCustomization | None = None
+    # A conflicting/unsupported field must not silently retain a previous value.
+    unresolved_fields: list[Literal['temperature', 'service_type']] = Field(default_factory=list)
+
+
 class VoiceInterpretResponse(BaseModel):
     transcript: str
     action: VoiceAction
+    recognized_options: RecognizedOptions | None = None

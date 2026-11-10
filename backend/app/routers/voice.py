@@ -14,6 +14,8 @@ from app.services.voice.audio import (
     AUDIO_TOO_LARGE_MESSAGE, MAX_AUDIO_BYTES, SAMPLE_RATE_HZ, PreparedVoiceAudio, VoiceAudioError, prepare_voice_audio,
 )
 from app.services.voice.interpretation import interpret_transcript
+from app.services.voice.options import extract_options
+from app.schemas.menus import Temperature
 from app.services.voice.transcription import TranscriptionError, transcribe_voice
 from app.schemas.voice import DirectRecommendation
 from app.services.llm_direct import recommend as llm_recommend
@@ -21,7 +23,7 @@ from app.services.llm_direct import DirectError
 
 MAX_MULTIPART_BYTES = MAX_AUDIO_BYTES + 16 * 1024
 UPLOAD_TIMEOUT_SECONDS = 5
-audio_slot = BoundedSemaphore(1)
+audio_slots = BoundedSemaphore(2)
 
 
 class VoiceUploadRoute(APIRoute):
@@ -29,7 +31,7 @@ class VoiceUploadRoute(APIRoute):
         handle = super().get_route_handler()
 
         async def receive_audio(request: Request):
-            if not audio_slot.acquire(blocking=False):
+            if not audio_slots.acquire(blocking=False):
                 raise HTTPException(503, detail={
                     "code": "AUDIO_BUSY", "message": "다른 녹음을 처리 중이에요. 잠시 후 다시 녹음해 주세요.",
                 })
@@ -64,7 +66,7 @@ class VoiceUploadRoute(APIRoute):
 
                 return await handle(Request(request.scope, receive=replay_body))
             finally:
-                audio_slot.release()
+                audio_slots.release()
 
         return receive_audio
 
@@ -104,18 +106,21 @@ def _invalid_context() -> HTTPException:
     })
 
 
-@router.post("/interpret", response_model=VoiceInterpretResponse)
+@router.post("/interpret", response_model=VoiceInterpretResponse, response_model_exclude_none=True)
 def interpret_audio(
     audio: Annotated[UploadFile, File()],
     stage: Annotated[VoiceStage, Form()],
     selected_menu_id: Annotated[MenuId | None, Form()] = None,
     candidate_menu_ids: Annotated[list[MenuId] | None, Form()] = None,
+    selected_temperature: Annotated[Temperature | None, Form()] = None,
 ) -> VoiceInterpretResponse:
     candidates = tuple(candidate_menu_ids or ())
     requires_selection = stage in {"temperature", "service_type"}
     if (requires_selection != (selected_menu_id is not None)
             or (stage == "recommendations") != bool(candidates)
             or len(set(candidates)) != len(candidates)):
+        raise _invalid_context()
+    if selected_temperature is not None and selected_menu_id is None:
         raise _invalid_context()
 
     try:
@@ -128,6 +133,8 @@ def interpret_audio(
         raise _invalid_context()
     if (selected_menu_id is not None and selected_menu_id not in menus) or any(menu_id not in menus for menu_id in candidates):
         raise _invalid_context()
+    if selected_temperature is not None and selected_temperature not in menus[selected_menu_id]['available_temperatures']:
+        raise _invalid_context()
 
     prepared, _ = _prepare_upload(audio)
     try:
@@ -136,16 +143,26 @@ def interpret_audio(
         raise HTTPException(error.status, detail={"code": error.code, "message": str(error)}) from None
 
     action = interpret_transcript(transcript, stage, menus, selected_menu_id=selected_menu_id, candidate_menu_ids=candidates)
+    option_menu = menus.get(action.menu_id) if action.type == 'select_menu' else menus.get(selected_menu_id or '')
+    recognized = extract_options(transcript, menu=option_menu, temperature=selected_temperature)
     if stage in {"menu", "recommendations"} and any(word in transcript.replace(" ", "") for word in ("재추천", "다시추천", "다른추천")):
         action = RestartRecommendation()
+        recognized = None
     elif stage in {"menu", "recommendations"} and (action.type == "retry" and action.reason == "UNRECOGNIZED"):
         try:
             result = llm_recommend(transcript, list(menus.values()))['result']
             action = DirectRecommendation(**{k: result[k] for k in ('status', 'recommendations', 'questions', 'missing_information')})
+            # A suggested temperature is not user intent. Validate both the
+            # actual catalogue and any explicitly requested temperature.
+            if any(r.menu_id not in menus or not menus[r.menu_id]['is_available']
+                   or r.temperature not in menus[r.menu_id]['available_temperatures']
+                   or (recognized and recognized.temperature and r.temperature != recognized.temperature)
+                   for r in action.recommendations):
+                raise DirectError('INELIGIBLE_OPTION')
         except DirectError:
             raise HTTPException(502, detail={'code': 'LLM_RECOMMENDATION_FAILED',
                 'message': '메뉴 추천을 처리하지 못했어요. 잠시 후 다시 시도해 주세요.'}) from None
         except (ValueError, OSError, KeyError):
             raise HTTPException(503, detail={'code': 'LLM_EVIDENCE_NOT_READY',
                 'message': '현재 메뉴와 LLM 근거 자료의 연결을 확인해 주세요.'}) from None
-    return VoiceInterpretResponse(transcript=transcript, action=action)
+    return VoiceInterpretResponse(transcript=transcript, action=action, recognized_options=recognized)
