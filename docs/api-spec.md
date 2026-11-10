@@ -136,7 +136,7 @@ multipart `audio` 필드로 `.webm` 파일을 받는다. 브라우저 MIME인 `a
 
 성공 `200`은 `mime_type`, `container`, `codec`, `duration_seconds`, `size_bytes`, `source_sample_rate_hz`, `source_channels`, `sample_rate_hz`, `channels`를 반환한다. 원본과 변환 데이터는 요청 종료 시 정리한다. Docker 백엔드 이미지가 FFmpeg와 ffprobe를 제공한다.
 
-multipart 요청 전체는 오디오 제한에 헤더 여유 16 KiB를 더해 파싱 전에 제한한다. 프로세스당 음성 요청 한 건을 업로드부터 변환 완료까지 처리한다. 업로드 수신은 5초, ffprobe와 FFmpeg에는 합쳐서 5초, 브라우저 요청에는 15초를 적용한다. 초과 시 화면은 **다시 녹음**을 제공한다.
+multipart 요청 전체는 오디오 제한에 헤더 여유 16 KiB를 더해 파싱 전에 제한한다. API 프로세스는 두 음성 경로를 합쳐 동시에 두 건까지 처리한다. 업로드 수신은 5초, ffprobe와 FFmpeg에는 합쳐서 5초, 브라우저 요청에는 15초를 적용한다. 초과 시 화면은 **다시 녹음**을 제공한다.
 
 | HTTP | code | 조건 |
 | --- | --- | --- |
@@ -144,7 +144,7 @@ multipart 요청 전체는 오디오 제한에 헤더 여유 16 KiB를 더해 �
 | 413 | `AUDIO_TOO_LARGE`, `AUDIO_TOO_LONG` | 파일 크기 또는 변환된 길이 초과 |
 | 415 | `UNSUPPORTED_AUDIO`, `AUDIO_FORMAT_MISMATCH` | 확장자·MIME 오류 또는 실제 컨테이너·코덱 불일치 |
 | 422 | `EMPTY_AUDIO`, `INVALID_AUDIO` | 빈 파일 또는 디코딩 실패 |
-| 503 | `AUDIO_BUSY`, `AUDIO_TOOLS_UNAVAILABLE` | 다른 요청 처리 중이거나 FFmpeg 또는 ffprobe가 설치되지 않음 |
+| 503 | `AUDIO_BUSY`, `AUDIO_TOOLS_UNAVAILABLE` | 음성 요청 두 건을 처리 중이거나 FFmpeg 또는 ffprobe가 설치되지 않음 |
 | 504 | `AUDIO_TIMEOUT` | 검사 또는 변환 도구 타임아웃 |
 
 ### 7.2 `POST /api/voice/interpret` — 전사와 주문 단계 해석
@@ -155,13 +155,37 @@ multipart 요청 전체는 오디오 제한에 헤더 여유 16 KiB를 더해 �
 | --- | --- | --- |
 | `menu` | `audio`, `stage` | `select_menu`, `direct_recommendation`, `restart_recommendation`, `retry` |
 | `temperature` | `audio`, `stage`, `selected_menu_id` | `set_temperature`, `retry` |
+| `customization` | `audio`, `stage`, `selected_menu_id`, `selected_temperature` | `set_options`, `retry` |
 | `service_type` | `audio`, `stage`, `selected_menu_id` | `set_service_type`, `retry` |
-| `recommendations` | `audio`, `stage`, `candidate_menu_ids` 1~4개 | `select_menu`, `direct_recommendation`, `restart_recommendation`, `retry` |
+| `menu_confirmation` | `audio`, `stage`. `selected_menu_id`, `selected_temperature` 선택적 전달 | `confirm`, `retry` |
+| `recommendations` | `audio`, `stage`, `candidate_menu_ids` 1개 이상, 현재 카탈로그 메뉴 수 이하 | `select_menu`, `direct_recommendation`, `restart_recommendation`, `retry` |
+| `review` | `audio`, `stage` | `confirm`, `retry` |
 
 메뉴 ID는 등록된 고정 ID를 사용한다. 단계에 해당하지 않는 맥락 필드와 중복 후보는 거부한다. 추천 화면의 메뉴 선택은 현재 후보 안에서만 가능하다. 판매 여부와 제공 온도는 DB 카탈로그를 기준으로 확인한다.
 
+#### 음성 요청 목적 (`intent`)
+
+`intent`는 선택적 multipart 문자열이며 `order` 또는 `recommend`를 사용한다. 화면 단계인 `stage`와 별개의 필드다. 명시적 목적은 `menu`, `recommendations` 단계에서만 허용하며, 나머지 단계에 전달하면 전사 전에 `422 INVALID_VOICE_CONTEXT`로 거부한다. 정의하지 않은 문자열은 FastAPI의 `422 detail` 검증 오류다.
+
+| 요청 목적 | 처리 및 응답 |
+| --- | --- |
+| `order` | 등록 메뉴명 또는 현재 후보를 직접 선택한다. 해석하지 못하면 `retry/UNRECOGNIZED`이며 LLM 추천을 호출하지 않는다. 판매 중지·후보 밖 메뉴 검증도 유지한다. |
+| `recommend` | 메뉴명이나 후보 순서를 말해도 바로 주문으로 선택하지 않고 추천 서비스를 호출한다. `direct_recommendation` 또는 기존 추천 오류를 반환하며 직접 주문으로 대체하지 않는다. |
+| 필드 생략 | 기존 클라이언트 호환: 직접 메뉴 선택을 먼저 시도하고, 메뉴/추천 단계의 `UNRECOGNIZED`에서만 LLM 추천을 호출한다. |
+
+빈 전사·공백·구두점만 있는 입력은 두 목적 모두 `retry/EMPTY_TRANSCRIPT`이며 LLM을 호출하지 않는다. “다시 추천”은 목적과 관계없이 `restart_recommendation`으로 먼저 처리하고 옵션을 초기화한다. 정상 추천 요청은 LLM을 한 번 호출하며 별도 자동 재시도나 주문 fallback이 없다.
+
+`recognized_options`는 기존 계약을 유지한다. 명시적 `recommend`에서는 정확한 메뉴명이 있어도 메뉴가 선택된 것으로 보지 않으므로 커스터마이징 의도는 `pending`으로 보존한다(명시적 추가 옵션 없음은 `resolved`의 빈 선택). 사용자 발화 온도·이용 방식은 그대로 추출하고, 추천 모델의 후보 온도를 사용자 선택으로 복사하지 않는다. 실제 제공 온도 및 사용자 요청 온도와 충돌하는 추천은 기존 `502 LLM_RECOMMENDATION_FAILED`다.
+
+예: 같은 “아이스 카페라떼 샷 추가 포장” 발화라도 `intent=order`는 `select_menu`와 검증된 샷 옵션을 반환하고, `intent=recommend`는 추천 결과와 아직 확정되지 않은 샷 의도를 반환한다.
+
+현재 프론트의 두 버튼은 녹음 시작 때 고정한 목적을 전송한다. `order`는 `select_menu`, `recommend`는 `direct_recommendation`만 진행 행동으로 허용하며 `retry`/`restart_recommendation`은 공통으로 허용한다. 목적과 다른 응답은 기존 화면·후보·옵션을 변경하지 않고 오류로 처리한다. 이후 메뉴 확인·옵션·최종 확인 단계의 단일 녹음은 `intent`를 보내지 않는다.
+
+새 추천은 성공한 후보 목록 또는 빈 `insufficient_data` 결과를 검증한 뒤 기존 추천 세션을 교체한다. 요청 실패·취소·잘못된 응답·`retry`에서는 이전 세션을 유지하며, 이때 새 추천의 `unresolved_fields`도 이전 선택에 적용하지 않는다. 주문/옵션 선택 중의 `retry`는 기존 계약대로 충돌한 선택의 자동 확정을 막는다.
+
 ```sh
 curl -F 'audio=@recording.webm;type=audio/webm' -F 'stage=recommendations' \
+  -F 'intent=order' \
   -F 'candidate_menu_ids=cafe_latte' -F 'candidate_menu_ids=green_tea_latte' \
   http://localhost:8000/api/voice/interpret
 ```
@@ -173,10 +197,69 @@ curl -F 'audio=@recording.webm;type=audio/webm' -F 'stage=recommendations' \
 | `select_menu` | `menu_id` |
 | `set_temperature` | `temperature` (`HOT` 또는 `COLD`) |
 | `set_service_type` | `service_type` (`DINE_IN` 또는 `TAKEOUT`) |
+| `set_options` | `option_ids`. 미해결 항목 여부는 `recognized_options.customization`에서 함께 확인 |
+| `confirm` | 추가 필드 없음. 현재 메뉴 확인 또는 최종 주문 확인에 대한 명시적 동의 |
+| `restart_recommendation` | 추가 필드 없음. 추천과 세션 옵션을 초기화하고 초기 음성 입력으로 이동 |
 | `direct_recommendation` | LLM이 결정한 조건에 맞는 전체 후보 또는 자료 부족. |
 | `retry` | `reason` (`EMPTY_TRANSCRIPT`, `UNRECOGNIZED`, `MENU_UNAVAILABLE`, `INVALID_OPTION`, `OUTSIDE_CANDIDATES`) |
 
-빈 전사와 모호한 발화는 `200`의 `retry`로 안내한다. 단일 발화는 현재 단계의 행동 하나만 반환한다. `recommend`는 추천 API에 전달할 조건이며, 주문 확정은 화면의 주문 확정 버튼에서 수행한다.
+빈 전사와 모호한 발화는 `200`의 `retry`로 안내한다. 단일 발화는 현재 단계의 행동 하나와 선택적 `recognized_options`를 반환한다. 추천은 별도 추천 API 없이 `direct_recommendation`으로 반환한다. 최종 주문 확인 화면의 버튼 또는 명시적 음성 확인 후에만 `POST /api/orders`를 호출한다. `interpret` 자체는 주문을 저장하지 않는다.
+
+#### 발화에서 인식한 옵션 (`recognized_options`)
+
+기존 `action`은 유지하고, 발화에 옵션이 포함되면 응답 최상위에 `recognized_options`를 추가한다. 옵션 미언급 시 필드 자체를 생략하며, 내부의 미인식 온도·이용 방식도 `null` 대신 생략한다. 추천 후보의 온도는 사용자 발화의 선택값으로 복사하지 않는다.
+
+| 필드 | 의미 |
+| --- | --- |
+| `temperature` | `HOT` 또는 `COLD`. “시원한”, “차가운”, “아이스”는 `COLD` |
+| `service_type` | `DINE_IN` 또는 `TAKEOUT` |
+| `unresolved_fields` | 모호하거나 제공하지 않는 `temperature`/`service_type` 목록. 해당 필드는 기존 세션 값으로 조용히 확정하면 안 됨 |
+| `customization.status` | `resolved`: 요청한 옵션 검증 완료, `pending`: 메뉴·온도 확정 대기, `needs_clarification`: 지원하지 않는 옵션·충돌·모호한 표현 있음 |
+| `customization.option_ids` | 선택 메뉴·온도의 실제 옵션 그룹에서 검증한 ID 목록. `pending`에서는 빈 배열 |
+| `customization.intents` | `{ expression, candidate_option_ids }` 목록. 메뉴·온도 확정 후 재검증할 발화 의도이며 후보 ID를 곧바로 주문에 사용하면 안 됨 |
+| `customization.unresolved` | 추가 확인이 필요한 표현·사유 목록 |
+
+예: “아이스 카페라떼 샷 추가하고 포장해 주세요”는 아래와 같이 반환한다.
+
+```json
+{
+  "transcript": "아이스 카페라떼 샷 추가하고 포장해 주세요",
+  "action": { "type": "select_menu", "menu_id": "cafe_latte" },
+  "recognized_options": {
+    "temperature": "COLD",
+    "service_type": "TAKEOUT",
+    "unresolved_fields": [],
+    "customization": {
+      "status": "resolved",
+      "option_ids": ["shot:extra"],
+      "intents": [{ "expression": "샷추가", "candidate_option_ids": ["shot:extra"] }],
+      "unresolved": []
+    }
+  }
+}
+```
+
+“샷 추가”만 말하고 메뉴 또는 온도가 아직 정해지지 않았으면 `pending`으로 보존한다. “추가 옵션 없이”는 `resolved`와 빈 `option_ids`이며 커스터마이징 미언급과 구분한다. “샷 추가하고 시럽도”는 유효한 샷 선택을 유지하고 시럽을 `unresolved`에 넣는다. “핫 말고 아이스”, “샷 추가 말고 연하게”는 명확한 정정을 반영하고, “핫이나 아이스”, 부정 표현, 중복 옵션, 그룹별 선택 개수 초과는 자동 확정하지 않는다.
+
+추가 계약 예시(카페라떼가 HOT/COLD 및 샷 추가를 제공하는 경우):
+
+| 발화와 단계 | 행동 및 인식 옵션 | 소비 규칙 |
+| --- | --- | --- |
+| 메뉴 단계 “카페라떼 주세요” | `select_menu`, `recognized_options` 생략 | 기존 옵션 선택 흐름 |
+| 메뉴 단계 “카페라떼 샷 추가” | `select_menu`, 커스터마이징 `pending`, `option_ids: []`, 샷 의도 보존 | 온도 선택 후 의도를 검증하며 빈 배열을 “옵션 없음”으로 취급하지 않음 |
+| 메뉴 단계 “아이스 카페라떼 추가 옵션 없이 포장” | `select_menu`, `COLD`/`TAKEOUT`, 커스터마이징 `resolved`, 빈 `option_ids`와 `intents` | 메뉴 확인 후 최종 주문 확인으로 이동 |
+| 메뉴 확인 단계 “네, 샷도 추가해 주세요” | `confirm`, 현재 메뉴·온도에 유효하면 `shot:extra` | 기존 온도·이용 방식을 유지하고 샷 선택 추가 |
+| 온도 단계 “핫이나 아이스” | `retry`, 온도 생략, `unresolved_fields: ["temperature"]` | 이전 온도로 자동 진행하지 않고 다시 선택 |
+| 커스터마이징 단계 “샷 추가하고 시럽도” | `set_options`, `option_ids: ["shot:extra"]`, `needs_clarification`, `unresolved: ["시럽"]` | 샷은 선택된 상태로 표시하고 화면에서 시럽 확인 |
+| HOT 전용 메뉴의 온도 단계 “아이스” | `retry/INVALID_OPTION`, 온도 생략, `unresolved_fields: ["temperature"]` | HOT으로 조용히 대체하지 않음 |
+
+커스터마이징을 하나라도 명확히 지정하고 모든 요청을 해결했으면 추가 옵션 화면 전체를 생략하며 언급하지 않은 그룹은 추가 선택 없음으로 둔다. 미해결 표현은 화면에서 선택 후 계속하기 또는 “추가 옵션 없이”로 명시적으로 확인할 수 있다. 최종 주문 요청에는 `intents`, `unresolved`, 가격을 보내지 않고 검증된 `option_ids`만 전달한다. 서버가 현재 메뉴의 옵션 ID와 선택 개수를 다시 검증하고 추가 금액을 계산한다.
+
+`temperature`/`service_type` 단계에서는 선택적 폼 필드 `selected_temperature=HOT|COLD`를 전달해 커스터마이징을 검증할 수 있다. `menu_confirmation`에서도 선택 메뉴와 온도를 전달할 수 있으며 `customization` 단계는 둘 다 필수다. 메뉴 맥락 없이 온도를 보내거나 메뉴가 제공하지 않는 온도를 보내면 `422 INVALID_VOICE_CONTEXT`다. 메뉴 직접 선택은 해당 메뉴와 발화 온도(또는 유일한 제공 온도)로 검증한다. 추천 경로는 메뉴 확정 전이므로 커스터마이징 의도를 보존하며, 추천이 발화 온도 또는 실제 제공 온도와 충돌하면 `502 LLM_RECOMMENDATION_FAILED`다.
+
+현재 단계의 `action` 검증과 별도로 옵션을 반환한다. `retry` 응답의 옵션만으로 주문을 진행하면 안 되며 `unresolved_fields`는 기존 선택의 자동 확정을 막는다. 재추천 행동에는 이전 요청 옵션을 전달하지 않는다. 메뉴 확인 단계는 “네, 포장이요” 같은 복합 확인을 지원하지만 최종 주문 확정의 기존 명시적 확인 규칙은 유지한다.
+
+프론트는 발화에서 새로 지정한 항목만 세션에 병합한다. 추천·터치 메뉴 선택·메뉴 확인·온도 선택을 거쳐 원래 커스터마이징 의도를 보존하고, 현재 메뉴/온도에서 검증된 값만 주문에 적용한다. 커스터마이징 음성 입력의 `set_options`는 `needs_clarification` 상태도 반환할 수 있으므로 그 경우 유효한 선택을 표시한 채 같은 화면에서 확인받는다. 재추천·홈 이동에서는 세션을 초기화하고, 터치 선택 이후 늦은 음성 응답은 적용하지 않는다.
 
 7.1의 오디오 오류와 처리량 제한을 공유하며, 다음 오류를 추가한다.
 
@@ -185,17 +268,17 @@ curl -F 'audio=@recording.webm;type=audio/webm' -F 'stage=recommendations' \
 | 422 | FastAPI 기본 `detail` 배열 | 필수 폼 필드 누락, `stage` 값 오류 또는 메뉴 ID 형식 오류 |
 | 422 | `INVALID_VOICE_CONTEXT` | 단계에 필요한 메뉴 ID 누락, 미등록 ID, 중복 후보 또는 단계와 맥락 불일치 |
 | 502 | `TRANSCRIPTION_FAILED` | 전사 워커가 실패했거나 유효한 응답을 반환하지 않음 |
-| 503 | `TRANSCRIPTION_UNAVAILABLE`, `TRANSCRIPTION_BUSY`, `CATALOG_UNAVAILABLE` | 워커 미설정·연결 불가, 워커가 다른 녹음을 처리 중, 또는 DB 카탈로그 조회 실패 |
+| 503 | `TRANSCRIPTION_UNAVAILABLE`, `TRANSCRIPTION_BUSY`, `CATALOG_UNAVAILABLE` | 워커 미설정·연결 불가, 워커의 동시 요청 한도 초과, 또는 DB 카탈로그 조회 실패 |
 | 504 | `TRANSCRIPTION_TIMEOUT` | 전사 워커 응답 대기 시간이 75초 초과 |
 
-Whisper는 공용 서버의 전사 워커에서 미리 로드한다. FastAPI는 내부 `VOICE_TRANSCRIPTION_URL`로 변환된 PCM을 보내고 전사 텍스트를 받는다. 브라우저 전체 요청 제한은 전사와 LLM 요청을 포함해 140초다.
+Whisper는 공용 서버의 전사 워커에서 미리 로드한다. 워커는 기본으로 두 건을 받고, 첫 녹음 도착 후 150 ms 안에 두 번째 녹음이 준비되면 한 배치로 전사한다. FastAPI는 내부 `VOICE_TRANSCRIPTION_URL`로 변환된 PCM을 보내고 전사 텍스트를 받는다. 브라우저 전체 요청 제한은 전사와 LLM 요청을 포함해 140초다.
 
 ## LLM 직접 추천 결과
 
 등록 메뉴명과 일치하지 않는 전사는 현재 DB 메뉴 45종과 함께 LLM에 전달한다. 서버는 결과의 메뉴 ID·온도·판매·가격·근거를 검증한다. 별도 텍스트 추천 API나 Pretuning 관리 API는 제공하지 않는다.
 
 ```json
-{"transcript":"차가운 음료 추천", "action":{"type":"direct_recommendation","engine":"llm-direct","status":"recommend","recommendations":[{"menu_id":"iced_americano","temperature":"COLD","reason":"확인된 자료에 기반한 근거"}],"questions":[],"missing_information":[]}}
+{"transcript":"차가운 음료 추천", "action":{"type":"direct_recommendation","engine":"llm-direct","status":"recommend","recommendations":[{"menu_id":"iced_americano","temperature":"COLD","reason":"확인된 자료에 기반한 근거"}],"questions":[],"missing_information":[]}, "recognized_options":{"temperature":"COLD","unresolved_fields":[]}}
 ```
 
 `status`는 `recommend`, `insufficient_data`다. 추천 개수를 말하면 그 개수를 상한으로 사용하고, 말하지 않으면 적합한 후보를 최대 6개 반환한다. 명시한 개수도 6개를 넘을 수 없다. 같은 메뉴 ID는 중복하지 않는다. `questions`는 항상 빈 배열이다. 자료 부족은 후보 없이 반환하고 화면에는 빈 추천 목록과 재추천 버튼을 표시한다. 추천 단계의 `candidate_menu_ids`는 최대 6개다. 5~6개 결과는 4개 미리보기와 전체보기로 표시한다. 재추천은 `restart_recommendation`, 정확한 메뉴 선택은 `select_menu`, 단계별 옵션과 주문 확인은 기존 행동을 사용한다. LLM 실패는 502 `LLM_RECOMMENDATION_FAILED`, 근거 자료 미준비는 503 `LLM_EVIDENCE_NOT_READY`다. 성공처럼 보이는 기본 후보나 점수 추천으로 대체하지 않는다.

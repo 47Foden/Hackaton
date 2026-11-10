@@ -20,7 +20,7 @@ async function setup(page, action, status = 200) {
   });
   await page.goto('/');
   await page.getByRole('button', { name: '음성으로 주문하기' }).click();
-  await page.getByRole('button', { name: '음성 녹음', exact: true }).click();
+  await page.getByRole('button', { name: '메뉴 추천받기', exact: true }).click();
   await expect(page.getByRole('button', { name: '녹음 종료' })).toBeVisible();
   await page.getByRole('button', { name: '녹음 종료' }).click();
   return () => calls;
@@ -68,7 +68,8 @@ test('a fresh recommendation returns to the four-menu preview', async ({ page })
   const results = page.getByRole('region', { name: '추천 결과' });
   await results.getByRole('button', { name: '전체보기', exact: true }).click();
   await expect(results.locator('.menu-card')).toHaveCount(6);
-  await page.getByRole('button', { name: '음성 녹음', exact: true }).click();
+  await page.getByRole('button', { name: '메뉴 추천받기', exact: true }).click();
+  await expect(page.getByRole('button', { name: '녹음 종료' })).toBeVisible();
   await page.getByRole('button', { name: '녹음 종료' }).click();
   await expect(results.locator('.menu-card')).toHaveCount(4);
   await expect(results.getByRole('button', { name: '전체보기', exact: true })).toHaveAttribute('aria-expanded', 'false');

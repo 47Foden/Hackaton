@@ -85,27 +85,32 @@ class VoiceAudioTests(unittest.TestCase):
                 self.assertEqual(status, 413)
                 self.assertEqual(body["detail"]["code"], code)
 
-    def test_concurrent_request_is_rejected_while_slot_is_occupied(self):
+    def test_two_concurrent_requests_are_accepted_and_a_third_is_busy(self):
         async def send_concurrent():
-            started = asyncio.Event()
+            started = asyncio.Queue()
             release = asyncio.Event()
 
             async def pause_upload():
-                started.set()
+                started.put_nowait(None)
                 await release.wait()
 
-            active = asyncio.create_task(post_audio(self.audio, "recording.webm", MIME_TYPE, pause_upload))
-            await started.wait()
+            active = [
+                asyncio.create_task(post_audio(self.audio, "recording.webm", MIME_TYPE, pause_upload))
+                for _ in range(2)
+            ]
             try:
+                for _ in active:
+                    await asyncio.wait_for(started.get(), timeout=2)
                 busy = await post_audio(self.audio, "recording.webm", MIME_TYPE)
             finally:
                 release.set()
-            return busy, await active
+                accepted = await asyncio.gather(*active)
+            return busy, accepted
 
         busy, accepted = asyncio.run(send_concurrent())
         self.assertEqual(busy[0], 503)
         self.assertEqual(busy[1]["detail"]["code"], "AUDIO_BUSY")
-        self.assertEqual(accepted[0], 200)
+        self.assertEqual([status for status, _ in accepted], [200, 200])
 
     def test_upload_timeout_releases_slot(self):
         async def pause_upload():

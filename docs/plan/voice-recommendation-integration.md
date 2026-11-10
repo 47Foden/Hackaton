@@ -58,7 +58,7 @@ $env:PYTHONPATH = (Resolve-Path backend).Path
 & ./backend/scripts/voice/.venv/Scripts/python.exe -m app.services.voice.whisper_worker --model-dir models/whisper-large-v3-turbo --port 8765
 ```
 
-FastAPI에는 `VOICE_TRANSCRIPTION_URL`을 지정한다. 같은 호스트에서 직접 실행할 때는 `http://127.0.0.1:8765/transcribe`, 로컬 Docker Desktop에서는 `http://host.docker.internal:8765/transcribe`를 사용한다. 공용 서버에서는 전사 워커를 사설 인터페이스에 둔다. `--model-dir`과 `--device`로 배포 모델과 CPU/CUDA를 선택한다. API가 75초 뒤 대기를 중단해도 워커는 진행 중인 전사를 마칠 때까지 새 요청에 `TRANSCRIPTION_BUSY`를 반환한다.
+FastAPI에는 `VOICE_TRANSCRIPTION_URL`을 지정한다. 같은 호스트에서 직접 실행할 때는 `http://127.0.0.1:8765/transcribe`, 로컬 Docker Desktop에서는 `http://host.docker.internal:8765/transcribe`를 사용한다. 공용 서버에서는 전사 워커를 사설 인터페이스에 둔다. `--model-dir`과 `--device`로 배포 모델과 CPU/CUDA를 선택한다. 현재 동시 처리 한도와 시간 제한은 [API 명세](../api-spec.md)에 기록한다.
 
 ### 5.3 추천 데이터와 후보 화면
 

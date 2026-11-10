@@ -5,7 +5,8 @@ from pydantic import BaseModel, Field, StringConstraints
 from app.schemas.menus import Temperature
 from app.schemas.orders import ServiceType
 
-VoiceStage = Literal["menu", "temperature", "service_type", "recommendations", "menu_confirmation", "review"]
+VoiceStage = Literal["menu", "temperature", "customization", "service_type", "recommendations", "menu_confirmation", "review"]
+VoiceIntent = Literal['order', 'recommend']
 MenuId = Annotated[str, StringConstraints(pattern=r"^[a-z0-9_]{1,64}$")]
 RetryReason = Literal["EMPTY_TRANSCRIPT", "UNRECOGNIZED", "MENU_UNAVAILABLE", "INVALID_OPTION", "OUTSIDE_CANDIDATES"]
 
@@ -37,6 +38,11 @@ class SetServiceType(BaseModel):
     service_type: ServiceType
 
 
+class SetOptions(BaseModel):
+    type: Literal['set_options'] = 'set_options'
+    option_ids: list[str]
+
+
 class Retry(BaseModel):
     type: Literal["retry"] = "retry"
     reason: RetryReason
@@ -65,9 +71,33 @@ class Confirm(BaseModel):
     type: Literal["confirm"] = "confirm"
 
 
-VoiceAction = Annotated[DirectRecommendation | RestartRecommendation | Confirm | SelectMenu | SetTemperature | SetServiceType | Retry, Field(discriminator="type")]
+VoiceAction = Annotated[DirectRecommendation | RestartRecommendation | Confirm | SelectMenu | SetTemperature | SetServiceType | SetOptions | Retry, Field(discriminator="type")]
+
+
+OptionId = Annotated[str, StringConstraints(pattern=r'^[a-z_]+:[a-z_]+$')]
+
+
+class CustomizationIntent(BaseModel):
+    expression: str
+    candidate_option_ids: list[OptionId]
+
+
+class RecognizedCustomization(BaseModel):
+    status: Literal['resolved', 'pending', 'needs_clarification']
+    option_ids: list[OptionId] = Field(default_factory=list)
+    intents: list[CustomizationIntent] = Field(default_factory=list)
+    unresolved: list[str] = Field(default_factory=list)
+
+
+class RecognizedOptions(BaseModel):
+    temperature: Temperature | None = None
+    service_type: ServiceType | None = None
+    customization: RecognizedCustomization | None = None
+    # A conflicting/unsupported field must not silently retain a previous value.
+    unresolved_fields: list[Literal['temperature', 'service_type']] = Field(default_factory=list)
 
 
 class VoiceInterpretResponse(BaseModel):
     transcript: str
     action: VoiceAction
+    recognized_options: RecognizedOptions | None = None

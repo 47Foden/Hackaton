@@ -14,6 +14,8 @@ from app.db.connection import connect
 from app.db.migrate import migrate
 from app.db.seed import seed
 from app.main import app
+from app.services.voice.audio import PreparedVoiceAudio
+from test_voice_audio import post_audio, MIME_TYPE
 
 SELECTION = {"menu_id": "espresso", "temperature": "HOT", "service_type": "TAKEOUT"}
 ORDER = {**SELECTION, "request_id": "550e8400-e29b-41d4-a716-446655440000"}
@@ -40,6 +42,36 @@ async def asgi_post_order(payload):
 
 
 class OrdersApiTests(unittest.TestCase):
+    def test_voice_options_reach_order_price_and_database_snapshot(self):
+        for text, ids in [
+            ('아이스 카페라떼 샷 추가하고 포장', ['shot:extra']),
+            ('아이스 카페라떼 샷 추가하고 바닐라 시럽 추가 포장', ['shot:extra', 'sweetness:vanilla']),
+        ]:
+            with self.subTest(text=text), patch.dict(os.environ, {'DATABASE_URL': self.url}), \
+                    patch('app.routers.voice._prepare_upload', return_value=(PreparedVoiceAudio(b'\0\0', 16000, 1), 2)), \
+                    patch('app.routers.voice.transcribe_voice', return_value=text), \
+                    patch('app.routers.voice.llm_recommend', side_effect=AssertionError('No LLM required')):
+                status, voice = asyncio.run(post_audio(b'fixture', 'sample.webm', MIME_TYPE,
+                    path='/api/voice/interpret', fields=[('stage', 'menu')]))
+                self.assertEqual(status, 200)
+                options = voice['recognized_options']
+                self.assertEqual(options['customization']['status'], 'resolved')
+                self.assertEqual(options['customization']['option_ids'], ids)
+                request = {'request_id': str(uuid.uuid4()), 'menu_id': voice['action']['menu_id'],
+                    'temperature': options['temperature'], 'service_type': options['service_type'],
+                    'option_ids': options['customization']['option_ids']}
+                status, result = self.post(request)
+                self.assertEqual(status, 201)
+                self.assertEqual({c['id'] for c in result['selected_options']}, set(ids))
+                self.assertEqual((result['temperature'], result['service_type']), ('COLD', 'TAKEOUT'))
+                with connect(self.url) as connection:
+                    base = connection.execute("SELECT price_krw FROM menus WHERE menu_id = 'cafe_latte'").fetchone()['price_krw']
+                    stored = connection.execute('SELECT * FROM orders WHERE id = %s', (int(result['order_id']),)).fetchone()
+                self.assertEqual(result['total_price_krw'], base + 600 + (700 if 'sweetness:vanilla' in ids else 0))
+                self.assertEqual(stored['selected_options'], result['selected_options'])
+                self.assertEqual(stored['total_price_krw'], result['total_price_krw'])
+                self.assertEqual(self.post(request), (200, result))
+
     def setUp(self):
         self.admin_url = os.environ["DATABASE_URL"]
         self.schema = "test_orders_api_" + uuid.uuid4().hex

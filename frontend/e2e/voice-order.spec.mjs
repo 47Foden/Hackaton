@@ -26,9 +26,10 @@ test('independent voice session mixes speech and touch and submits only after co
   });
   await page.goto('/');
   await page.getByRole('button', { name: '음성으로 주문하기' }).click();
-  await expect.poll(() => page.evaluate(() => window.prompts.join(' '))).toContain('아래 마이크 버튼');
+  await expect.poll(() => page.evaluate(() => window.prompts.join(' '))).toContain('메뉴 추천받기를');
   async function say() {
-    await page.getByRole('button', { name: '음성 녹음', exact: true }).click();
+    await page.getByRole('button', { name: '음성 녹음', exact: true })
+      .or(page.getByRole('button', { name: '주문하기', exact: true })).click();
     await expect(page.getByRole('button', { name: '녹음 종료' })).toBeVisible();
     await page.getByRole('button', { name: '녹음 종료' }).click();
   }
@@ -37,7 +38,7 @@ test('independent voice session mixes speech and touch and submits only after co
   expect(orders).toBe(0);
   await say();
   await page.getByRole('button', { name: /따뜻하게/ }).click();
-  await expect(page.getByRole('button', { name: '음성 녹음', exact: true })).toBeDisabled();
+  await expect(page.getByRole('button', { name: '음성 녹음', exact: true })).toBeEnabled();
   await page.getByRole('button', { name: '옵션 없이 계속' }).click();
   await say();
   await expect(page.getByRole('button', { name: '주문 확정', exact: true })).toBeVisible();
@@ -99,16 +100,17 @@ test('voice recommendation, spoken restart, candidate selection and order comple
   await page.addInitScript(() => { window.speechSynthesis.speak=()=>{}; window.speechSynthesis.cancel=()=>{}; });
   await page.goto('/');
   await page.getByRole('button',{name:'음성으로 주문하기'}).click();
-  async function say() {
-    await page.getByRole('button',{name:'음성 녹음',exact:true}).click();
+  async function say(intent = 'order') {
+    await page.getByRole('button',{name:'음성 녹음',exact:true})
+      .or(page.getByRole('button', { name: intent === 'recommend' ? '메뉴 추천받기' : '주문하기', exact: true })).click();
     await page.getByRole('button',{name:'녹음 종료'}).click();
   }
-  await say();
+  await say('recommend');
   await expect(page.getByRole('heading',{name:'추천 메뉴',exact:true})).toBeVisible();
   await expect(page.getByRole('region',{name:'추천 결과'}).locator('.menu-card')).toHaveCount(1);
   await say();
   await expect(page.getByRole('heading',{name:'음성 주문',exact:true})).toBeVisible();
-  await say();
+  await say('recommend');
   await expect(page.getByRole('heading',{name:'추천 메뉴',exact:true})).toBeVisible();
   await say();
   await expect(page.getByRole('button',{name:'네, 이 메뉴로 주문'})).toBeVisible();

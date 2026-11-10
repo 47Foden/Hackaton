@@ -7,7 +7,7 @@ interface KioskLayoutProps {
   title: string;
   description: string;
   voiceDescription?: string;
-  status: string;
+  status?: string;
   microphone?: ReactNode;
   children: ReactNode;
   onHome?: () => void;
