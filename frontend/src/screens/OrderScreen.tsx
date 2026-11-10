@@ -16,7 +16,7 @@ import './order/OrderFlow.css';
 
 
 export function OrderScreen({ onHome }: { onHome: () => void }) {
-  const { order, dispatch, confirm } = useOrderFlow(kioskApi);
+  const { order, dispatch, confirm, items, continueOrder, changeQuantity, locked } = useOrderFlow(kioskApi);
   const { state: catalog, reload } = useMenus(kioskApi);
   const [menuView, setMenuView] = useState<MenuBoardView>({ enlarged: false });
 
@@ -52,10 +52,10 @@ export function OrderScreen({ onHome }: { onHome: () => void }) {
       {order.stage === 'service_type' && <ServiceTypeScreen menu={order.menu} temperature={order.temperature}
         selectedOptions={order.selectedOptions}
         onSelect={serviceType => applySelection({ type: 'set_service_type', serviceType })} />}
-      {(order.stage === 'review' || order.stage === 'submitting') && <ReviewScreen draft={order.draft}
+      {(order.stage === 'review' || order.stage === 'submitting') && <ReviewScreen items={items} onContinue={continueOrder} onQuantity={changeQuantity} locked={locked} draft={order.draft}
         isMock={isMockOrderApi} pending={order.stage === 'submitting'}
         error={reviewError} onConfirm={confirm} />}
-      {order.stage === 'complete' && <CompletionScreen draft={order.draft} result={order.result}
+      {order.stage === 'complete' && <CompletionScreen items={items} draft={order.draft} result={order.result}
         isMock={isMockOrderApi} onHome={onHome} />}
     </KioskLayout>
   );

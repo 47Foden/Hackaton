@@ -2,8 +2,8 @@ import type { OrderResponse } from '../../api/contracts';
 import type { OrderDraft } from '../../state/order';
 import { OrderSummary } from '../../components/order/OrderSummary';
 
-export function CompletionScreen({ draft, result, isMock, onHome }: {
-  draft: OrderDraft; result: OrderResponse; isMock: boolean; onHome: () => void;
+export function CompletionScreen({ draft, result, isMock, onHome, items = [draft] }: {
+  items?: OrderDraft[]; draft: OrderDraft; result: OrderResponse; isMock: boolean; onHome: () => void;
 }) {
   const selectedOptions = result.selected_options ?? [];
   const basePrice = result.total_price_krw - selectedOptions.reduce((sum, option) => sum + option.price_delta_krw, 0);
@@ -17,8 +17,10 @@ export function CompletionScreen({ draft, result, isMock, onHome }: {
         <dd className="order-completion__number">{result.order_number}</dd>
       </dl>
       {isMock && <p className="order-step__note">실제 발급 번호가 아니에요. 주문은 저장되거나 접수되지 않았어요.</p>}
-      <OrderSummary {...confirmedDraft} />
-      {selectedOptions.length > 0 && <p className="order-step__total">합계 <strong>{result.total_price_krw.toLocaleString('ko-KR')}원</strong></p>}
+      {result.items?.length ? result.items.map((item, index) => <OrderSummary key={index}
+        menu={{...draft.menu, name: item.menu_name, imageUrl: items[index]?.menu.imageUrl, imageUrls: items[index]?.menu.imageUrls ?? {}, price: item.unit_price_krw - item.selected_options.reduce((s,c) => s+c.price_delta_krw,0)}}
+        temperature={item.temperature} serviceType={item.service_type} selectedOptions={item.selected_options} quantity={item.quantity} />) : <OrderSummary {...confirmedDraft} />}
+      {(selectedOptions.length > 0 || !!result.items?.length) && <p className="order-step__total">합계 <strong>{result.total_price_krw.toLocaleString('ko-KR')}원</strong></p>}
       <button type="button" className="primary-button order-step__confirm" onClick={onHome}>처음으로 돌아가기</button>
     </section>
   );

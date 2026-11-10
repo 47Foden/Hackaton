@@ -4,11 +4,11 @@ import { OrderSummary } from '../../components/order/OrderSummary';
 import type { Menu, Temperature } from '../../data/menuCatalog';
 import { resolveOrderOptions } from '../../state/orderOptions';
 
-export function CustomizationScreen({ menu, temperature, onContinue }: {
-  menu: Menu; temperature: Temperature; onContinue: (ids: string[]) => void;
+export function CustomizationScreen({ menu, temperature, onContinue, initialIds = [] }: {
+  initialIds?: string[]; menu: Menu; temperature: Temperature; onContinue: (ids: string[]) => void;
 }) {
   const groups = menu.optionGroups[temperature] ?? [];
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [selectedIds, setSelectedIds] = useState<string[]>(() => resolveOrderOptions(groups, initialIds) ? initialIds : []);
   const selected = resolveOrderOptions(groups, selectedIds) ?? [];
   const total = menu.price + selected.reduce((sum, choice) => sum + choice.price_delta_krw, 0);
 

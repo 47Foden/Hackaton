@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { KioskLayout } from '../components/layout/KioskLayout';
 import { MenuBoard, type MenuBoardView } from '../components/menu/MenuBoard';
 import { CatalogStatus } from '../components/menu/CatalogStatus';
@@ -19,7 +19,7 @@ import { getOrderGuidance } from '../data/orderGuidance';
 import './order/OrderFlow.css';
 
 export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
-  const { order, dispatch, confirm } = useOrderFlow(kioskApi);
+  const { order, dispatch, confirm, items, continueOrder, changeQuantity, setQuantity, locked } = useOrderFlow(kioskApi);
   const { state: catalog, reload } = useMenus(kioskApi);
   const [candidates, setCandidates] = useState<string[] | null>(null);
   const [recommendationsExpanded, setRecommendationsExpanded] = useState(false);
@@ -27,6 +27,22 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
   const [menuView, setMenuView] = useState<MenuBoardView>({ enlarged: false });
   const [error, setError] = useState('');
   const [transcript, setTranscript] = useState('');
+  type PendingItem = { menu_id: string; quantity: number; temperature?: 'HOT' | 'COLD'; option_ids: string[] };
+  const [queue, setQueue] = useState<PendingItem[]>([]);
+  const [activeItem, setActiveItem] = useState<PendingItem | null>(null);
+  useEffect(() => {
+    if (order.stage === 'menu' && queue.length && catalog.status === 'ready') {
+      const [next, ...rest] = queue;
+      const menu = catalog.menus.find(m => m.id === next.menu_id);
+      if (!menu) return;
+      setQueue(rest); setActiveItem(next); setQuantity(next.quantity);
+      dispatch({type: 'select_menu', menu});
+    } else if (order.stage === 'temperature' && activeItem?.temperature) {
+      dispatch({type: 'set_temperature', temperature: activeItem.temperature});
+    } else if (order.stage === 'review' && queue.length) {
+      continueOrder(); setActiveItem(null);
+    }
+  }, [order.stage, queue, catalog.status, activeItem]);
   const revision = useRef(0);
   const stage = selected ? 'menu_confirmation' : order.stage === 'menu' && candidates?.length ? 'recommendations' : order.stage;
   const guide = selected ? { title: selected.name, description: '이 메뉴로 주문하시겠습니까? 네라고 말씀하시거나 버튼을 눌러 주세요.' }
@@ -62,6 +78,11 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
       setTranscript(typeof data.transcript === 'string' ? data.transcript : '');
       voice.cancel();
       const action = data.action;
+      if (stage === 'menu' && action?.type === 'select_items' && catalog.status === 'ready') {
+        if (!Array.isArray(action.items) || action.items.length + items.length > 20 ||
+          !action.items.every((item: PendingItem) => catalog.menus.some(m => m.id === item.menu_id && m.available) && Number.isInteger(item.quantity) && item.quantity >= 1 && item.quantity <= 99)) throw new Error('주문 메뉴를 확인해 주세요.');
+        interrupt(); setQueue(action.items); setSelected(null); setCandidates(null); return;
+      }
       if (['menu', 'recommendations'].includes(stage) && action?.type === 'direct_recommendation' && catalog.status === 'ready') {
         if (action.status === 'recommend') {
           const recs = action.recommendations;
@@ -122,12 +143,12 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
       : catalog.status === 'loading' ? <CatalogStatus status="loading" />
         : <CatalogStatus status="error" message={catalog.message} onReload={() => { interrupt(); reload(); }} />)}
     {order.stage === 'temperature' && <TemperatureScreen menu={order.menu} onSelect={temperature => { interrupt(); dispatch({ type: 'set_temperature', temperature }); }} />}
-    {order.stage === 'customization' && <CustomizationScreen menu={order.menu} temperature={order.temperature}
+    {order.stage === 'customization' && <CustomizationScreen key={order.menu.id + queue.length} initialIds={activeItem?.option_ids} menu={order.menu} temperature={order.temperature}
       onContinue={ids => { interrupt(); dispatch({ type: 'set_options', ids }); }} />}
     {order.stage === 'service_type' && <ServiceTypeScreen menu={order.menu} temperature={order.temperature} selectedOptions={order.selectedOptions}
       onSelect={serviceType => { interrupt(); dispatch({ type: 'set_service_type', serviceType }); }} />}
-    {(order.stage === 'review' || order.stage === 'submitting') && <ReviewScreen draft={order.draft} isMock={isMockOrderApi} pending={order.stage === 'submitting'}
+    {(order.stage === 'review' || order.stage === 'submitting') && <ReviewScreen items={items} onContinue={() => { interrupt(); setActiveItem(null); setCandidates(null); setTranscript(''); continueOrder(); }} onQuantity={changeQuantity} locked={locked} draft={order.draft} isMock={isMockOrderApi} pending={order.stage === 'submitting'}
       error={order.stage === 'review' ? order.error : undefined} onConfirm={() => { interrupt(); void confirm(); }} />}
-    {order.stage === 'complete' && <CompletionScreen draft={order.draft} result={order.result} isMock={isMockOrderApi} onHome={() => { interrupt(); onHome(); }} />}
+    {order.stage === 'complete' && <CompletionScreen items={items} draft={order.draft} result={order.result} isMock={isMockOrderApi} onHome={() => { interrupt(); onHome(); }} />}
   </KioskLayout>;
 }

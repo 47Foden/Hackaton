@@ -136,6 +136,9 @@ def interpret_audio(
         raise HTTPException(error.status, detail={"code": error.code, "message": str(error)}) from None
 
     action = interpret_transcript(transcript, stage, menus, selected_menu_id=selected_menu_id, candidate_menu_ids=candidates)
+    if stage == "menu":
+        from app.services.voice.cart import parse_cart
+        action = parse_cart(transcript, menus) or action
     if stage in {"menu", "recommendations"} and any(word in transcript.replace(" ", "") for word in ("재추천", "다시추천", "다른추천")):
         action = RestartRecommendation()
     elif stage in {"menu", "recommendations"} and (action.type == "retry" and action.reason == "UNRECOGNIZED"):

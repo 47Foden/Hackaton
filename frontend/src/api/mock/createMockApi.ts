@@ -35,6 +35,30 @@ export function createMockApi(options: MockOptions = {}): KioskApi & { setMenus(
     },
     async createOrder(request, signal) {
       await wait(options.delayMs ?? 350, signal);
+      if (request.items) {
+        const previous = orders.get(request.request_id);
+        if (previous) {
+          const identity = (i: {menu_id: string; temperature: string; service_type: string; quantity: number; option_ids?: string[]; selected_options?: {id: string}[]}) => JSON.stringify([i.menu_id,i.temperature,i.service_type,i.quantity,[...(i.option_ids ?? i.selected_options?.map(c=>c.id) ?? [])].sort()]);
+          if (JSON.stringify(previous.items?.map(identity)) !== JSON.stringify(request.items.map(identity))) throw new ApiError('주문 내용이 다릅니다.',409,'IDEMPOTENCY_CONFLICT');
+          return structuredClone(previous);
+        }
+        const items = request.items.map(line => {
+          const menu = menus.find(m => m.menu_id === line.menu_id && m.is_available);
+          const variant = menu?.variants.find(v => v.temperature === line.temperature);
+          const selected = variant && resolveOrderOptions(variant.option_groups ?? [], line.option_ids);
+          if (!menu || !selected || !Number.isInteger(line.quantity) || line.quantity < 1 || line.quantity > 99) throw new ApiError('입력 내용을 확인해 주세요.', 422, 'INVALID_OPTION');
+          const unit = menu.price_krw + selected.reduce((s,c) => s+c.price_delta_krw,0);
+          return {...line, menu_name: menu.name, selected_options: selected, unit_price_krw: unit, total_price_krw: unit * line.quantity};
+        });
+        if (!items.length || items.length > 20) throw new ApiError('입력 내용을 확인해 주세요.', 422, 'VALIDATION_ERROR');
+        if (options.orderError === 'rejected') throw new ApiError('주문이 거부됐어요.', 409, 'MENU_UNAVAILABLE');
+        const number = `DEV-${String(++sequence).padStart(4, '0')}`;
+        const result: OrderResponse = {...items[0], quantity: 1, items, order_id: number, order_number: number,
+          total_price_krw: items.reduce((s,i) => s+i.total_price_krw,0), created_at: new Date().toISOString()};
+        orders.set(request.request_id, result);
+        if (options.orderError === 'uncertain') throw new ApiError('주문 처리를 확인하지 못했어요.', 503, 'ORDER_STORAGE_UNAVAILABLE', true);
+        return structuredClone(result);
+      }
       const keys = Object.keys(request);
       const { request_id, menu_id, temperature, service_type, option_ids = [] } = request;
       if (typeof request_id !== 'string' || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(request_id)

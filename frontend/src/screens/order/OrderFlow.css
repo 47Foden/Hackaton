@@ -41,3 +41,8 @@
 .voice-menu-confirmation__actions { width: 100%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
 .voice-menu-confirmation__actions button { font-size: 22px; }
 @media (max-width: 540px) { .voice-menu-confirmation__actions { grid-template-columns: 1fr; } }
+
+.quantity-control { display:flex; align-items:center; justify-content:flex-end; gap:24px; margin:16px 0 32px; }
+.quantity-control button { min-width:56px; min-height:56px; border:1px solid #555; border-radius:12px; background:white; font-size:32px; }
+.cart-actions { display:flex; gap:16px; }
+.cart-actions > button { flex:1; }

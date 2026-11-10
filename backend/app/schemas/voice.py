@@ -65,7 +65,18 @@ class Confirm(BaseModel):
     type: Literal["confirm"] = "confirm"
 
 
-VoiceAction = Annotated[DirectRecommendation | RestartRecommendation | Confirm | SelectMenu | SetTemperature | SetServiceType | Retry, Field(discriminator="type")]
+class VoiceCartItem(BaseModel):
+    menu_id: MenuId
+    temperature: Temperature | None = None
+    quantity: int = Field(default=1, ge=1, le=99)
+    option_ids: list[str] = Field(default_factory=list)
+
+class VoiceCart(BaseModel):
+    type: Literal["select_items"] = "select_items"
+    items: list[VoiceCartItem] = Field(min_length=1, max_length=20)
+
+
+VoiceAction = Annotated[VoiceCart | DirectRecommendation | RestartRecommendation | Confirm | SelectMenu | SetTemperature | SetServiceType | Retry, Field(discriminator="type")]
 
 
 class VoiceInterpretResponse(BaseModel):

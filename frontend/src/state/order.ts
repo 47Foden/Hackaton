@@ -3,7 +3,7 @@ import type { MenuOption, OrderResponse, ServiceType } from '../api/contracts';
 import { resolveOrderOptions } from './orderOptions.ts';
 
 export type { ServiceType } from '../api/contracts';
-export interface OrderDraft { menu: Menu; temperature: Temperature; serviceType: ServiceType; selectedOptions: MenuOption[]; }
+export interface OrderDraft { menu: Menu; temperature: Temperature; serviceType: ServiceType; selectedOptions: MenuOption[]; quantity?: number; }
 export interface OrderFailure { message: string; kind: 'rejected' | 'uncertain' | 'conflict'; }
 export type OrderState =
   | { stage: 'menu' }
