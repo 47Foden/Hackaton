@@ -72,8 +72,11 @@ class CurrentCatalogueTests(unittest.TestCase):
             direct.recommend('추천', self.rows, transport=lambda _: envelope(candidate(mid, self.rows[0]['available_temperatures'][0])))
 
     def test_unknown_recipe_is_not_imported_from_old_menu_name(self):
+        evidence = json.loads(direct.DEFAULT_EVIDENCE.read_text())
+        evidence['menus'][0]['variants']['COLD']['description'] = {
+            'status': 'unknown', 'value': None, 'source': None, 'checked_date': None, 'note': 'Test-only unknown recipe'}
         with self.assertRaisesRegex(DirectError, 'EVIDENCE_SCOPE_MISMATCH'):
-            direct.recommend('추천', self.rows, transport=lambda _: envelope(candidate(fields=['description'])))
+            direct.recommend('추천', self.rows, evidence=evidence, transport=lambda _: envelope(candidate(fields=['description'])))
         for text in ('우유 빼주세요', '카페인 없는 음료'):
             with self.subTest(text=text), self.assertRaisesRegex(DirectError, 'INELIGIBLE_OPTION'):
                 direct.recommend(text, self.rows, transport=lambda _: envelope(candidate()))

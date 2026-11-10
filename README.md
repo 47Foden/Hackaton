@@ -330,8 +330,10 @@ docker compose exec backend python -c "import socket; s=socket.create_connection
 
 `backend/.env`의 `OPENAI_API_KEY`와 선택적 `LLM_RECOMMENDATION_MODEL`을 설정한 뒤 백엔드를 재생성하세요. 기본 모델 ID는 `gpt-5.4-mini-2026-03-17`이며 계정의 모델 접근 권한이 필요합니다. `RECOMMENDATION_ENGINE`으로 추천 방식을 선택하는 설정은 제거했습니다.
 
-현재 45종 설명·성분 자료는 미확인이므로 성분 제외 등 충족을 확인할 수 없는 조건에서는 빈 추천 결과가 표시될 수 있습니다. 유료 API 호출 실패 시 기존 점수 추천으로 대체하지 않습니다.
+45종·71개 온도별 맛 근거는 공식 사이트에서 확인한 설명을 사용합니다. 가격·종류는 로컬 파일과 DB가 기준입니다. 성분 제외 등 확인할 수 없는 조건에서는 빈 추천 결과가 표시될 수 있습니다. 유료 API 호출 실패 시 기존 점수 추천으로 대체하지 않습니다.
 
 설정·실행·데이터 한계는 [LLM 직접 추천 안내](docs/llm-direct.md)를 참고하세요.
 
 실제 음성 20개를 반영한 조건 해석 예시·자동 평가 도구는 [speech20 안내](docs/evaluation/speech20.md)를 참고하세요. 이는 프롬프트·조건 검증 개선이며 모델 파인튜닝은 아닙니다.
+
+외부 공식 설명 수집과 맛 근거 검증·갱신 방법은 [맛 자료 안내](docs/menu-taste-research.md)에 정리했습니다.

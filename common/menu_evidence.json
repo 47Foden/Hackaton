@@ -5,15 +5,15 @@
       "menu_id": "iced_americano",
       "name": "아메리카노",
       "official_name": "아메리카노",
-      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "mapping_note": "기존 이미지 출처의 공식명·온도·원본 이미지 URL이 현재 공식 페이지와 일치함. 가격·분류는 로컬 데이터를 유지함.",
       "variants": {
         "HOT": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "[기본2샷]메가MGC커피 블렌드 원두로 추출한 에스프레소에 물을 더해, 풍부한 바디감을 느낄 수 있는 스탠다드 커피.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=5",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -39,11 +39,11 @@
         },
         "COLD": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "[기본2샷]메가MGC커피 블렌드 원두로 추출한 에스프레소에 물을 더해, 풍부한 바디감을 느낄 수 있는 스탠다드 커피.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=7",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -73,15 +73,15 @@
       "menu_id": "honey_americano",
       "name": "꿀아메리카노",
       "official_name": "꿀아메리카노",
-      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "mapping_note": "기존 이미지 출처의 공식명·온도·원본 이미지 URL이 현재 공식 페이지와 일치함. 가격·분류는 로컬 데이터를 유지함.",
       "variants": {
         "HOT": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "아메리카노의 묵직한 바디감에 달콤한 사양벌꿀이 소프트하게 어우러진 커피.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=6",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -107,11 +107,11 @@
         },
         "COLD": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "아메리카노의 묵직한 바디감에 달콤한 사양벌꿀이 소프트하게 어우러진 커피.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=6",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -140,16 +140,16 @@
     {
       "menu_id": "vanilla_americano",
       "name": "바닐라 아메리카노",
-      "official_name": "바닐라 아메리카노",
-      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "official_name": "바닐라아메리카노",
+      "mapping_note": "기존 이미지 출처의 공식명·온도·원본 이미지 URL이 현재 공식 페이지와 일치함. 가격·분류는 로컬 데이터를 유지함.",
       "variants": {
         "HOT": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "아메리카노에 바닐라의 부드러운 향과 달콤함을 조화롭게 담아낸 커피.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=6",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -175,11 +175,11 @@
         },
         "COLD": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "아메리카노에 바닐라의 부드러운 향과 달콤함을 조화롭게 담아낸 커피.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=6",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -208,16 +208,16 @@
     {
       "menu_id": "hazelnut_americano",
       "name": "헤이즐넛 아메리카노",
-      "official_name": "헤이즐넛 아메리카노",
-      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "official_name": "헤이즐넛아메리카노",
+      "mapping_note": "기존 이미지 출처의 공식명·온도·원본 이미지 URL이 현재 공식 페이지와 일치함. 가격·분류는 로컬 데이터를 유지함.",
       "variants": {
         "HOT": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "아메리카노에 헤이즐넛의 풍성한 향과 달콤함을 담아 향긋하고 부드럽게 즐기는 커피.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=6",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -243,11 +243,11 @@
         },
         "COLD": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "아메리카노에 헤이즐넛의 풍성한 향과 달콤함을 담아 향긋하고 부드럽게 즐기는 커피.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=7",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -277,15 +277,15 @@
       "menu_id": "cafe_latte",
       "name": "카페라떼",
       "official_name": "카페라떼",
-      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "mapping_note": "기존 이미지 출처의 공식명·온도·원본 이미지 URL이 현재 공식 페이지와 일치함. 가격·분류는 로컬 데이터를 유지함.",
       "variants": {
         "HOT": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "진한 에스프레소와 부드러운 우유가 어우러져 고소한 풍미를 완성한 라떼.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=6",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -311,11 +311,11 @@
         },
         "COLD": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "진한 에스프레소와 부드러운 우유가 어우러져 고소한 풍미를 완성한 라떼.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=6",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -345,15 +345,15 @@
       "menu_id": "vanilla_latte",
       "name": "바닐라라떼",
       "official_name": "바닐라라떼",
-      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "mapping_note": "기존 이미지 출처의 공식명·온도·원본 이미지 URL이 현재 공식 페이지와 일치함. 가격·분류는 로컬 데이터를 유지함.",
       "variants": {
         "HOT": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "바닐라의 짙은 향과 풍부한 폼 밀크의 조화가 인상적인 달콤한 라떼.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=6",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -379,11 +379,11 @@
         },
         "COLD": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "바닐라의 짙은 향과 풍부한 폼 밀크의 조화가 인상적인 달콤한 라떼.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=6",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -413,15 +413,15 @@
       "menu_id": "condensed_milk_latte",
       "name": "연유라떼",
       "official_name": "연유라떼",
-      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "mapping_note": "기존 이미지 출처의 공식명·온도·원본 이미지 URL이 현재 공식 페이지와 일치함. 가격·분류는 로컬 데이터를 유지함.",
       "variants": {
         "HOT": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "향기로운 에스프레소 샷, 부드러운 우유 그리고 달콤한 연유가 조화롭게 어우러진 라떼.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=6",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -447,11 +447,11 @@
         },
         "COLD": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "향기로운 에스프레소 샷, 부드러운 우유 그리고 달콤한 연유가 조화롭게 어우러진 라떼",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=3",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -481,15 +481,15 @@
       "menu_id": "cappuccino",
       "name": "카푸치노",
       "official_name": "카푸치노",
-      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "mapping_note": "기존 이미지 출처의 공식명·온도·원본 이미지 URL이 현재 공식 페이지와 일치함. 가격·분류는 로컬 데이터를 유지함.",
       "variants": {
         "HOT": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "에스프레소 위에 올려진 우유 거품, 그리고 시나몬 파우더로 완성한 조화로운 맛의 커피.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=6",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -515,11 +515,11 @@
         },
         "COLD": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "에스프레소 위에 올려진 우유 거품, 그리고 시나몬 파우더로 완성한 조화로운 맛의 커피.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=6",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -548,16 +548,16 @@
     {
       "menu_id": "hazelnut_latte",
       "name": "헤이즐넛 라떼",
-      "official_name": "헤이즐넛 라떼",
-      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "official_name": "헤이즐넛라떼",
+      "mapping_note": "기존 이미지 출처의 공식명·온도·원본 이미지 URL이 현재 공식 페이지와 일치함. 가격·분류는 로컬 데이터를 유지함.",
       "variants": {
         "HOT": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "부드러운 카페라떼에 헤이즐넛의 풍부한 향과 달콤함을 담아 향긋하게 즐길 수 있는 라떼.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=6",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -583,11 +583,11 @@
         },
         "COLD": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "부드러운 카페라떼에 헤이즐넛의 풍부한 향과 달콤함을 담아 향긋하게 즐길 수 있는 라떼.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=7",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -616,16 +616,16 @@
     {
       "menu_id": "cold_brew",
       "name": "콜드브루 오리지널",
-      "official_name": "콜드브루 오리지널",
-      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "official_name": "콜드브루오리지널",
+      "mapping_note": "기존 이미지 출처의 공식명·온도·원본 이미지 URL이 현재 공식 페이지와 일치함. 가격·분류는 로컬 데이터를 유지함.",
       "variants": {
         "HOT": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "차가운 물에 장시간 우려내 깔끔한 목넘김을 느낄 수 있는 콜드브루.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=6",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -651,11 +651,11 @@
         },
         "COLD": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "차가운 물에 장시간 우려내 깔끔한 목넘김을 느낄 수 있는 콜드브루.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=7",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -685,15 +685,15 @@
       "menu_id": "decaf_americano",
       "name": "디카페인 아메리카노",
       "official_name": "디카페인 아메리카노",
-      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "mapping_note": "기존 이미지 출처의 공식명·온도·원본 이미지 URL이 현재 공식 페이지와 일치함. 가격·분류는 로컬 데이터를 유지함.",
       "variants": {
         "HOT": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "향과 풍미 그대로 카페인만을 낮춰 민감한 분들도 안심하고 매일매일 즐길 수 있는 디카페인 커피",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=3",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -719,11 +719,11 @@
         },
         "COLD": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "향과 풍미 그대로 카페인만을 낮춰 민감한 분들도 안심하고 매일매일 즐길 수 있는 디카페인 커피",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=4",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -752,16 +752,16 @@
     {
       "menu_id": "decaf_honey_americano",
       "name": "디카페인 꿀 아메리카노",
-      "official_name": "디카페인 꿀 아메리카노",
-      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "official_name": "디카페인 꿀아메리카노",
+      "mapping_note": "기존 이미지 출처의 공식명·온도·원본 이미지 URL이 현재 공식 페이지와 일치함. 가격·분류는 로컬 데이터를 유지함.",
       "variants": {
         "HOT": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "디카페인 아메리카노의 묵직한 바디감에 달콤한 사양벌꿀이 소프트하게 어우러진 커피.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=3",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -787,11 +787,11 @@
         },
         "COLD": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "디카페인 아메리카노의 묵직한 바디감에 달콤한 사양벌꿀이 소프트하게 어우러진 커피.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=4",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -821,15 +821,15 @@
       "menu_id": "decaf_vanilla_americano",
       "name": "디카페인 바닐라 아메리카노",
       "official_name": "디카페인 바닐라 아메리카노",
-      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "mapping_note": "기존 이미지 출처의 공식명·온도·원본 이미지 URL이 현재 공식 페이지와 일치함. 가격·분류는 로컬 데이터를 유지함.",
       "variants": {
         "HOT": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "디카페인 아메리카노에 바닐라의 부드러운 향과 달콤함을 조화롭게 담아낸 커피.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=3",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -855,11 +855,11 @@
         },
         "COLD": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "디카페인 아메리카노에 바닐라의 부드러운 향과 달콤함을 조화롭게 담아낸 커피.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=4",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -889,15 +889,15 @@
       "menu_id": "decaf_hazelnut_americano",
       "name": "디카페인 헤이즐넛 아메리카노",
       "official_name": "디카페인 헤이즐넛 아메리카노",
-      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "mapping_note": "기존 이미지 출처의 공식명·온도·원본 이미지 URL이 현재 공식 페이지와 일치함. 가격·분류는 로컬 데이터를 유지함.",
       "variants": {
         "HOT": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "디카페인 아메리카노에 헤이즐넛의 풍성한 향과 달콤함을 담아 향긋하고 부드럽게 즐기는 커피.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=3",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -923,11 +923,11 @@
         },
         "COLD": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "디카페인 아메리카노에 헤이즐넛의 풍성한 향과 달콤함을 담아 향긋하고 부드럽게 즐기는 커피.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=4",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -957,15 +957,15 @@
       "menu_id": "decaf_cafe_latte",
       "name": "디카페인 카페라떼",
       "official_name": "디카페인 카페라떼",
-      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "mapping_note": "기존 이미지 출처의 공식명·온도·원본 이미지 URL이 현재 공식 페이지와 일치함. 가격·분류는 로컬 데이터를 유지함.",
       "variants": {
         "HOT": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "디카페인 에스프레소와 부드러운 우유가 어우러져 고소한 풍미를 완성한 라떼.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=3",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -991,11 +991,11 @@
         },
         "COLD": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "디카페인 에스프레소와 부드러운 우유가 어우러져 고소한 풍미를 완성한 라떼.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=4",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -1025,15 +1025,15 @@
       "menu_id": "decaf_vanilla_latte",
       "name": "디카페인 바닐라라떼",
       "official_name": "디카페인 바닐라라떼",
-      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "mapping_note": "기존 이미지 출처의 공식명·온도·원본 이미지 URL이 현재 공식 페이지와 일치함. 가격·분류는 로컬 데이터를 유지함.",
       "variants": {
         "HOT": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "디카페인으로 즐기는 바닐라의 짙은 향과 풍부한 폼 밀크의 조화가 인상적인 달콤한 라떼.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=3",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -1059,11 +1059,11 @@
         },
         "COLD": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "디카페인으로 즐기는 바닐라의 짙은 향과 풍부한 폼 밀크의 조화가 인상적인 달콤한 라떼.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=4",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -1093,15 +1093,15 @@
       "menu_id": "decaf_condensed_milk_latte",
       "name": "디카페인 연유라떼",
       "official_name": "디카페인 연유라떼",
-      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "mapping_note": "기존 이미지 출처의 공식명·온도·원본 이미지 URL이 현재 공식 페이지와 일치함. 가격·분류는 로컬 데이터를 유지함.",
       "variants": {
         "HOT": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "디카페인 에스프레소 샷, 부드러운 우유 그리고 달콤한 연유가 조화롭게 어우러진 라떼.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=4",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -1127,11 +1127,11 @@
         },
         "COLD": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "디카페인 에스프레소 샷, 부드러운 우유 그리고 달콤한 연유가 조화롭게 어우러진 라떼.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=4",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -1161,15 +1161,15 @@
       "menu_id": "decaf_cappuccino",
       "name": "디카페인 카푸치노",
       "official_name": "디카페인 카푸치노",
-      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "mapping_note": "기존 이미지 출처의 공식명·온도·원본 이미지 URL이 현재 공식 페이지와 일치함. 가격·분류는 로컬 데이터를 유지함.",
       "variants": {
         "HOT": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "디카페인 에스프레소와 부드러운 우유가 어우러져 고소한 풍미를 완성한 카푸치노.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=3",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -1195,11 +1195,11 @@
         },
         "COLD": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "디카페인 에스프레소 위에 올려진 우유 거품, 그리고 시나몬 파우더로 완성한 조화로운 맛의 커피.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=4",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -1228,16 +1228,16 @@
     {
       "menu_id": "decaf_hazelnut_latte",
       "name": "디카페인 헤이즐넛라떼",
-      "official_name": "디카페인 헤이즐넛라떼",
-      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "official_name": "디카페인 헤이즐넛 라떼",
+      "mapping_note": "기존 이미지 출처의 공식명·온도·원본 이미지 URL이 현재 공식 페이지와 일치함. 가격·분류는 로컬 데이터를 유지함.",
       "variants": {
         "HOT": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "부드러운 카페라떼에 헤이즐넛의 풍부한 향과 달콤함을 담아 향긋하게 즐길 수 있는 디카페인 라떼.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=3",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -1263,11 +1263,11 @@
         },
         "COLD": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "부드러운 카페라떼에 헤이즐넛의 풍부한 향과 달콤함을 담아 향긋하게 즐길 수 있는 디카페인 라떼.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=4",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -1296,16 +1296,16 @@
     {
       "menu_id": "decaf_cold_brew",
       "name": "콜드브루 디카페인",
-      "official_name": "콜드브루 디카페인",
-      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "official_name": "콜드브루디카페인",
+      "mapping_note": "기존 이미지 출처의 공식명·온도·원본 이미지 URL이 현재 공식 페이지와 일치함. 가격·분류는 로컬 데이터를 유지함.",
       "variants": {
         "HOT": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "카페인을 줄였지만, 원두 본연의 향미를 풍부하게 살려 맛을 잡은 디카페인 콜드브루.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=4",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -1331,11 +1331,11 @@
         },
         "COLD": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "카페인을 줄였지만, 원두 본연의 향미를 풍부하게 살려 맛을 잡은 디카페인 콜드브루.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=4",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -1365,15 +1365,15 @@
       "menu_id": "lemonade",
       "name": "레몬에이드",
       "official_name": "레몬에이드",
-      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "mapping_note": "기존 이미지 출처의 공식명·온도·원본 이미지 URL이 현재 공식 페이지와 일치함. 가격·분류는 로컬 데이터를 유지함.",
       "variants": {
         "COLD": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "시트러스향 가득한 레몬의 상큼함과 톡쏘는 탄산의 상쾌함이 만난 청량 에이드.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=7",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -1403,15 +1403,15 @@
       "menu_id": "grapefruit_ade",
       "name": "자몽에이드",
       "official_name": "자몽에이드",
-      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "mapping_note": "기존 이미지 출처의 공식명·온도·원본 이미지 URL이 현재 공식 페이지와 일치함. 가격·분류는 로컬 데이터를 유지함.",
       "variants": {
         "COLD": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "자몽의 달콤쌉싸름한 맛과 탄산의 톡쏘는 목넘김이 어우러진 트로피컬 에이드.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=8",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -1441,15 +1441,15 @@
       "menu_id": "green_grape_ade",
       "name": "청포도에이드",
       "official_name": "청포도에이드",
-      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "mapping_note": "기존 이미지 출처의 공식명·온도·원본 이미지 URL이 현재 공식 페이지와 일치함. 가격·분류는 로컬 데이터를 유지함.",
       "variants": {
         "COLD": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "산뜻한 청포도와 상쾌한 탄산의 달달한 조화가 인상적인 에이드.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=8",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -1479,15 +1479,15 @@
       "menu_id": "cookie_frappe",
       "name": "쿠키프라페",
       "official_name": "쿠키프라페",
-      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "mapping_note": "기존 이미지 출처의 공식명·온도·원본 이미지 URL이 현재 공식 페이지와 일치함. 가격·분류는 로컬 데이터를 유지함.",
       "variants": {
         "COLD": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "바삭하고 달콤한 오레오와 고소한 우유, 부드러운 바닐라향의 조화를 느낄 수 있는 프라페.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=5",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -1517,15 +1517,15 @@
       "menu_id": "green_tea_frappe",
       "name": "녹차프라페",
       "official_name": "녹차프라페",
-      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "mapping_note": "기존 이미지 출처의 공식명·온도·원본 이미지 URL이 현재 공식 페이지와 일치함. 가격·분류는 로컬 데이터를 유지함.",
       "variants": {
         "COLD": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "향긋한 녹차 위에 우유와 휘핑크림을 더해 더 부드럽게 즐길 수 있는 프라페.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=7",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -1555,15 +1555,15 @@
       "menu_id": "coffee_frappe",
       "name": "커피프라페",
       "official_name": "커피프라페",
-      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "mapping_note": "기존 이미지 출처의 공식명·온도·원본 이미지 URL이 현재 공식 페이지와 일치함. 가격·분류는 로컬 데이터를 유지함.",
       "variants": {
         "COLD": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "바삭한 쿠키와 부드러운 바닐라에 향긋한 에스프레소를 섞어 만든 힐링 프라페.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=7",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -1593,15 +1593,15 @@
       "menu_id": "strawberry_cookie_frappe",
       "name": "딸기쿠키프라페",
       "official_name": "딸기쿠키프라페",
-      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "mapping_note": "기존 이미지 출처의 공식명·온도·원본 이미지 URL이 현재 공식 페이지와 일치함. 가격·분류는 로컬 데이터를 유지함.",
       "variants": {
         "COLD": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "부드러운 바닐라와 달달한 딸기, 바삭한 오레오 쿠키가 달콤한 하모니를 선물하는 프라페.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=4",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -1631,15 +1631,15 @@
       "menu_id": "strawberry_yogurt_smoothie",
       "name": "딸기요거트스무디",
       "official_name": "딸기요거트스무디",
-      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "mapping_note": "기존 이미지 출처의 공식명·온도·원본 이미지 URL이 현재 공식 페이지와 일치함. 가격·분류는 로컬 데이터를 유지함.",
       "variants": {
         "COLD": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "요거트의 상큼함과 딸기의 상큼함을 상냥하게 어우른 상큼 스무디.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=7",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -1669,15 +1669,15 @@
       "menu_id": "plain_yogurt_smoothie",
       "name": "플레인요거트스무디",
       "official_name": "플레인요거트스무디",
-      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "mapping_note": "기존 이미지 출처의 공식명·온도·원본 이미지 URL이 현재 공식 페이지와 일치함. 가격·분류는 로컬 데이터를 유지함.",
       "variants": {
         "COLD": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "더 시원하게 요거트의 새콤달콤한 맛을 오롯이 만끽할 수 있는 스무디.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=7",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -1707,15 +1707,15 @@
       "menu_id": "strawberry_banana_juice",
       "name": "딸기바나나주스",
       "official_name": "딸기바나나주스",
-      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "mapping_note": "기존 이미지 출처의 공식명·온도·원본 이미지 URL이 현재 공식 페이지와 일치함. 가격·분류는 로컬 데이터를 유지함.",
       "variants": {
         "COLD": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "상큼한 딸기와 부드러운 바나나가 만나, 새콤달콤한 매력이 살아 있는 과일 음료.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=3",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -1745,15 +1745,15 @@
       "menu_id": "strawberry_juice",
       "name": "딸기주스",
       "official_name": "딸기주스",
-      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "mapping_note": "기존 이미지 출처의 공식명·온도·원본 이미지 URL이 현재 공식 페이지와 일치함. 가격·분류는 로컬 데이터를 유지함.",
       "variants": {
         "COLD": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "새콤달콤한 딸기주스에 피쉬 콜라겐을 더해 건강한 블렌딩 주스",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=3",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -1783,15 +1783,15 @@
       "menu_id": "mango_yogurt_smoothie",
       "name": "망고요거트스무디",
       "official_name": "망고요거트스무디",
-      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "mapping_note": "기존 이미지 출처의 공식명·온도·원본 이미지 URL이 현재 공식 페이지와 일치함. 가격·분류는 로컬 데이터를 유지함.",
       "variants": {
         "COLD": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "열대과일 망고의 진한 단 맛과 산뜻한 요거트의 하모니가 인상적인 스무디.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=7",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -1821,15 +1821,15 @@
       "menu_id": "blueberry_yogurt_smoothie",
       "name": "블루베리요거트스무디",
       "official_name": "블루베리요거트스무디",
-      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "mapping_note": "기존 이미지 출처의 공식명·온도·원본 이미지 URL이 현재 공식 페이지와 일치함. 가격·분류는 로컬 데이터를 유지함.",
       "variants": {
         "COLD": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "새콤달콤한 블루베리와 산뜻한 요거트가 만나 조화로운 스무디",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=2",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -1859,15 +1859,15 @@
       "menu_id": "strawberry_latte",
       "name": "딸기라떼",
       "official_name": "딸기라떼",
-      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "mapping_note": "기존 이미지 출처의 공식명·온도·원본 이미지 URL이 현재 공식 페이지와 일치함. 가격·분류는 로컬 데이터를 유지함.",
       "variants": {
         "COLD": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "딸기과육이 풍부히 느껴지는 스테디 셀러 산뜻하고 달콤한 딸기가 가득해 부드러운 우유와 어우러져 더욱 기분 좋게 즐기는 아이스 라떼",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=1",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -1897,15 +1897,15 @@
       "menu_id": "oreo_chocolate_latte",
       "name": "오레오초코라떼",
       "official_name": "오레오초코라떼",
-      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "mapping_note": "기존 이미지 출처의 공식명·온도·원본 이미지 URL이 현재 공식 페이지와 일치함. 가격·분류는 로컬 데이터를 유지함.",
       "variants": {
         "COLD": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "진한 초코와 리얼 오레오를 블렌딩해 씹는 맛을 더한 달콤한 아이스 라떼.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=5",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -1935,15 +1935,15 @@
       "menu_id": "green_tea_latte",
       "name": "녹차라떼",
       "official_name": "녹차라떼",
-      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "mapping_note": "기존 이미지 출처의 공식명·온도·원본 이미지 URL이 현재 공식 페이지와 일치함. 가격·분류는 로컬 데이터를 유지함.",
       "variants": {
         "HOT": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "향긋한 녹차에 우유를 더해 입 안에 부드러운 푸릇함을 선물하는 라떼. *[원료 변경에 따른 전환 기간으로, 매장에 따라 기존 원료 또는 변경 원료가 사용될 수 있습니다. 변경 원료 사용 시 영양정보는 아래 내용을 참고해 주세요.] 알레르기 유발 성분 - 우유 칼로리 288.1kcal, 탄수화물 42.3g, 당류 42.1g, 단백질 8.5g, 지방 9.3g, 포화지방 5.8g, 트랜스지방 0g, 나트륨 125.7mg, 콜레스테롤 37.5mg, 카페인 82.9mg",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=5",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -1969,11 +1969,11 @@
         },
         "COLD": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "향긋한 녹차에 우유를 더해 입 안에 부드러운 푸릇함을 선물하는 라떼. *[원료 변경에 따른 전환 기간으로, 매장에 따라 기존 원료 또는 변경 원료가 사용될 수 있습니다. 변경 원료 사용 시 영양정보는 아래 내용을 참고해 주세요.] 알레르기 유발 성분 - 우유 칼로리 292.3kcal, 탄수화물 45.3g, 당류 45.1g, 단백질 8.0g, 지방 8.6g, 포화지방 5.4g, 트랜스지방 0g, 나트륨 115.8mg, 콜레스테롤 34.5mg, 카페인 94.2mg 고카페인 함유 : 해당 제품은 다량의 카페인을 함유하고 있어 어린이, 임산부, 카페인에 민감하신 분들은 유의하시기 바랍니다.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=5",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -2003,15 +2003,15 @@
       "menu_id": "brown_sugar_latte",
       "name": "흑당라떼",
       "official_name": "흑당라떼",
-      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "mapping_note": "기존 이미지 출처의 공식명·온도·원본 이미지 URL이 현재 공식 페이지와 일치함. 가격·분류는 로컬 데이터를 유지함.",
       "variants": {
         "COLD": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "모리셔스의 진한 흑당과 부드러운 우유가 달콤하게 조화를 이루는 라떼.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=5",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -2040,16 +2040,16 @@
     {
       "menu_id": "peach_iced_tea",
       "name": "복숭아 아이스티",
-      "official_name": "복숭아 아이스티",
-      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "official_name": "복숭아아이스티",
+      "mapping_note": "기존 이미지 출처의 공식명·온도·원본 이미지 URL이 현재 공식 페이지와 일치함. 가격·분류는 로컬 데이터를 유지함.",
       "variants": {
         "COLD": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "깊은 맛의 홍차와 달콤한 복숭아의 은은한 향이 어우러진 시원한 여름철 인기 음료.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=8",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -2079,15 +2079,15 @@
       "menu_id": "zero_peach_iced_tea",
       "name": "제로 복숭아 아이스티",
       "official_name": "제로 복숭아 아이스티",
-      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "mapping_note": "기존 이미지 출처의 공식명·온도·원본 이미지 URL이 현재 공식 페이지와 일치함. 가격·분류는 로컬 데이터를 유지함.",
       "variants": {
         "COLD": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "깊게 우려진 홍차와 은은한 복숭아향의 아이스티를 제로슈가, 제로칼로리로 즐길 수 있는 음료 *대체당(알룰로스,에리스리톨)을 과도하게 섭취 시 개인에 따라 복통 및 설사 등을 유발 할 수 있으니 주의하세요.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=3",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -2117,15 +2117,15 @@
       "menu_id": "apple_citron_tea",
       "name": "사과유자차",
       "official_name": "사과유자차",
-      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "mapping_note": "기존 이미지 출처의 공식명·온도·원본 이미지 URL이 현재 공식 페이지와 일치함. 가격·분류는 로컬 데이터를 유지함.",
       "variants": {
         "HOT": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "애플티의 향긋함과 유자청의 상큼달콤함을 한컵에 담아낸 과일티.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=8",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -2151,11 +2151,11 @@
         },
         "COLD": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "애플티의 향긋함과 유자청의 상큼달콤함을 한컵에 담아낸 과일티.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=8",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -2185,15 +2185,15 @@
       "menu_id": "grapefruit_tea",
       "name": "자몽차",
       "official_name": "자몽차",
-      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "mapping_note": "기존 이미지 출처의 공식명·온도·원본 이미지 URL이 현재 공식 페이지와 일치함. 가격·분류는 로컬 데이터를 유지함.",
       "variants": {
         "HOT": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "달콤쌉싸름한 자몽의 조화로운 맛을 한 잔 가득 느낄 수 있는 과일티.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=8",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -2219,11 +2219,11 @@
         },
         "COLD": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "달콤쌉싸름한 자몽의 조화로운 맛을 한 잔 가득 느낄 수 있는 과일티.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=9",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -2253,15 +2253,15 @@
       "menu_id": "lemon_tea",
       "name": "레몬차",
       "official_name": "레몬차",
-      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "mapping_note": "기존 이미지 출처의 공식명·온도·원본 이미지 URL이 현재 공식 페이지와 일치함. 가격·분류는 로컬 데이터를 유지함.",
       "variants": {
         "HOT": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "상큼한 레몬의 맛과 향을 오롯이 살린 비타민C 가득한 과일티.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=8",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -2287,11 +2287,11 @@
         },
         "COLD": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "상큼한 레몬의 맛과 향을 오롯이 살린 비타민C 가득한 과일티.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=9",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -2321,15 +2321,15 @@
       "menu_id": "citron_tea",
       "name": "유자차",
       "official_name": "유자차",
-      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "mapping_note": "기존 이미지 출처의 공식명·온도·원본 이미지 URL이 현재 공식 페이지와 일치함. 가격·분류는 로컬 데이터를 유지함.",
       "variants": {
         "HOT": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "비타민이 가득 든 상큼달콤한 유자를 듬뿍 넣어 향긋한 즐거움을 전하는 과일티.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=8",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -2355,11 +2355,11 @@
         },
         "COLD": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "비타민이 가득 든 상큼달콤한 유자를 듬뿍 넣어 향긋한 즐거움을 전하는 과일티.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=8",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -2389,15 +2389,15 @@
       "menu_id": "espresso",
       "name": "에스프레소",
       "official_name": "에스프레소",
-      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "mapping_note": "기존 이미지 출처의 공식명·온도·원본 이미지 URL이 현재 공식 페이지와 일치함. 가격·분류는 로컬 데이터를 유지함.",
       "variants": {
         "HOT": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "메가MGC커피 원두의 향미를 온전히 즐길 수 있는 에스프레소",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=4",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -2426,16 +2426,16 @@
     {
       "menu_id": "lemon_tea_alias",
       "name": "레몬티",
-      "official_name": "레몬티",
-      "mapping_note": "현재 카탈로그의 이름만 기록. 외부 공식 제품과 레시피가 같다는 검증은 아님.",
+      "official_name": "레몬차",
+      "mapping_note": "기존 이미지 출처의 공식명·온도·원본 이미지 URL이 현재 공식 페이지와 일치함. 가격·분류는 로컬 데이터를 유지함.",
       "variants": {
         "HOT": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "상큼한 레몬의 맛과 향을 오롯이 살린 비타민C 가득한 과일티.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=8",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
@@ -2461,11 +2461,11 @@
         },
         "COLD": {
           "description": {
-            "status": "unknown",
-            "value": null,
-            "source": null,
-            "checked_date": null,
-            "note": "현행 45종 메뉴의 레시피·성분 자료 미확인. 이전 11종 제품 설명을 자동 이식하지 않음."
+            "status": "verified",
+            "value": "상큼한 레몬의 맛과 향을 오롯이 살린 비타민C 가득한 과일티.",
+            "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=9",
+            "checked_date": "2026-11-10",
+            "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
           },
           "caffeine_mg": {
             "status": "unknown",
