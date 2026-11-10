@@ -106,6 +106,40 @@ class OptionExtractionTests(unittest.TestCase):
 
 
 class OptionRouteTests(unittest.TestCase):
+    def test_confirmation_can_add_shot_with_korean_particle(self):
+        status, body, calls = self.post('네, 샷도 추가해 주세요', [('stage', 'menu_confirmation'),
+            ('selected_menu_id', 'cafe_latte'), ('selected_temperature', 'COLD')])
+        self.assertEqual((status, calls), (200, 0))
+        self.assertEqual(body['action']['type'], 'confirm')
+        self.assertEqual(body['recognized_options']['customization']['option_ids'], ['shot:extra'])
+
+    def test_contract_examples_and_serialization(self):
+        cases = [
+            ('아이스 카페라떼 포장해 주세요', 'menu', None, 'select_menu', 'COLD', 'TAKEOUT', None),
+            ('카페라떼 매장에서 마실게요', 'menu', None, 'select_menu', None, 'DINE_IN', None),
+            ('카페라떼 샷 추가', 'menu', None, 'select_menu', None, None, 'pending'),
+            ('아이스 카페라떼 추가 옵션 없이 포장', 'menu', None, 'select_menu', 'COLD', 'TAKEOUT', 'resolved'),
+            ('아이스로 포장', 'temperature', None, 'set_temperature', 'COLD', 'TAKEOUT', None),
+            ('샷 추가하고 시럽도', 'customization', 'COLD', 'set_options', None, None, 'needs_clarification'),
+            ('핫이나 아이스', 'temperature', None, 'retry', None, None, None),
+        ]
+        for transcript, stage, temperature, action, temp, service, custom_status in cases:
+            fields = [('stage', stage)]
+            if stage != 'menu': fields.append(('selected_menu_id', 'cafe_latte'))
+            if temperature: fields.append(('selected_temperature', temperature))
+            with self.subTest(transcript=transcript):
+                status, body, calls = self.post(transcript, fields)
+                self.assertEqual((status, calls), (200, 0))
+                self.assertEqual(body['action']['type'], action)
+                self.assertEqual(VoiceInterpretResponse.model_validate(body).model_dump(exclude_none=True), body)
+                options = body['recognized_options']
+                self.assertEqual(options.get('temperature'), temp)
+                self.assertEqual(options.get('service_type'), service)
+                if temp is None: self.assertNotIn('temperature', options)
+                if custom_status:
+                    self.assertEqual(options['customization']['status'], custom_status)
+                else: self.assertNotIn('customization', options)
+
     def test_confirmation_and_customization_context(self):
         status, body, _ = self.post('네 샷 추가 포장이요', [('stage', 'menu_confirmation'),
             ('selected_menu_id', 'cafe_latte'), ('selected_temperature', 'COLD')])

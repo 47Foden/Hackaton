@@ -37,8 +37,10 @@ def option_aliases(common_dir: str) -> dict[str, set[str]]:
             aliases.setdefault(label.replace('2샷', '두샷'), set()).update(ids)
         if '샷추가' in label:
             aliases.setdefault(label.replace('샷추가', '샷하나추가'), set()).update(ids)
+            aliases.setdefault(label.replace('샷추가', '샷도추가'), set()).update(ids)
         if '시럽추가' in label:
             aliases.setdefault(label.removesuffix('추가'), set()).update(ids)
+            aliases.setdefault(label.replace('시럽추가', '시럽도추가'), set()).update(ids)
     aliases['휘핑빼고'] = {'whip:without'}
     return aliases
 

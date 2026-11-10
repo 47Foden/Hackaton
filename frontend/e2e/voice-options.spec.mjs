@@ -137,3 +137,44 @@ for (const ids of [[], ['shot:extra']]) {
     if (ids.length) await expect(page.getByRole('region', { name: '최종 주문 확인' })).toContainText('샷 추가');
   });
 }
+
+for (const ids of [['shot:extra'], ['shot:extra', 'sweetness:vanilla']]) {
+  test(`voice extras match review, request and receipt prices (${ids.length} groups)`, async ({ page }) => {
+    const api = createMockApi({ delayMs: 0 });
+    const menu = (await api.getMenus()).menus.find(m => m.menu_id === 'cafe_latte');
+    const choices = menu.variants.find(v => v.temperature === 'COLD').option_groups.flatMap(g => g.choices)
+      .filter(choice => ids.includes(choice.id));
+    const expectedTotal = menu.price_krw + choices.reduce((sum, c) => sum + c.price_delta_krw, 0);
+    await setup(page, [{ action: { type: 'select_menu', menu_id: menu.menu_id }, recognized_options: {
+      temperature: 'COLD', service_type: 'TAKEOUT', customization: { status: 'resolved', option_ids: ids,
+        intents: ids.map(id => ({ expression: id, candidate_option_ids: [id] })), unresolved: [] } } }]);
+    let submitted;
+    let result;
+    await page.route('**/api/orders', async route => {
+      submitted = route.request().postDataJSON();
+      result = await api.createOrder(submitted);
+      // The HTTP adapter requires numeric database identifiers.
+      await route.fulfill({ status: 201, json: { ...result, order_id: '123', order_number: '123' } });
+    });
+    await say(page);
+    await page.getByRole('button', { name: '네, 이 메뉴로 주문' }).click();
+    const review = page.getByRole('region', { name: '최종 주문 확인' });
+    await expect(review).toContainText(`${expectedTotal.toLocaleString('ko-KR')}원`);
+    for (const choice of choices) await expect(review).toContainText(choice.label);
+    expect(submitted).toBeUndefined();
+    await page.getByRole('button', { name: '주문 확정', exact: true }).click();
+    const receipt = page.getByRole('region', { name: '주문 완료', exact: true });
+    await expect(receipt).toBeVisible();
+    expect(submitted.option_ids).toEqual(ids);
+    expect(result.total_price_krw).toBe(expectedTotal);
+    expect(result.selected_options.map(c => c.id)).toEqual(ids);
+    await expect(receipt).toContainText(`${expectedTotal.toLocaleString('ko-KR')}원`);
+    for (const choice of choices) await expect(receipt).toContainText(choice.label);
+    await page.getByRole('button', { name: '처음으로 돌아가기', exact: true }).click();
+    await page.getByRole('button', { name: '음성으로 주문하기' }).click();
+    await page.getByRole('button', { name: '라떼', exact: true }).click();
+    await page.getByRole('button', { name: /^카페라떼/ }).click();
+    await page.getByRole('button', { name: '네, 이 메뉴로 주문' }).click();
+    await expect(page.getByRole('region', { name: '온도 선택' })).toBeVisible();
+  });
+}
