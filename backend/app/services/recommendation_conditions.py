@@ -1,4 +1,4 @@
-"""Narrow, auditable guards for v2; never a taste parser or ranker.
+"""Narrow, auditable guards for direct recommendations; never a taste parser or ranker.
 
 Unknown or contradictory hard constraints ask a question. This is not a complete
 Korean NLU system, and the original transcript still goes to the selector.

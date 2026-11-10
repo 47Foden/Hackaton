@@ -80,11 +80,6 @@ export function VoiceOrderScreen({ onHome }: { onHome: () => void }) {
       if (stage === 'menu_confirmation' && action?.type === 'confirm') { accept(); return; }
       if (stage === 'review' && action?.type === 'confirm') { interrupt(); await confirm(); return; }
       if (['menu', 'recommendations'].includes(stage) && action?.type === 'restart_recommendation') { interrupt(); setCandidates(null); setTranscript(''); return; }
-      if (['menu', 'recommendations'].includes(stage) && action?.type === 'recommendation_results' && catalog.status === 'ready') {
-        const ids = action.menu_ids;
-        if (!Array.isArray(ids) || ids.length > 4 || new Set(ids).size !== ids.length || !ids.every(id => catalog.menus.some(m => m.id === id && m.available))) throw new Error('추천 결과를 확인하지 못했어요.');
-        interrupt(); setCandidates(ids); return;
-      }
       if (['menu', 'recommendations'].includes(stage) && action?.type === 'select_menu' && catalog.status === 'ready') {
         const menu = catalog.menus.find(m => m.id === action.menu_id && m.available && (stage !== 'recommendations' || candidates?.includes(m.id)));
         if (menu) { choose(menu); return; }

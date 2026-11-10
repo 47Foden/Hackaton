@@ -5,7 +5,7 @@ import unittest
 from unittest.mock import patch
 
 from app.db.catalog import load_catalog
-from app.services.voice import llm_recommendation as direct
+from app.services import llm_direct as direct
 from app.services.llm_direct import DirectError
 from app.services.voice.audio import PreparedVoiceAudio
 from app.routers import voice
@@ -52,8 +52,7 @@ class CurrentCatalogueTests(unittest.TestCase):
         def send(payload):
             calls.append(payload)
             return envelope(candidate())
-        with patch('app.services.recommendation.load_scores', side_effect=AssertionError('No taste scores')):
-            direct.recommend('4000원 이하 차가운 음료', self.rows, transport=send)
+        direct.recommend('4000원 이하 차가운 음료', self.rows, transport=send)
         data = json.loads(calls[0]['input'][0]['content'])
         self.assertEqual(len(data['menus']), 45)
         self.assertNotIn('sensory', data)
@@ -97,16 +96,10 @@ class VoiceRouteIntegrationTests(unittest.TestCase):
     def post(self):
         return asyncio.run(post_audio(b'fixture', 'sample.webm', MIME_TYPE, path='/api/voice/interpret', fields=[('stage','menu')]))
 
-    def test_default_path_remains_existing(self):
-        with patch.object(voice, 'recommend', return_value=['iced_americano']) as existing, patch.object(voice, 'llm_recommend') as llm:
-            status, value = self.post()
-        self.assertEqual(status, 200)
-        self.assertEqual(value['action']['type'], 'recommendation_results')
-        existing.assert_called_once(); llm.assert_not_called()
-
-    def test_stt_transcript_reaches_v3_in_opt_in_mode(self):
-        os.environ['RECOMMENDATION_ENGINE'] = 'llm-direct'
-        with patch.object(direct, 'openai_transport', return_value=envelope(candidate())) as provider, patch.object(voice, 'recommend') as existing:
+    def test_default_path_uses_llm_and_original_transcript_once(self):
+        # An obsolete local setting must not silently select the removed ranker.
+        os.environ['RECOMMENDATION_ENGINE'] = 'existing'
+        with patch.object(direct, 'openai_transport', return_value=envelope(candidate())) as provider:
             status, value = self.post()
         self.assertEqual(status, 200)
         self.assertEqual(value['action']['type'], 'direct_recommendation')
@@ -115,7 +108,6 @@ class VoiceRouteIntegrationTests(unittest.TestCase):
         self.assertEqual(provider.call_count, 1)
         data = json.loads(provider.call_args.args[0]['input'][0]['content'])
         self.assertEqual(data['transcript'], '4000원 이하 음료 추천해 주세요')
-        existing.assert_not_called()
 
     def test_question_and_missing_data_actions(self):
         os.environ['RECOMMENDATION_ENGINE'] = 'llm-direct'
@@ -131,11 +123,11 @@ class VoiceRouteIntegrationTests(unittest.TestCase):
 
     def test_failure_no_legacy_fallback_or_retry(self):
         os.environ['RECOMMENDATION_ENGINE'] = 'llm-direct'
-        with patch.object(direct,'openai_transport',side_effect=DirectError('PROVIDER_HTTP_429')) as provider, patch.object(voice,'recommend') as existing:
+        with patch.object(direct,'openai_transport',side_effect=DirectError('PROVIDER_HTTP_429')) as provider:
             status,value = self.post()
         self.assertEqual(status,502)
         self.assertEqual(value['detail']['code'],'LLM_RECOMMENDATION_FAILED')
-        self.assertEqual(provider.call_count,1); existing.assert_not_called()
+        self.assertEqual(provider.call_count,1)
 
     def test_named_menu_selection_does_not_call_llm(self):
         os.environ['RECOMMENDATION_ENGINE'] = 'llm-direct'

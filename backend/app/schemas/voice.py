@@ -7,8 +7,6 @@ from app.schemas.orders import ServiceType
 
 VoiceStage = Literal["menu", "temperature", "service_type", "recommendations", "menu_confirmation", "review"]
 MenuId = Annotated[str, StringConstraints(pattern=r"^[a-z0-9_]{1,64}$")]
-Taste = Literal["sweetness", "sourness", "bitterness"]
-CategoryFilter = Literal["coffee", "tea", "ade", "latte", "non_coffee_latte"]
 RetryReason = Literal["EMPTY_TRANSCRIPT", "UNRECOGNIZED", "MENU_UNAVAILABLE", "INVALID_OPTION", "OUTSIDE_CANDIDATES"]
 
 
@@ -39,20 +37,9 @@ class SetServiceType(BaseModel):
     service_type: ServiceType
 
 
-class Recommend(BaseModel):
-    type: Literal["recommend"] = "recommend"
-    filters: dict[CategoryFilter, Literal[0, 1]]
-    targets: dict[Taste, float]
-
-
 class Retry(BaseModel):
     type: Literal["retry"] = "retry"
     reason: RetryReason
-
-
-class RecommendationResults(BaseModel):
-    type: Literal["recommendation_results"] = "recommendation_results"
-    menu_ids: list[MenuId] = Field(max_length=4)
 
 
 class DirectCandidate(BaseModel):
@@ -78,7 +65,7 @@ class Confirm(BaseModel):
     type: Literal["confirm"] = "confirm"
 
 
-VoiceAction = Annotated[DirectRecommendation | RecommendationResults | RestartRecommendation | Confirm | SelectMenu | SetTemperature | SetServiceType | Recommend | Retry, Field(discriminator="type")]
+VoiceAction = Annotated[DirectRecommendation | RestartRecommendation | Confirm | SelectMenu | SetTemperature | SetServiceType | Retry, Field(discriminator="type")]
 
 
 class VoiceInterpretResponse(BaseModel):
