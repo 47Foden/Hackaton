@@ -72,7 +72,8 @@ export function VoiceOrderScreen({ onHome, serviceType }: { onHome: () => void; 
     : order.stage === 'review' ? { title: '주문 내용을 확인해 주세요.', description: '주문 확정이라고 말씀하시거나 주문 확정 버튼을 눌러 주세요.' }
     : order.stage === 'complete' ? { title: '주문이 접수되었어요.', description: `주문번호는 ${order.result.order_number}번입니다.` }
     : getOrderGuidance(order, isMockOrderApi);
-  useVoiceGuidance(`${guide.title} ${guide.description}`);
+  const recommendationVisible = !selected && order.stage === 'menu' && !!candidates?.length;
+  useVoiceGuidance(recommendationVisible ? guide.description : `${guide.title} ${guide.description}`);
   const advancingQueue = queue.length > 0 && ['menu', 'service_type', 'review'].includes(order.stage);
   const enabled = !advancingQueue && !['submitting', 'complete'].includes(stage)
     && !(order.stage === 'review' && order.error?.kind === 'conflict');
