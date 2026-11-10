@@ -159,6 +159,57 @@ class VoiceIntentTests(unittest.TestCase):
                 _, body, _, _ = self.post(text, 'order', rows=[americano], order_result=parsed)
                 self.assertEqual(body['action']['type'], expected)
 
+    def test_order_model_validates_cart_items_independently(self):
+        americano = {**menu(), 'menu_id': 'iced_americano', 'name': '아메리카노'}
+        parsed = {'items': [
+            {'menu_id': 'iced_americano', 'menu_phrase': '아메리카노', 'quantity': 1,
+             'temperature': 'HOT', 'option_ids': ['shot:extra'], 'unresolved_fields': []},
+            {'menu_id': 'cafe_latte', 'menu_phrase': '라떼', 'quantity': 4,
+             'temperature': 'COLD', 'option_ids': [], 'unresolved_fields': []},
+        ], 'service_type': 'TAKEOUT', 'unresolved_fields': []}
+        _, body, _, _ = self.post('뜨듯한 아메리카노 두 잔 샷 추가랑 아이스 라떼 한 잔, 포장', 'order',
+                                  rows=[americano, menu()], order_result=parsed)
+        self.assertEqual(body['action']['type'], 'select_items')
+        first, second = body['action']['items']
+        self.assertEqual((first['temperature'], first['quantity'], first['option_ids']), ('HOT', 2, ['shot:extra']))
+        self.assertEqual((second['temperature'], second['quantity'], second['option_ids']), ('COLD', 1, []))
+        self.assertEqual(second['recognized_options']['customization']['status'], 'resolved')
+        self.assertEqual(body['recognized_options']['service_type'], 'TAKEOUT')
+        self.assertNotIn('temperature', body['recognized_options'])
+
+        parsed['items'][1]['menu_id'] = 'unknown'
+        _, body, _, _ = self.post('뜨듯한 아메리카노 두 잔이랑 아이스 라떼 한 잔, 포장', 'order',
+                                  rows=[americano, menu()], order_result=parsed)
+        self.assertEqual([line['menu_id'] for line in body['action']['items']], ['iced_americano', 'cafe_latte'])
+        self.assertNotIn('temperature', body['action']['items'][0])
+
+    def test_order_model_defers_options_until_temperature_and_rejects_invalid_ids(self):
+        item = {'menu_id': 'cafe_latte', 'menu_phrase': '카페라떼', 'quantity': 1,
+                'temperature': None, 'option_ids': ['shot:extra'], 'unresolved_fields': []}
+        parsed = {'items': [item], 'service_type': None, 'unresolved_fields': []}
+        _, body, _, _ = self.post('카페라떼', 'order', order_result=parsed)
+        customization = body['recognized_options']['customization']
+        self.assertEqual((customization['status'], customization['option_ids']), ('pending', []))
+        self.assertEqual(customization['intents'][0]['candidate_option_ids'], ['shot:extra'])
+        item['temperature'] = 'HOT'
+        for ids in [['shot:unknown'], ['shot:extra', 'shot:extra'], ['shot:extra', 'shot:double']]:
+            with self.subTest(ids=ids):
+                item['option_ids'] = ids
+                _, body, _, _ = self.post('카페라떼', 'order', order_result=parsed)
+                customization = body['recognized_options']['customization']
+                self.assertEqual((customization['status'], customization['option_ids']), ('needs_clarification', []))
+
+    def test_order_model_promotes_unparsed_quantity_and_requires_confirmation_for_conflicting_temperature(self):
+        item = {'menu_id': 'cafe_latte', 'menu_phrase': '카페라떼', 'quantity': 7,
+                'temperature': 'HOT', 'option_ids': None, 'unresolved_fields': []}
+        parsed = {'items': [item], 'service_type': None, 'unresolved_fields': []}
+        _, body, _, _ = self.post('아이스 카페라떼 일곱 잔', 'order', order_result=parsed)
+        self.assertEqual(body['action']['type'], 'select_items')
+        line = body['action']['items'][0]
+        self.assertEqual(line['quantity'], 7)
+        self.assertNotIn('temperature', line)
+        self.assertEqual(line['recognized_options']['unresolved_fields'], ['temperature'])
+
     def test_named_cart_from_recommendations_keeps_candidate_boundary(self):
         rows = [menu(), {**menu(), 'menu_id': 'tea', 'name': '레몬티'}]
         extra = [('candidate_menu_ids', 'cafe_latte')]

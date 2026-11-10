@@ -66,7 +66,7 @@ def interpret_named_order(text: str, menus: dict[str, dict], *,
         stop = next((start for start, _, _ in mentions if start >= end), len(phrase))
         if read_quantity(phrase[end:stop]) == 1:
             return SelectMenu(menu_id=key)
-    cart = build_cart(phrase, menus, found, mentions)
+    cart = build_cart(phrase, menus, found, mentions, keep_unsupported_temperature=True)
     if cart is None:
         return Retry(reason="INVALID_OPTION")
     return cart
@@ -92,7 +92,7 @@ def read_quantity(suffix: str) -> int:
     return counts[count] if count in counts else int(count)
 
 
-def build_cart(phrase, menus, found, mentions):
+def build_cart(phrase, menus, found, mentions, *, keep_unsupported_temperature=False):
     lines = []
     for i, (start, end, key) in enumerate(mentions):
         if (start, end, key) not in found:
@@ -106,7 +106,7 @@ def build_cart(phrase, menus, found, mentions):
         # Prefix temperature belongs to the menu immediately following it.
         temperatures = [(prefix.rfind(word), value) for word, value in TEMPERATURES.items() if prefix.endswith(word)]
         temperature = max(temperatures)[1] if temperatures else None
-        if temperature and temperature not in menu["available_temperatures"]:
+        if temperature and temperature not in menu["available_temperatures"] and not keep_unsupported_temperature:
             return None
         quantity = read_quantity(suffix)
         if not 1 <= quantity <= 99:

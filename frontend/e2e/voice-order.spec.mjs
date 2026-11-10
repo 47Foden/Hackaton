@@ -155,3 +155,47 @@ test('spoken multiple menus configure sequentially and preserve counts', async (
   expect(sent.items.every(i => i.service_type === 'TAKEOUT')).toBe(true);
   expect(sent.items.map(i=>[i.menu_id,i.quantity])).toEqual([['iced_americano',2],['cafe_latte',1]]);
 });
+
+test('validated voice items reach final review with their own options and shared takeout', async ({ page }) => {
+  const api = createMockApi({ delayMs: 0 });
+  await page.route('**/api/menus', async route => route.fulfill({ json: await api.getMenus() }));
+  await page.route('**/api/voice/interpret', route => route.fulfill({ json: {
+    transcript: '뜨듯한 아메리카노 두 잔 샷 추가랑 아이스 라떼 한 잔, 포장',
+    action: { type: 'select_items', items: [
+      { menu_id: 'iced_americano', quantity: 2, temperature: 'HOT', option_ids: ['shot:extra'],
+        recognized_options: { temperature: 'HOT', customization: {
+          status: 'resolved', option_ids: ['shot:extra'],
+          intents: [{ expression: '샷 추가', candidate_option_ids: ['shot:extra'] }], unresolved: [],
+        } } },
+      { menu_id: 'cafe_latte', quantity: 1, temperature: 'COLD', option_ids: [],
+        recognized_options: { temperature: 'COLD' } },
+    ] },
+    recognized_options: { service_type: 'TAKEOUT' },
+  } }));
+  let sent;
+  await page.route('**/api/orders', async route => {
+    sent = route.request().postDataJSON();
+    await route.fulfill({ status: 201, json: {
+      ...await api.createOrder(sent), order_id: '101', order_number: '101',
+    } });
+  });
+  await page.goto('/');
+  await page.getByRole('button', { name: '음성으로 주문하기' }).click();
+  await page.getByRole('button', { name: '주문하기', exact: true }).click();
+  await page.getByRole('button', { name: '녹음 종료' }).click();
+  const customization = page.getByRole('region', { name: '추가 옵션 선택' });
+  await expect(customization.getByRole('heading', { name: '카페라떼' })).toBeVisible();
+  await customization.getByRole('button', { name: '옵션 없이 계속' }).click();
+  const review = page.getByRole('region', { name: '최종 주문 확인' });
+  await expect(review.getByRole('heading', { name: '아메리카노', exact: true })).toBeVisible();
+  await expect(review.getByRole('heading', { name: '카페라떼', exact: true })).toBeVisible();
+  await expect(review.getByText('2잔', { exact: true })).toBeVisible();
+  await expect(review.getByText(/포장해서/)).toHaveCount(2);
+  expect(sent).toBeUndefined();
+  await review.getByRole('button', { name: '주문 확정', exact: true }).click();
+  await expect(page.getByRole('region', { name: '주문 완료' })).toBeVisible();
+  expect(sent.items).toEqual([
+    { menu_id: 'iced_americano', quantity: 2, temperature: 'HOT', option_ids: ['shot:extra'], service_type: 'TAKEOUT' },
+    { menu_id: 'cafe_latte', quantity: 1, temperature: 'COLD', option_ids: [], service_type: 'TAKEOUT' },
+  ]);
+});

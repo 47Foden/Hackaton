@@ -9,9 +9,13 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from app.schemas.menus import Temperature
 from app.schemas.orders import ServiceType
-from app.schemas.voice import MenuId, OptionId, RecognizedOptions, SelectMenu
+from app.schemas.voice import (
+    CustomizationIntent, MenuId, OptionId, RecognizedCustomization, RecognizedOptions,
+    SelectMenu, VoiceCart, VoiceCartItem,
+)
 from app.services.llm_direct import DirectError, openai_transport, response_text
-from app.services.voice.cart import EXCLUSION, find_menu_mentions, is_suggestion
+from app.services.orders import OrderRejected, select_options
+from app.services.voice.cart import EXCLUSION, QUANTITY, find_menu_mentions, is_suggestion, ordered_mentions
 from app.services.voice.options import compact
 
 
@@ -96,7 +100,7 @@ def select_unnamed_order(parsed: ParsedOrder, transcript: str, menus: dict[str, 
         return None
     item = parsed.items[0]
     menu = menus.get(item.menu_id)
-    if (item.quantity != 1 or not menu or not menu["is_available"]
+    if (not menu or not menu["is_available"]
             or (candidate_menu_ids and item.menu_id not in candidate_menu_ids)):
         return None
     mention = compact(item.menu_phrase)
@@ -108,22 +112,121 @@ def select_unnamed_order(parsed: ParsedOrder, transcript: str, menus: dict[str, 
     return SelectMenu(menu_id=item.menu_id)
 
 
-def apply_single_order_scalars(parsed: ParsedOrder, menu_id: str, menu: dict,
-                               recognized: RecognizedOptions | None) -> RecognizedOptions | None:
-    if len(parsed.items) != 1 or parsed.items[0].menu_id != menu_id or "menu" in parsed.unresolved_fields:
-        return recognized
-    item = parsed.items[0]
-    result = recognized or RecognizedOptions()
-    for field, value, allowed, unresolved in (
-        ("temperature", item.temperature, menu["available_temperatures"], item.unresolved_fields),
-        ("service_type", parsed.service_type, ("DINE_IN", "TAKEOUT"), parsed.unresolved_fields),
+def reconcile_scalar(options: RecognizedOptions, field: Literal["temperature", "service_type"],
+                     value: str | None, unresolved: bool, allowed) -> None:
+    existing = getattr(options, field)
+    if field in options.unresolved_fields:
+        return
+    if unresolved or (existing is not None and existing not in allowed) or (
+        value is not None and (value not in allowed or (existing is not None and value != existing))
     ):
-        existing = getattr(result, field)
-        if field in result.unresolved_fields:
-            continue
-        if field in unresolved or (value is not None and (value not in allowed or (existing and value != existing))):
-            setattr(result, field, None)
-            result.unresolved_fields.append(field)
-        elif value is not None:
-            setattr(result, field, value)
-    return result if result.temperature or result.service_type or result.customization or result.unresolved_fields else None
+        setattr(options, field, None)
+        options.unresolved_fields.append(field)
+    elif value is not None:
+        setattr(options, field, value)
+
+
+def validate_customization(ids: list[str], menu: dict, temperature: Temperature | None,
+                           unresolved: bool) -> RecognizedCustomization:
+    variants = menu.get("variants", [])
+    groups = [group for variant in variants if temperature is None or variant["temperature"] == temperature
+              for group in variant.get("option_groups", [])]
+    available = {choice["id"] for group in groups for choice in group["choices"]}
+    unique = list(dict.fromkeys(ids))
+    valid = [option_id for option_id in unique if option_id in available and ids.count(option_id) == 1]
+    unresolved = unresolved or len(valid) != len(ids)
+    if temperature is not None:
+        try:
+            select_options(groups, valid)
+        except OrderRejected:
+            unresolved = True
+            for group in groups:
+                group_ids = {choice["id"] for choice in group["choices"]}
+                if len(group_ids.intersection(valid)) > group["max_selections"]:
+                    valid = [option_id for option_id in valid if option_id not in group_ids]
+    return RecognizedCustomization(
+        status="needs_clarification" if unresolved else "pending" if valid and temperature is None else "resolved",
+        option_ids=valid if temperature is not None else [],
+        intents=[CustomizationIntent(expression=option_id, candidate_option_ids=[option_id]) for option_id in valid],
+        unresolved=["추가 옵션을 확인해 주세요."] if unresolved else [],
+    )
+
+
+def apply_item_options(item: ParsedItem | None, menu: dict, options: RecognizedOptions) -> None:
+    reconcile_scalar(options, "temperature", item.temperature if item else None,
+                     bool(item and "temperature" in item.unresolved_fields), menu["available_temperatures"])
+    if item is None:
+        return
+    unresolved = "customization" in item.unresolved_fields
+    if item.option_ids is None and not unresolved:
+        return
+    existing = options.customization
+    if existing is not None:
+        proposed = set(item.option_ids or [])
+        if existing.status == "resolved":
+            # A known choice can coexist with other groups the model understood.
+            conflicts = (not proposed.issuperset(existing.option_ids)
+                         or (not existing.option_ids and bool(proposed)))
+        else:
+            conflicts = any(not proposed.intersection(intent.candidate_option_ids) for intent in existing.intents)
+        if unresolved or conflicts or existing.status == "needs_clarification":
+            options.customization = existing.model_copy(update={
+                "status": "needs_clarification", "unresolved": ["추가 옵션을 확인해 주세요."],
+            })
+            return
+    temperature = options.temperature
+    if "temperature" not in options.unresolved_fields and temperature is None and len(menu["available_temperatures"]) == 1:
+        temperature = menu["available_temperatures"][0]
+    options.customization = validate_customization(item.option_ids or [], menu, temperature, unresolved)
+
+
+def apply_order_result(parsed: ParsedOrder | None, action: SelectMenu | VoiceCart, transcript: str,
+                       menus: dict[str, dict], recognized: RecognizedOptions | None
+                       ) -> tuple[SelectMenu | VoiceCart, RecognizedOptions | None]:
+    lines = action.items if isinstance(action, VoiceCart) else [VoiceCartItem(menu_id=action.menu_id)]
+    menu_ids = [line.menu_id for line in lines]
+    if parsed is not None and ("menu" in parsed.unresolved_fields
+                               or [item.menu_id for item in parsed.items] != menu_ids):
+        parsed = None
+
+    quantities = [line.quantity for line in lines]
+    if parsed is not None:
+        phrase = compact(transcript)
+        mentions = find_menu_mentions(phrase, menus, include_order_aliases=True)
+        selected = ordered_mentions(phrase, mentions)
+        stops = [start for start, _, _ in mentions[1:]] + [len(phrase)]
+        explicit_quantities = {mention for mention, stop in zip(mentions, stops)
+                               if QUANTITY.search(phrase[mention[1]:stop])}
+        for index, item in enumerate(parsed.items):
+            if quantities[index] == 1 and (index >= len(selected) or selected[index] not in explicit_quantities):
+                quantities[index] = item.quantity
+
+    shared = recognized or RecognizedOptions()
+    reconcile_scalar(shared, "service_type", parsed.service_type if parsed else None,
+                     bool(parsed and "service_type" in parsed.unresolved_fields), ("DINE_IN", "TAKEOUT"))
+    if isinstance(action, SelectMenu) and quantities[0] == 1:
+        apply_item_options(parsed.items[0] if parsed else None, menus[action.menu_id], shared)
+        return action, shared if shared.model_dump(exclude_defaults=True) else None
+
+    cart_items = []
+    for index, line in enumerate(lines):
+        menu = menus[line.menu_id]
+        options = RecognizedOptions(temperature=line.temperature)
+        if isinstance(action, SelectMenu):
+            options.temperature = shared.temperature
+            options.customization = shared.customization
+            options.unresolved_fields = [field for field in shared.unresolved_fields if field == "temperature"]
+        apply_item_options(parsed.items[index] if parsed else None, menu, options)
+        legacy_ids = validate_customization(line.option_ids, menu, options.temperature, False)
+        if options.customization is None and legacy_ids.unresolved:
+            options.customization = legacy_ids
+        cart_items.append(VoiceCartItem(
+            menu_id=line.menu_id, quantity=quantities[index], temperature=options.temperature,
+            option_ids=options.customization.option_ids if options.customization else (
+                legacy_ids.option_ids or [intent.candidate_option_ids[0] for intent in legacy_ids.intents]
+            ),
+            recognized_options=options if options.model_dump(exclude_defaults=True) else None,
+        ))
+    shared = RecognizedOptions(service_type=shared.service_type,
+                               unresolved_fields=[field for field in shared.unresolved_fields if field == "service_type"])
+    return VoiceCart(items=cart_items), shared if shared.model_dump(exclude_defaults=True) else None
