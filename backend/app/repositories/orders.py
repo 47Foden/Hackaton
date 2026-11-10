@@ -5,7 +5,7 @@ from psycopg.types.json import Jsonb
 
 ORDER_RESULT_COLUMNS = """
     id, menu_id, menu_name_snapshot, temperature, service_type,
-    quantity, total_price_krw, selected_options, created_at
+    quantity, total_price_krw, selected_options, created_at, items
 """
 
 

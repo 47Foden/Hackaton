@@ -10,7 +10,7 @@ test('independent voice session mixes speech and touch and submits only after co
   await page.route('**/api/orders', async route => {
     orders++;
     const input = route.request().postDataJSON();
-    await route.fulfill({ status: 201, json: { ...input, order_id: '42', order_number: '42', menu_name: '카페라떼', quantity: 1, total_price_krw: 4000, created_at: new Date().toISOString() } });
+    await route.fulfill({ status: 201, json: { ...input, items: undefined, order_id: '42', order_number: '42', menu_name: '카페라떼', quantity: 1, total_price_krw: 4000, created_at: new Date().toISOString() } });
   });
   const actions = [{ type: 'select_menu', menu_id: 'cafe_latte' }, { type: 'confirm' },
     { type: 'set_service_type', service_type: 'TAKEOUT' }, { type: 'confirm' }];
@@ -86,7 +86,7 @@ test('voice recommendation, spoken restart, candidate selection and order comple
   let orders = 0;
   await page.route('**/api/orders', route => {
     orders++;
-    return route.fulfill({ status: 201, json: { ...route.request().postDataJSON(), order_id:'52', order_number:'52', menu_name:'카페라떼', quantity:1, total_price_krw:2900, created_at:new Date().toISOString() } });
+    return route.fulfill({ status: 201, json: { ...route.request().postDataJSON(), items: undefined, order_id:'52', order_number:'52', menu_name:'카페라떼', quantity:1, total_price_krw:2900, created_at:new Date().toISOString() } });
   });
   const actions = [
     { type:'direct_recommendation', engine:'llm-direct', status:'recommend', recommendations:[{menu_id:'cafe_latte', temperature:'HOT', reason:'검증용 후보'}], questions:[], missing_information:[] },
@@ -125,4 +125,33 @@ test('voice recommendation, spoken restart, candidate selection and order comple
   await say();
   await expect(page.getByText('52',{exact:true})).toBeVisible();
   expect(orders).toBe(1);
+});
+
+test('spoken multiple menus configure sequentially and preserve counts', async ({page}) => {
+  const api=createMockApi({delayMs:0});
+  await page.route('**/api/menus',async r=>r.fulfill({json:await api.getMenus()}));
+  await page.route('**/api/voice/interpret',r=>r.fulfill({json:{transcript:'아이스 아메리카노 두 잔 카페라떼 한 잔',action:{type:'select_items',items:[
+    {menu_id:'iced_americano',temperature:'COLD',quantity:2,option_ids:[]},
+    {menu_id:'cafe_latte',quantity:1,option_ids:[]}
+  ]}}}));
+  let sent;
+  await page.route('**/api/orders', async r=>{
+    sent=r.request().postDataJSON();
+    await r.fulfill({status:201,json:{...await api.createOrder(sent),order_id:'100',order_number:'100'}});
+  });
+  await page.goto('/');
+  await page.getByRole('button',{name:'음성으로 주문하기'}).click();
+  await page.getByRole('button',{name:'주문하기',exact:true}).click();
+  await page.getByRole('button',{name:'녹음 종료'}).click();
+  await page.getByRole('button',{name:'옵션 없이 계속'}).click();
+  await expect(page.getByRole('region',{name:'매장 또는 포장 선택'})).toHaveCount(0);
+  await page.getByRole('button',{name:/따뜻하게/}).click();
+  await page.getByRole('button',{name:'옵션 없이 계속'}).click();
+  await page.getByRole('button',{name:/포장해서/}).click();
+  await expect(page.getByRole('heading',{name:'아메리카노',exact:true})).toBeVisible();
+  await expect(page.getByRole('heading',{name:'카페라떼',exact:true})).toBeVisible();
+  await page.getByRole('button',{name:'주문 확정',exact:true}).click();
+  await expect(page.getByRole('region',{name:'주문 완료'})).toBeVisible();
+  expect(sent.items.every(i => i.service_type === 'TAKEOUT')).toBe(true);
+  expect(sent.items.map(i=>[i.menu_id,i.quantity])).toEqual([['iced_americano',2],['cafe_latte',1]]);
 });

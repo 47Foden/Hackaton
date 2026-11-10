@@ -5,7 +5,7 @@ import { mergeVoiceOptions, validateVoiceOptions, selectedCustomization } from '
 import type { VoiceOptions } from './voiceOptions.ts';
 
 export type { ServiceType } from '../api/contracts';
-export interface OrderDraft { menu: Menu; temperature: Temperature; serviceType: ServiceType; selectedOptions: MenuOption[]; }
+export interface OrderDraft { menu: Menu; temperature: Temperature; serviceType: ServiceType; selectedOptions: MenuOption[]; quantity?: number; }
 export interface OrderFailure { message: string; kind: 'rejected' | 'uncertain' | 'conflict'; }
 export type OrderState =
   | { stage: 'menu' }

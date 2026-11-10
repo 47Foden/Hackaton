@@ -67,7 +67,7 @@ test('final confirmation submits once and locks the buttons while waiting', asyn
   await expect(displayedNumber).toBeVisible();
   await expect(displayedNumber).toHaveText(orderNumber);
   await expect(completion).toContainText('2,300원');
-  expect(requests).toEqual([{ method: 'POST', body: { ...draft, request_id: expect.stringMatching(/^[0-9a-f-]{36}$/) } }]);
+  expect(requests).toEqual([{ method: 'POST', body: { ...draft, items: [{...draft, quantity: 1, option_ids: []}], request_id: expect.stringMatching(/^[0-9a-f-]{36}$/) } }]);
 });
 
 test('a definite rejection displays the reason and permits a manual retry', async ({ page }) => {
@@ -192,4 +192,22 @@ test('customization adds the correct price and appears in confirmation and recei
   const receipt = page.getByRole('region', { name: '주문 완료' });
   await expect(receipt).toContainText('바닐라 시럽 추가');
   await expect(receipt).toContainText('4,800원');
+});
+
+test('continue ordering preserves both lines and quantity including options', async ({page}) => {
+  let sent;
+  await page.route('**/api/orders', async route => {
+    sent = route.request().postDataJSON();
+    await route.fulfill({status:201,json:result});
+  });
+  await openReview(page);
+  await page.getByRole('button', {name:'아메리카노 수량 늘리기',exact:true}).click();
+  await expect(page.getByText('2잔', {exact:true})).toBeVisible();
+  await page.getByRole('button', {name:'계속 주문하기'}).click();
+  await chooseIcedAmericano(page);
+  await page.getByRole('button', {name:/포장해서/}).click();
+  await expect(page.getByRole('heading', {name:'아메리카노',exact:true})).toHaveCount(2);
+  await page.getByRole('button', {name:'주문 확정',exact:true}).click();
+  await expect(page.getByRole('region', {name:'주문 완료'})).toBeVisible();
+  expect(sent.items.map(i => i.quantity)).toEqual([2,1]);
 });

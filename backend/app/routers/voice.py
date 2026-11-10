@@ -152,6 +152,11 @@ def interpret_audio(
     action = (Retry(reason='UNRECOGNIZED' if compact(transcript) else 'EMPTY_TRANSCRIPT')
               if intent == 'recommend' else
               interpret_transcript(transcript, stage, menus, selected_menu_id=selected_menu_id, candidate_menu_ids=candidates))
+    if stage == "menu" and intent != "recommend":
+        from app.services.voice.cart import parse_cart
+        cart = parse_cart(transcript, menus)
+        if cart and (len(cart.items) > 1 or action.type == "retry" or cart.items[0].quantity > 1):
+            action = cart
     option_menu = menus.get(action.menu_id) if action.type == 'select_menu' else menus.get(selected_menu_id or '')
     option_transcript = re.sub(r'^\s*(?:네|예|맞아요)[,\s]+', '', transcript) if stage == 'menu_confirmation' else transcript
     recognized = extract_options(option_transcript, menu=option_menu, temperature=selected_temperature)

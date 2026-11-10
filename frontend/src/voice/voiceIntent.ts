@@ -1,7 +1,7 @@
 export type VoiceIntent = 'order' | 'recommend';
 
 export function acceptsVoiceAction(intent: VoiceIntent, type: unknown): boolean {
-  return type === 'retry' || type === 'restart_recommendation'
+  return (intent === 'order' && type === 'select_items') || type === 'retry' || type === 'restart_recommendation'
     || type === (intent === 'order' ? 'select_menu' : 'direct_recommendation');
 }
 

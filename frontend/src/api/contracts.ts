@@ -21,11 +21,13 @@ interface OrderSelection {
   service_type: ServiceType;
 }
 export interface CreateOrderRequest extends OrderSelection {
+  items?: (OrderSelection & { quantity: number; option_ids: string[] })[];
   request_id: string;
   option_ids?: string[];
 }
 export interface OrderResponse extends OrderSelection {
   // DB BIGINT 주문번호는 정밀도를 유지하기 위해 문자열로 전달한다.
+  items?: { menu_id: string; menu_name: string; temperature: Temperature; service_type: ServiceType; quantity: number; selected_options: MenuOption[]; unit_price_krw: number; total_price_krw: number }[];
   order_id: string;
   order_number: string;
   menu_name: string;
