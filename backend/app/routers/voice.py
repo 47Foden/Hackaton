@@ -16,6 +16,7 @@ from app.services.voice.audio import (
 )
 from app.services.voice.cart import interpret_named_order, parse_cart
 from app.services.voice.interpretation import interpret_transcript
+from app.services.voice.llm_order import apply_single_order_scalars, parse_order, select_unnamed_order
 from app.services.voice.options import compact, extract_options
 from app.schemas.menus import Temperature
 from app.services.voice.transcription import TranscriptionError, transcribe_voice
@@ -150,13 +151,23 @@ def interpret_audio(
 
     # Explicit recommendation never selects a menu, even for an exact name or
     # ordinal. Keep customization pending until a candidate is actually chosen.
+    parsed_order = None
     if intent == 'recommend':
         action = Retry(reason='UNRECOGNIZED' if compact(transcript) else 'EMPTY_TRANSCRIPT')
     else:
-        action = interpret_named_order(transcript, menus, candidate_menu_ids=candidates) if intent == 'order' else None
+        named_order = interpret_named_order(transcript, menus, candidate_menu_ids=candidates) if intent == 'order' else None
+        action = named_order
         if action is None:
             action = interpret_transcript(transcript, stage, menus, selected_menu_id=selected_menu_id,
                                           candidate_menu_ids=candidates)
+        if intent == 'order' and compact(transcript):
+            try:
+                parsed_order = parse_order(transcript, menus, candidates)
+            except DirectError:
+                pass  # Keep the existing rule result if the provider is unavailable.
+            if (parsed_order is not None and named_order is None
+                    and action.type == 'retry' and action.reason == 'UNRECOGNIZED'):
+                action = select_unnamed_order(parsed_order, transcript, menus, candidates) or action
     if stage == "menu" and intent is None:
         cart = parse_cart(transcript, menus)
         if cart and (len(cart.items) > 1 or action.type == "retry" or cart.items[0].quantity > 1):
@@ -164,6 +175,8 @@ def interpret_audio(
     option_menu = menus.get(action.menu_id) if action.type == 'select_menu' else menus.get(selected_menu_id or '')
     option_transcript = re.sub(r'^\s*(?:네|예|맞아요)[,\s]+', '', transcript) if stage == 'menu_confirmation' else transcript
     recognized = extract_options(option_transcript, menu=option_menu, temperature=selected_temperature)
+    if parsed_order is not None and action.type == 'select_menu':
+        recognized = apply_single_order_scalars(parsed_order, action.menu_id, menus[action.menu_id], recognized)
     if stage == 'customization' and option_menu and option_menu['is_available'] and recognized and recognized.customization:
         action = SetOptions(option_ids=recognized.customization.option_ids)
     if stage in {"menu", "recommendations"} and any(word in transcript.replace(" ", "") for word in ("재추천", "다시추천", "다른추천")):

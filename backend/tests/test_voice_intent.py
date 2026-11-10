@@ -1,4 +1,5 @@
 import asyncio
+import json
 import unittest
 from unittest.mock import patch
 
@@ -10,19 +11,27 @@ from test_voice_options import menu
 
 
 class VoiceIntentTests(unittest.TestCase):
-    def post(self, text, intent=None, *, stage='menu', extra=(), failure=None, rows=None):
+    def post(self, text, intent=None, *, stage='menu', extra=(), failure=None, rows=None,
+             order_result=None, order_failure=None):
         fields = [('stage', stage), *extra]
         if intent is not None:
             fields.append(('intent', intent))
         result = {'result': {'status': 'recommend', 'recommendations': [
             {'menu_id': 'cafe_latte', 'temperature': 'COLD', 'reason': 'fixture'}],
             'questions': [], 'missing_information': []}}
+        order_envelope = {'status': 'completed', 'output': [{'type': 'message', 'content': [
+            {'type': 'output_text', 'text': json.dumps(order_result)}]}]}
+        if order_result is None and order_failure is None:
+            order_failure = DirectError('MISSING_API_KEY')
         with patch('app.routers.voice.list_menus', return_value=rows or [menu()]), \
              patch('app.routers.voice._prepare_upload', return_value=(PreparedVoiceAudio(b'\0\0', 16000, 1), 2)), \
              patch('app.routers.voice.transcribe_voice', return_value=text) as stt, \
-             patch('app.routers.voice.llm_recommend', return_value=result, side_effect=failure) as llm:
+             patch('app.routers.voice.llm_recommend', return_value=result, side_effect=failure) as llm, \
+             patch('app.services.voice.llm_order.openai_transport', return_value=order_envelope,
+                   side_effect=order_failure) as order_llm:
             status, body = asyncio.run(post_audio(b'fixture', 'sample.webm', MIME_TYPE,
                 path='/api/voice/interpret', fields=fields))
+            self.order_llm = order_llm
             return status, body, stt.call_count, llm.call_count
 
     def test_exact_menu_routes_by_intent_and_recommendation_keeps_pending_options(self):
@@ -31,16 +40,18 @@ class VoiceIntentTests(unittest.TestCase):
             with self.subTest(intent=intent):
                 status, body, _, count = self.post('아이스 카페라떼 샷 추가 포장', intent)
                 self.assertEqual((status, body['action']['type'], count), (200, expected, calls))
+                self.assertEqual(self.order_llm.call_count, int(intent == 'order'))
                 options = body['recognized_options']
                 self.assertEqual((options['temperature'], options['service_type']), ('COLD', 'TAKEOUT'))
                 self.assertEqual(options['customization']['status'], 'pending' if intent == 'recommend' else 'resolved')
                 if intent == 'recommend': self.assertEqual(options['customization']['option_ids'], [])
 
-    def test_unknown_order_never_calls_llm_but_legacy_and_recommend_do(self):
+    def test_unknown_order_only_calls_order_llm(self):
         for intent in ('order', 'recommend', None):
             status, body, _, count = self.post('시원한 음료 추천해 주세요', intent)
             self.assertEqual(status, 200)
             self.assertEqual(count, 0 if intent == 'order' else 1)
+            self.assertEqual(self.order_llm.call_count, int(intent == 'order'))
             self.assertEqual(body['action']['type'], 'retry' if intent == 'order' else 'direct_recommendation')
             self.assertEqual(body['recognized_options']['temperature'], 'COLD')
 
@@ -50,6 +61,7 @@ class VoiceIntentTests(unittest.TestCase):
                 with self.subTest(text=text, intent=intent):
                     status, body, _, count = self.post(text, intent)
                     self.assertEqual((status, count), (200, 0))
+                    self.order_llm.assert_not_called()
                     self.assertEqual(body['action'], {'type': 'retry', 'reason': 'EMPTY_TRANSCRIPT'})
 
     def test_restart_precedes_both_intents(self):
@@ -94,6 +106,58 @@ class VoiceIntentTests(unittest.TestCase):
         _, body, _, _ = self.post('뜨듯한 바닐라 아메리카노', 'order',
                                   rows=[americano, {**vanilla, 'is_available': False}])
         self.assertEqual(body['action'], {'type': 'retry', 'reason': 'MENU_UNAVAILABLE'})
+
+    def test_order_model_extracts_hot_for_a_known_menu(self):
+        americano = {**menu(), 'menu_id': 'iced_americano', 'name': '아메리카노'}
+        item = {'menu_id': 'iced_americano', 'menu_phrase': '아메리카노', 'quantity': 1,
+                'temperature': 'HOT', 'option_ids': None, 'unresolved_fields': []}
+        parsed = {'items': [item], 'service_type': None, 'unresolved_fields': []}
+        status, body, _, recommendation_calls = self.post('뜨듯한 아메리카노', 'order',
+                                                           rows=[americano], order_result=parsed)
+        self.assertEqual((status, recommendation_calls), (200, 0))
+        self.assertEqual(body['action'], {'type': 'select_menu', 'menu_id': 'iced_americano'})
+        self.assertEqual(body['recognized_options']['temperature'], 'HOT')
+        self.assertEqual(self.order_llm.call_count, 1)
+        call = self.order_llm.call_args
+        self.assertEqual(call.kwargs['timeout'], 12)
+        payload = call.args[0]
+        self.assertFalse(payload['store'])
+        self.assertTrue(payload['text']['format']['strict'])
+        self.assertIn('뜨듯한 아메리카노', payload['instructions'])
+        data = json.loads(payload['input'][0]['content'])
+        self.assertEqual(data['matched_menu_ids'], ['iced_americano'])
+        self.assertIn('options_by_temperature', data['menus'][0])
+
+        for result, failure in [(None, TimeoutError()), ({'items': [item]}, None)]:
+            _, body, _, _ = self.post('뜨듯한 아메리카노', 'order', rows=[americano],
+                                      order_result=result, order_failure=failure)
+            self.assertEqual(body['action'], {'type': 'select_menu', 'menu_id': 'iced_americano'})
+            self.assertNotIn('recognized_options', body)
+
+    def test_order_model_cannot_replace_named_menu_or_invent_temperature(self):
+        americano = {**menu(), 'menu_id': 'iced_americano', 'name': '아메리카노',
+                     'available_temperatures': ['COLD']}
+        item = {'menu_id': 'iced_americano', 'menu_phrase': '아메리카노', 'quantity': 1,
+                'temperature': 'HOT', 'option_ids': None, 'unresolved_fields': []}
+        parsed = {'items': [item], 'service_type': None, 'unresolved_fields': []}
+        _, body, _, _ = self.post('뜨듯한 아메리카노', 'order', rows=[americano], order_result=parsed)
+        self.assertNotIn('temperature', body['recognized_options'])
+        self.assertEqual(body['recognized_options']['unresolved_fields'], ['temperature'])
+        item['menu_id'] = 'cafe_latte'
+        _, body, _, _ = self.post('뜨듯한 아메리카노', 'order', rows=[americano, menu()], order_result=parsed)
+        self.assertEqual(body['action']['menu_id'], 'iced_americano')
+        self.assertNotIn('recognized_options', body)
+
+    def test_order_model_requires_grounding_for_transcription_correction(self):
+        americano = {**menu(), 'menu_id': 'iced_americano', 'name': '아메리카노'}
+        item = {'menu_id': 'iced_americano', 'menu_phrase': '아메리카눠', 'quantity': 1,
+                'temperature': None, 'option_ids': None, 'unresolved_fields': []}
+        parsed = {'items': [item], 'service_type': None, 'unresolved_fields': []}
+        for text, expected in [('아메리카눠 주세요', 'select_menu'), ('아무거나 주세요', 'retry'),
+                               ('아메리카눠 말고', 'retry')]:
+            with self.subTest(text=text):
+                _, body, _, _ = self.post(text, 'order', rows=[americano], order_result=parsed)
+                self.assertEqual(body['action']['type'], expected)
 
     def test_named_cart_from_recommendations_keeps_candidate_boundary(self):
         rows = [menu(), {**menu(), 'menu_id': 'tea', 'name': '레몬티'}]
