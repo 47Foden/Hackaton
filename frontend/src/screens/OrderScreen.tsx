@@ -7,6 +7,7 @@ import { kioskApi, isMockOrderApi } from '../api';
 import { getOrderGuidance } from '../data/orderGuidance';
 import { useMenus } from '../hooks/useMenus';
 import { useOrderFlow } from '../hooks/useOrderFlow';
+import { useKioskStep } from '../hooks/useKioskHistory';
 import type { OrderSelection } from '../state/order';
 import { TemperatureScreen } from './order/TemperatureScreen';
 import { CustomizationScreen } from './order/CustomizationScreen';
@@ -17,9 +18,13 @@ import './order/OrderFlow.css';
 
 
 export function OrderScreen({ onHome, serviceType }: { onHome: () => void; serviceType: ServiceType }) {
-  const { order, dispatch, confirm, items, continueOrder, changeQuantity, removeItem, quantity, locked } = useOrderFlow(kioskApi, serviceType);
+  const { order, dispatch, confirm, items, continueOrder, changeQuantity, removeItem, quantity, locked, snapshot, restore } = useOrderFlow(kioskApi, serviceType);
   const { state: catalog, reload } = useMenus(kioskApi);
   const [menuView, setMenuView] = useState<MenuBoardView>({ enlarged: false });
+  const [optionIds, setOptionIds] = useState<string[]>([]);
+  useKioskStep(order.stage, { flow: snapshot, menuView, optionIds }, saved => {
+    restore(saved.flow); setMenuView(saved.menuView); setOptionIds(saved.optionIds);
+  }, locked, order.stage === 'complete');
 
   const guide = getOrderGuidance(order, isMockOrderApi);
   const reviewError = order.stage === 'review' ? order.error : undefined;
@@ -31,7 +36,7 @@ export function OrderScreen({ onHome, serviceType }: { onHome: () => void; servi
     }
     if (catalog.status !== 'ready') return;
     const menu = catalog.menus.find(item => item.id === selection.menuId);
-    if (menu) dispatch({ type: 'select_menu', menu });
+    if (menu) { setOptionIds([]); dispatch({ type: 'select_menu', menu }); }
   }
 
   return (
@@ -49,6 +54,7 @@ export function OrderScreen({ onHome, serviceType }: { onHome: () => void; servi
       {order.stage === 'temperature' && <TemperatureScreen quantity={quantity} menu={order.menu}
         onSelect={temperature => applySelection({ type: 'set_temperature', temperature })} />}
       {order.stage === 'customization' && <CustomizationScreen quantity={quantity} menu={order.menu} temperature={order.temperature}
+        initialSelectedIds={optionIds} onSelectionChange={setOptionIds}
         onContinue={ids => dispatch({ type: 'set_options', ids })} />}
       {order.stage === 'service_type' && <ServiceTypeScreen quantity={quantity} items={items} menu={order.menu} temperature={order.temperature}
         selectedOptions={order.selectedOptions}

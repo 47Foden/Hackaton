@@ -11,6 +11,7 @@ import { OrderMicrophone } from '../components/voice/OrderMicrophone';
 import { VoiceIntentMicrophone, type VoiceIntent } from '../components/voice/VoiceIntentMicrophone';
 import { useMenus } from '../hooks/useMenus';
 import { useOrderFlow } from '../hooks/useOrderFlow';
+import { useKioskStep } from '../hooks/useKioskHistory';
 import { useVoiceGuidance } from '../hooks/useVoiceGuidance';
 import { browserVoiceGuidance as voice } from '../voice/browserVoiceGuidance';
 import { acceptsVoiceAction, voiceRetryMessage } from '../voice/voiceIntent';
@@ -25,7 +26,7 @@ import { getOrderGuidance } from '../data/orderGuidance';
 import './order/OrderFlow.css';
 
 export function VoiceOrderScreen({ onHome, serviceType }: { onHome: () => void; serviceType: ServiceType }) {
-  const { order, dispatch, confirm, items, continueOrder, deferService, changeQuantity, removeItem, quantity, setQuantity, locked } = useOrderFlow(kioskApi, serviceType);
+  const { order, dispatch, confirm, items, continueOrder, deferService, changeQuantity, removeItem, quantity, setQuantity, locked, snapshot, restore } = useOrderFlow(kioskApi, serviceType);
   const { state: catalog, reload } = useMenus(kioskApi);
   const [candidates, setCandidates] = useState<string[] | null>(null);
   const [recommendationsExpanded, setRecommendationsExpanded] = useState(false);
@@ -66,6 +67,12 @@ export function VoiceOrderScreen({ onHome, serviceType }: { onHome: () => void; 
   const optionNotice = validated.unresolved_fields?.length || validated.customization?.status === 'needs_clarification'
     ? '말씀하신 옵션 중 확인이 필요한 항목이 있어요. 가능한 선택은 유지했으니 화면에서 확인해 주세요.' : '';
   const stage = selected ? 'menu_confirmation' : order.stage === 'menu' && candidates?.length ? 'recommendations' : order.stage;
+  useKioskStep(`${stage}:${selected?.id ?? ''}:${candidates?.join(',') ?? ''}`,
+    { flow: snapshot, candidates, recommendationsExpanded, selected, menuView, transcript, session, queue, activeItem }, saved => {
+      interrupt(); restore(saved.flow); setCandidates(saved.candidates); setRecommendationsExpanded(saved.recommendationsExpanded);
+      setSelected(saved.selected); setMenuView(saved.menuView); setTranscript(saved.transcript);
+      save(saved.session); setQueue(saved.queue); setActiveItem(saved.activeItem);
+    }, locked, order.stage === 'complete');
   const guide = selected ? { title: selected.name, description: '이 메뉴로 주문하시겠습니까? 네라고 말씀하시거나 버튼을 눌러 주세요.' }
     : candidates !== null && order.stage === 'menu' ? { title: candidates.length ? '추천 메뉴' : '조건에 맞는 메뉴가 없어요.', description: '추천 메뉴를 터치하거나 주문하기를 눌러 선택해 주세요. 새 조건으로 추천받으려면 메뉴 추천받기를 눌러 주세요. 다시 추천받기는 초기 화면으로 돌아갑니다.' }
     : order.stage === 'menu' ? { title: '음성 주문', description: '메뉴를 정하셨다면 주문하기를, 추천이 필요하면 메뉴 추천받기를 눌러 말씀해 주세요.' }

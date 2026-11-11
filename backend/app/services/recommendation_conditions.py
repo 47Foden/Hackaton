@@ -56,7 +56,7 @@ def derive_conditions(text):
               'temperature': None, 'included_categories': [], 'excluded_categories': [],
               'milk_free': False, 'max_caffeine_mg': None, 'requested_count': None,
               'order_quantity': None, 'total_budget_krw': None, 'sort_by': 'relevance',
-              'required_options': [], 'preferences': [], 'flavors': [],
+              'required_options': [], 'preferences': [], 'flavors': [], 'excluded_flavors': [],
               'required_questions': [], 'unsupported_conditions': [], 'evidence_spans': []}
     def upper(value):
         result['max_price_krw'] = min(result['max_price_krw'] if result['max_price_krw'] is not None else value, value)
@@ -66,12 +66,26 @@ def derive_conditions(text):
     consumed = set()
     for i, match in enumerate(matches):
         if i in consumed: continue
-        amount = won_amount(match['amount'])
+        try:
+            if corrected[:match.start()].rstrip().endswith(('-', '−')):
+                raise ValueError('Negative amount')
+            amount = won_amount(match['amount'])
+        except ValueError:
+            result['unsupported_conditions'].append('해석할 수 없는 금액 표현')
+            continue
         suffix = re.sub(r'\s+', '', corrected[match.end():])
         suffix = re.sub(r'^(?:은|는|을|를)', '', suffix)
         parsed = True
         if i + 1 < len(matches) and suffix.startswith('에서') and '사이' in corrected[matches[i+1].end():]:
-            lower(amount); upper(won_amount(matches[i+1]['amount'])); consumed.add(i+1)
+            consumed.add(i+1)
+            try:
+                if corrected[:matches[i+1].start()].rstrip().endswith(('-', '−')):
+                    raise ValueError('Negative range endpoint')
+                end_amount = won_amount(matches[i+1]['amount'])
+            except ValueError:
+                result['unsupported_conditions'].append('해석할 수 없는 금액 표현')
+                continue
+            lower(amount); upper(end_amount)
         elif suffix.startswith('대'):
             lower(amount); upper(amount + 999)
         elif re.match(r'미만|아래|안되는|(?:짜리)?보다(?:더)?(?:싼|저렴)', suffix): upper(amount - 1)
@@ -126,7 +140,15 @@ def derive_conditions(text):
     for option in ('두유', '오트밀크', '아몬드밀크', '얼음많이', '얼음없이'):
         if option in compact: result['required_options'].append(option)
     for flavor in ('딸기', '레몬', '망고', '초콜릿', '과일'):
-        if flavor in compact: result['flavors'].append(flavor)
+        # Scope exclusion to this flavor, not to a different flavor later in the sentence.
+        # The latest mention permits an explicit correction: "레몬 말고, 아니 레몬으로".
+        mentions = list(re.finditer(re.escape(flavor), compact))
+        if not mentions: continue
+        tail = compact[mentions[-1].end():]
+        prefix = r'(?:맛|향)?(?:은|는|이|가|도|을|를)?'
+        keep = re.match(prefix + r'(?:빼지|제외하지)(?:말|마|않)', tail)
+        excluded = not keep and re.match(prefix + r'(?:말고|빼|제외|싫|없는|없이|아닌|아니고|아니라)', tail)
+        result['excluded_flavors' if excluded else 'flavors'].append(flavor)
     for pattern, preference in [(r'쓴맛.{0,3}(?:약|덜|낮)|안쓴|쓰지않|씁쓰름한건싫', '쓴맛 낮음'),
                                 (r'달지않|안달|덜달|많이달지', '단맛 낮음'),
                                 (r'달달|달콤', '단맛 높음'), (r'새콤|상큼', '상큼함'),

@@ -1,10 +1,14 @@
 import { useEffect, useReducer, useRef, useState } from 'react';
 import type { CreateOrderRequest, KioskApi, ServiceType } from '../api/contracts';
 import { asApiError } from '../api/errors';
-import { initialOrderState, orderReducer, sessionOrderReducer, type OrderDraft } from '../state/order';
+import { initialOrderState, orderReducer, sessionOrderReducer, type OrderDraft, type OrderState } from '../state/order';
+
+export type OrderFlowSnapshot = { order: OrderState; cart: OrderDraft[]; quantity: number };
 
 export function useOrderFlow(api: KioskApi, serviceType: ServiceType) {
-  const [order, dispatch] = useReducer((state: Parameters<typeof orderReducer>[0], action: Parameters<typeof orderReducer>[1] | {type: 'continue'}) => sessionOrderReducer(state, action, serviceType), initialOrderState);
+  type Action = Parameters<typeof orderReducer>[1] | {type: 'continue'} | {type: 'restore'; order: OrderState};
+  const [order, dispatch] = useReducer((state: OrderState, action: Action) => action.type === 'restore'
+    ? action.order : sessionOrderReducer(state, action, serviceType), initialOrderState);
   const [cart, setCart] = useState<OrderDraft[]>([]);
   const [quantity, setQuantity] = useState(1);
   const items = 'draft' in order ? [...cart, {...order.draft, quantity}].map(item => ({...item, serviceType: order.draft.serviceType})) : cart;
@@ -63,5 +67,11 @@ export function useOrderFlow(api: KioskApi, serviceType: ServiceType) {
       if (pending.current === controller) pending.current = null;
     }
   }
-  return { order, dispatch, confirm, items, continueOrder, deferService, changeQuantity, removeItem, quantity, setQuantity, locked: !!submittedRequest.current };
+  function restore(snapshot: OrderFlowSnapshot) {
+    if (submittedRequest.current) return;
+    dispatch({ type: 'restore', order: snapshot.order });
+    setCart(snapshot.cart); setQuantity(snapshot.quantity);
+  }
+  return { order, dispatch, confirm, items, continueOrder, deferService, changeQuantity, removeItem, quantity, setQuantity, locked: !!submittedRequest.current,
+    snapshot: { order, cart, quantity } satisfies OrderFlowSnapshot, restore };
 }
