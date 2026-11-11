@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "note": "Human-authored expected interpretation/response fixtures. Not real model output or measured accuracy. Menu descriptions come only from the existing verified evidence file.",
+  "cases": [
+    {
+      "id": "simple_exclusion",
+      "text": "레몬 말고 딸기 음료 추천해 주세요",
+      "expected_constraints": [
+        {"kind": "excluded_flavor", "value": "레몬", "source_text": "레몬 말고"},
+        {"kind": "preferred_flavor", "value": "딸기", "source_text": "딸기"}
+      ],
+      "fixture_menu_id": "strawberry_latte",
+      "fixture_temperature": "COLD"
+    },
+    {
+      "id": "joint_exclusion",
+      "text": "레몬이랑 망고는 빼고 딸기 음료 추천해 주세요",
+      "expected_constraints": [
+        {"kind": "excluded_flavor", "value": "레몬", "source_text": "레몬이랑 망고는 빼고"},
+        {"kind": "excluded_flavor", "value": "망고", "source_text": "레몬이랑 망고는 빼고"},
+        {"kind": "preferred_flavor", "value": "딸기", "source_text": "딸기"}
+      ],
+      "fixture_menu_id": "strawberry_latte",
+      "fixture_temperature": "COLD"
+    },
+    {
+      "id": "double_negation",
+      "text": "레몬은 싫지 않아요. 음료 추천해 주세요",
+      "expected_constraints": [],
+      "fixture_menu_id": "lemonade",
+      "fixture_temperature": "COLD"
+    },
+    {
+      "id": "positive_control",
+      "text": "딸기 음료 추천해 주세요",
+      "expected_constraints": [
+        {"kind": "preferred_flavor", "value": "딸기", "source_text": "딸기"}
+      ],
+      "fixture_menu_id": "strawberry_latte",
+      "fixture_temperature": "COLD"
+    }
+  ]
+}

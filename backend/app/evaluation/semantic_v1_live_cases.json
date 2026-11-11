@@ -1,0 +1,355 @@
+{
+  "source": "Actual semantic-direct-v1 Responses API outputs from the completed eight-call study; no keys or provider error bodies.",
+  "source_results_sha256": "e944213161e9a04ab499490b8336643140065773ec79981913cb8fa2010886f3",
+  "semantic_source_hash": "95587d7963286fa473e0f26935026dfba763ad1ee2567e0b10b59c14a4b7a4ee",
+  "cases": [
+    {
+      "task_id": "simple_exclusion.semantic",
+      "text": "레몬 말고 딸기 음료 추천해 주세요",
+      "raw_candidate": {
+        "status": "recommend",
+        "request_summary": "레몬은 빼고 딸기 계열 음료를 추천해 달라는 요청으로 이해했습니다.",
+        "constraints": [
+          {
+            "kind": "excluded_flavor",
+            "value": "레몬",
+            "source_text": "레몬 말고 딸기 음료 추천해 주세요"
+          },
+          {
+            "kind": "preferred_flavor",
+            "value": "딸기",
+            "source_text": "레몬 말고 딸기 음료 추천해 주세요"
+          }
+        ],
+        "recommendations": [
+          {
+            "menu_id": "strawberry_latte",
+            "temperature": "COLD",
+            "option_ids": [],
+            "basis_fields": [
+              "name",
+              "categories",
+              "price_krw",
+              "temperature",
+              "description"
+            ]
+          },
+          {
+            "menu_id": "strawberry_yogurt_smoothie",
+            "temperature": "COLD",
+            "option_ids": [],
+            "basis_fields": [
+              "name",
+              "categories",
+              "price_krw",
+              "temperature",
+              "description"
+            ]
+          },
+          {
+            "menu_id": "strawberry_juice",
+            "temperature": "COLD",
+            "option_ids": [],
+            "basis_fields": [
+              "name",
+              "categories",
+              "price_krw",
+              "temperature",
+              "description"
+            ]
+          },
+          {
+            "menu_id": "strawberry_cookie_frappe",
+            "temperature": "COLD",
+            "option_ids": [],
+            "basis_fields": [
+              "name",
+              "categories",
+              "price_krw",
+              "temperature",
+              "description"
+            ]
+          },
+          {
+            "menu_id": "strawberry_banana_juice",
+            "temperature": "COLD",
+            "option_ids": [],
+            "basis_fields": [
+              "name",
+              "categories",
+              "price_krw",
+              "temperature",
+              "description"
+            ]
+          }
+        ],
+        "questions": [],
+        "missing_information": [],
+        "unresolved_requirements": []
+      },
+      "observed_validation_error": null
+    },
+    {
+      "task_id": "joint_exclusion.semantic",
+      "text": "레몬이랑 망고는 빼고 딸기 음료 추천해 주세요",
+      "raw_candidate": {
+        "status": "recommend",
+        "request_summary": "레몬과 망고를 제외하고, 딸기 계열 음료를 추천해 달라는 요청으로 이해했습니다.",
+        "constraints": [
+          {
+            "kind": "excluded_flavor",
+            "value": "레몬",
+            "source_text": "레몬이랑 망고는 빼고 딸기 음료 추천해 주세요"
+          },
+          {
+            "kind": "excluded_flavor",
+            "value": "망고",
+            "source_text": "레몬이랑 망고는 빼고 딸기 음료 추천해 주세요"
+          },
+          {
+            "kind": "preferred_flavor",
+            "value": "딸기",
+            "source_text": "레몬이랑 망고는 빼고 딸기 음료 추천해 주세요"
+          }
+        ],
+        "recommendations": [
+          {
+            "menu_id": "strawberry_latte",
+            "temperature": "COLD",
+            "option_ids": [],
+            "basis_fields": [
+              "name",
+              "categories",
+              "price_krw",
+              "temperature",
+              "description"
+            ]
+          },
+          {
+            "menu_id": "strawberry_cookie_frappe",
+            "temperature": "COLD",
+            "option_ids": [],
+            "basis_fields": [
+              "name",
+              "categories",
+              "price_krw",
+              "temperature",
+              "description"
+            ]
+          },
+          {
+            "menu_id": "strawberry_yogurt_smoothie",
+            "temperature": "COLD",
+            "option_ids": [],
+            "basis_fields": [
+              "name",
+              "categories",
+              "price_krw",
+              "temperature",
+              "description"
+            ]
+          },
+          {
+            "menu_id": "strawberry_juice",
+            "temperature": "COLD",
+            "option_ids": [],
+            "basis_fields": [
+              "name",
+              "categories",
+              "price_krw",
+              "temperature",
+              "description"
+            ]
+          },
+          {
+            "menu_id": "strawberry_banana_juice",
+            "temperature": "COLD",
+            "option_ids": [],
+            "basis_fields": [
+              "name",
+              "categories",
+              "price_krw",
+              "temperature",
+              "description"
+            ]
+          }
+        ],
+        "questions": [],
+        "missing_information": [],
+        "unresolved_requirements": []
+      },
+      "observed_validation_error": null
+    },
+    {
+      "task_id": "double_negation.semantic",
+      "text": "레몬은 싫지 않아요. 음료 추천해 주세요",
+      "raw_candidate": {
+        "status": "recommend",
+        "request_summary": "레몬 향/맛을 싫어하지 않으니, 일반 음료 중에서 마실 만한 추천을 요청한 것으로 이해했습니다.",
+        "constraints": [
+          {
+            "kind": "unverifiable_requirement",
+            "value": "레몬은 싫지 않아요",
+            "source_text": "레몬은 싫지 않아요"
+          },
+          {
+            "kind": "include_category",
+            "value": "음료",
+            "source_text": "음료 추천해 주세요"
+          }
+        ],
+        "recommendations": [
+          {
+            "menu_id": "lemonade",
+            "temperature": "COLD",
+            "option_ids": [],
+            "basis_fields": [
+              "name",
+              "categories",
+              "price_krw",
+              "temperature",
+              "description"
+            ]
+          },
+          {
+            "menu_id": "lemon_tea",
+            "temperature": "COLD",
+            "option_ids": [],
+            "basis_fields": [
+              "name",
+              "categories",
+              "price_krw",
+              "temperature",
+              "description"
+            ]
+          },
+          {
+            "menu_id": "lemon_tea_alias",
+            "temperature": "COLD",
+            "option_ids": [],
+            "basis_fields": [
+              "name",
+              "categories",
+              "price_krw",
+              "temperature",
+              "description"
+            ]
+          },
+          {
+            "menu_id": "citron_tea",
+            "temperature": "HOT",
+            "option_ids": [],
+            "basis_fields": [
+              "name",
+              "categories",
+              "price_krw",
+              "temperature",
+              "description"
+            ]
+          }
+        ],
+        "questions": [],
+        "missing_information": [],
+        "unresolved_requirements": [
+          "레몬은 싫지 않아요: 선호의 강도는 확인 가능하지만, 반드시 레몬 계열을 원하는지는 명시되지 않았습니다."
+        ]
+      },
+      "observed_validation_error": "UNRESOLVED_RECOMMENDATION"
+    },
+    {
+      "task_id": "positive_control.semantic",
+      "text": "딸기 음료 추천해 주세요",
+      "raw_candidate": {
+        "status": "recommend",
+        "request_summary": "딸기 맛이 느껴지는 음료를 추천해 달라는 요청으로 이해했습니다.",
+        "constraints": [
+          {
+            "kind": "preferred_flavor",
+            "value": "딸기",
+            "source_text": "딸기 음료 추천해 주세요"
+          }
+        ],
+        "recommendations": [
+          {
+            "menu_id": "strawberry_latte",
+            "temperature": "COLD",
+            "option_ids": [],
+            "basis_fields": [
+              "name",
+              "categories",
+              "price_krw",
+              "temperature",
+              "description"
+            ]
+          },
+          {
+            "menu_id": "strawberry_juice",
+            "temperature": "COLD",
+            "option_ids": [],
+            "basis_fields": [
+              "name",
+              "categories",
+              "price_krw",
+              "temperature",
+              "description"
+            ]
+          },
+          {
+            "menu_id": "strawberry_yogurt_smoothie",
+            "temperature": "COLD",
+            "option_ids": [],
+            "basis_fields": [
+              "name",
+              "categories",
+              "price_krw",
+              "temperature",
+              "description"
+            ]
+          },
+          {
+            "menu_id": "strawberry_banana_juice",
+            "temperature": "COLD",
+            "option_ids": [],
+            "basis_fields": [
+              "name",
+              "categories",
+              "price_krw",
+              "temperature",
+              "description"
+            ]
+          },
+          {
+            "menu_id": "strawberry_cookie_frappe",
+            "temperature": "COLD",
+            "option_ids": [],
+            "basis_fields": [
+              "name",
+              "categories",
+              "price_krw",
+              "temperature",
+              "description"
+            ]
+          },
+          {
+            "menu_id": "strawberry_cookie_frappe",
+            "temperature": "COLD",
+            "option_ids": [],
+            "basis_fields": [
+              "name",
+              "categories",
+              "price_krw",
+              "temperature",
+              "description"
+            ]
+          }
+        ],
+        "questions": [],
+        "missing_information": [],
+        "unresolved_requirements": []
+      },
+      "observed_validation_error": "DUPLICATE_MENU_ID"
+    }
+  ],
+  "catalogue_sha256": "9f098c411f3620cc77bd91af2599cf1391542e72f82357966a22fe903e75716e",
+  "evidence_sha256": "47b56c99ed420b526ca30ab1b44db761a36e4599240523af3910330c977c9e89"
+}

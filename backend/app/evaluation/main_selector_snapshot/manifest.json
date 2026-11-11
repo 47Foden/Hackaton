@@ -1,0 +1,33 @@
+{
+  "main_commit": "f6bbfcbc772a7b06121b9329bda02e72e8d6cc4e",
+  "checked_date_kst": "2026-11-12",
+  "hash_algorithm": "SHA-256 of UTF-8 text normalized to LF",
+  "selector_files": {
+    "llm_direct": {
+      "repository_path": "backend/app/services/llm_direct.py",
+      "sha256_lf": "4cc5ad3766b2fbe89b55486fc125209dd6c983de92715be4da13a52bf5ee86cc"
+    },
+    "recommendation_conditions": {
+      "repository_path": "backend/app/services/recommendation_conditions.py",
+      "sha256_lf": "8f332b2f3a2e4fd676af231cda49fa28ac505fccac035da55d8c49b2b89e7a48"
+    },
+    "taste_evidence": {
+      "repository_path": "backend/app/services/taste_evidence.py",
+      "sha256_lf": "55da1d9aad22590f7ef75d1d18cd8e9d7d53342e6905f78eacfc4946c0b0f0fe"
+    }
+  },
+  "shared_files": {
+    "backend/app/db/catalog.py": "6ba67dd5472b8129a20a6970762b369ce9576e6c50d48e020bea7c9356902296",
+    "backend/app/services/menu_evidence.py": "e4d169035edd94b83658a8de9275cca3dfa969314ab56c86af0dc6404434bf71",
+    "backend/app/schemas/menus.py": "f8fa608de17997be8b72155fd1355c91ce3568f15d4f9ee001c4fcaf9b2dcc38",
+    "common/order_catalog.json": "fc16b4db5be80e21a953c7cc828060100e1a6e8352be4b90a161c1f62f53c7f2",
+    "common/order_option_profiles.json": "9a1d4e3df3addbcd2bce4ce17c30bfc98c38611ea1bca08539f74be0bbaa1d2e",
+    "common/menu_prices.json": "bad2e5442532fe9452bda8ed25f61f503bd3d20226941323075adc4c2aa9180b",
+    "common/menu_images.json": "8db6335a4a90c2a308d373fac3dc0d4b4968606d3b39755c4a78f8198f0331d3",
+    "common/menu_price_sources.json": "e1acd0f156a5b7bc8914cced35f7606bb6aa1a87d24a5b268b10fe0917017338",
+    "common/menu_image_sources.json": "880782b14c288729098b7e497bc22ead01897536f37e9136246fa3e072697917",
+    "common/menu_display.json": "55641429d33cc6c3b3c787ec20db328f4cd18bfec01ddbc73f839b48dfa99ba0",
+    "common/menu_evidence.json": "0f1582e53e5994b0e18effe330dc7cfbed7c29e6c5c6b2ba53fdb7e92be4e33f",
+    "common/recommendation_examples.json": "c38ecde22a4a4d3b9154a13a63f0493df3625da040675c5edaddfcf966831ebf"
+  }
+}

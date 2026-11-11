@@ -1,0 +1,793 @@
+{
+  "experiment_date_kst": "2026-11-12",
+  "source_results_sha256": "1996628e4285f3a1edf5fbdf644bbc35cb769a07c41d9a9d1e3a512552662d33",
+  "plan": {
+    "schema_version": 1,
+    "model": "gpt-5.4-mini-2026-03-17",
+    "maximum_attempts": 8,
+    "semantic_prompt_version": "semantic-direct-v2",
+    "automatic_retries": 0,
+    "interval_seconds": 30,
+    "study_max_output_tokens": 2048,
+    "reference_estimate_usd": 0.2,
+    "reference_estimate_basis": "Previous measured requests were about $0.025 each; not a measured semantic-run cost or billing cap.",
+    "availability": "synthetic all True",
+    "catalogue_sha256": "9f098c411f3620cc77bd91af2599cf1391542e72f82357966a22fe903e75716e",
+    "dataset_sha256": "69643ae72681103fbc74b97601d851a13519c1044a7857763232dd131945f732",
+    "baseline_provenance": {
+      "main_commit": "f6bbfcbc772a7b06121b9329bda02e72e8d6cc4e",
+      "checked_date_kst": "2026-11-12",
+      "hash_algorithm": "SHA-256 of UTF-8 text normalized to LF",
+      "selector_files": {
+        "llm_direct": {
+          "repository_path": "backend/app/services/llm_direct.py",
+          "sha256_lf": "4cc5ad3766b2fbe89b55486fc125209dd6c983de92715be4da13a52bf5ee86cc"
+        },
+        "recommendation_conditions": {
+          "repository_path": "backend/app/services/recommendation_conditions.py",
+          "sha256_lf": "8f332b2f3a2e4fd676af231cda49fa28ac505fccac035da55d8c49b2b89e7a48"
+        },
+        "taste_evidence": {
+          "repository_path": "backend/app/services/taste_evidence.py",
+          "sha256_lf": "55da1d9aad22590f7ef75d1d18cd8e9d7d53342e6905f78eacfc4946c0b0f0fe"
+        }
+      },
+      "shared_files": {
+        "backend/app/db/catalog.py": "6ba67dd5472b8129a20a6970762b369ce9576e6c50d48e020bea7c9356902296",
+        "backend/app/services/menu_evidence.py": "e4d169035edd94b83658a8de9275cca3dfa969314ab56c86af0dc6404434bf71",
+        "backend/app/schemas/menus.py": "f8fa608de17997be8b72155fd1355c91ce3568f15d4f9ee001c4fcaf9b2dcc38",
+        "common/order_catalog.json": "fc16b4db5be80e21a953c7cc828060100e1a6e8352be4b90a161c1f62f53c7f2",
+        "common/order_option_profiles.json": "9a1d4e3df3addbcd2bce4ce17c30bfc98c38611ea1bca08539f74be0bbaa1d2e",
+        "common/menu_prices.json": "bad2e5442532fe9452bda8ed25f61f503bd3d20226941323075adc4c2aa9180b",
+        "common/menu_images.json": "8db6335a4a90c2a308d373fac3dc0d4b4968606d3b39755c4a78f8198f0331d3",
+        "common/menu_price_sources.json": "e1acd0f156a5b7bc8914cced35f7606bb6aa1a87d24a5b268b10fe0917017338",
+        "common/menu_image_sources.json": "880782b14c288729098b7e497bc22ead01897536f37e9136246fa3e072697917",
+        "common/menu_display.json": "55641429d33cc6c3b3c787ec20db328f4cd18bfec01ddbc73f839b48dfa99ba0",
+        "common/menu_evidence.json": "0f1582e53e5994b0e18effe330dc7cfbed7c29e6c5c6b2ba53fdb7e92be4e33f",
+        "common/recommendation_examples.json": "c38ecde22a4a4d3b9154a13a63f0493df3625da040675c5edaddfcf966831ebf"
+      }
+    },
+    "evidence_sha256": "47b56c99ed420b526ca30ab1b44db761a36e4599240523af3910330c977c9e89",
+    "pricing": {
+      "input": 0.75,
+      "cached_input": 0.075,
+      "output": 4.5,
+      "unit": "USD per million tokens",
+      "checked_date": "2026-11-12",
+      "source": "https://developers.openai.com/api/docs/models/gpt-5.4-mini"
+    },
+    "source_hashes": {
+      "previous": "fb84ebfc1f47eb022e4f72a1b61440050dc314552f8c85835f630543a20e0355",
+      "semantic": "00b3bb0a4ab065b9ddd82b851f3702ff3f63a3d1fe61260d978ec7635bdbbde0"
+    },
+    "tasks": [
+      {
+        "id": "holdout_simple_exclusion.previous",
+        "input": "레몬 말고 딸기 계열로 골라줘",
+        "request_sha256": "bc1183b57b9f61b0d0edde81485ee77902bd63518c8f0934ffcf51df0a351f42",
+        "request_utf8_bytes": 105484,
+        "max_output_tokens": 2048
+      },
+      {
+        "id": "holdout_simple_exclusion.semantic",
+        "input": "레몬 말고 딸기 계열로 골라줘",
+        "request_sha256": "65577b75e869447a98c306d934beccae96ef1f0a84ca3a93dcd01bf955bc504c",
+        "request_utf8_bytes": 100573,
+        "max_output_tokens": 2048
+      },
+      {
+        "id": "holdout_joint_exclusion.semantic",
+        "input": "레몬하고 망고는 싫고 딸기 음료가 좋아요",
+        "request_sha256": "6fffc4c3f530ceb932a5b364a64309cb6d9859d8467bf74f92d5e135a50a2455",
+        "request_utf8_bytes": 100589,
+        "max_output_tokens": 2048
+      },
+      {
+        "id": "holdout_joint_exclusion.previous",
+        "input": "레몬하고 망고는 싫고 딸기 음료가 좋아요",
+        "request_sha256": "e87c28f3341cb0606ea25d689db38e0a648a41868896c6fcb2563dc6f62fb9d1",
+        "request_utf8_bytes": 105512,
+        "max_output_tokens": 2048
+      },
+      {
+        "id": "holdout_double_negation.previous",
+        "input": "레몬이 싫다는 건 아니에요. 마실 것 좀 추천해 주세요",
+        "request_sha256": "b36eafaaff3ad40bc5b5d816faeb814e9fb993111582fe6af76584ce72e1f0f1",
+        "request_utf8_bytes": 104620,
+        "max_output_tokens": 2048
+      },
+      {
+        "id": "holdout_double_negation.semantic",
+        "input": "레몬이 싫다는 건 아니에요. 마실 것 좀 추천해 주세요",
+        "request_sha256": "05236e8551902884ae502d1564b58da107ec90cf1bad49cb5b0687016161bf98",
+        "request_utf8_bytes": 100605,
+        "max_output_tokens": 2048
+      },
+      {
+        "id": "holdout_positive_control.semantic",
+        "input": "딸기 맛 나는 걸로 골라주세요",
+        "request_sha256": "f929358a8e51497e85f06b79da88b557a7ee7741ba1179399af8cf49000ce4c2",
+        "request_utf8_bytes": 100573,
+        "max_output_tokens": 2048
+      },
+      {
+        "id": "holdout_positive_control.previous",
+        "input": "딸기 맛 나는 걸로 골라주세요",
+        "request_sha256": "f1853edfbd35f35610ae70fe34a149da2e5c2f1d3e8cc2b128727d72ea3ae867",
+        "request_utf8_bytes": 104669,
+        "max_output_tokens": 2048
+      }
+    ],
+    "fingerprint": "b1a2d9d79f8e31844f28e2a06b80b0c70b34153a32598348880b2a2417854b71",
+    "planning_estimate_usd": 0.7398487499999999
+  },
+  "known_usage_cost_usd": 0.195489,
+  "cost_complete": true,
+  "not_general_accuracy": true,
+  "attempts": [
+    {
+      "task_id": "holdout_simple_exclusion.previous",
+      "input": "레몬 말고 딸기 계열로 골라줘",
+      "version": "previous",
+      "state": "validation_rejected",
+      "error_code": "INCONSISTENT_STATUS",
+      "model_returned": "gpt-5.4-mini-2026-03-17",
+      "model_candidate": {
+        "status": "recommend",
+        "requested_menu_name": "",
+        "recommendations": [],
+        "questions": [],
+        "unresolved_requirements": [],
+        "missing_information": []
+      },
+      "raw_contract_valid": false,
+      "raw_contract_issues": [],
+      "candidate_annotation_check": false,
+      "interpretation_annotation_check": false,
+      "provider_seconds": 4.104,
+      "usage": {
+        "input_tokens": 32291,
+        "output_tokens": 40,
+        "total_tokens": 32331,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "cost_usd": 0.02439825,
+      "delivered_ids": [],
+      "normalizations": []
+    },
+    {
+      "task_id": "holdout_simple_exclusion.semantic",
+      "input": "레몬 말고 딸기 계열로 골라줘",
+      "version": "semantic",
+      "state": "accepted",
+      "model_returned": "gpt-5.4-mini-2026-03-17",
+      "model_candidate": {
+        "request_summary": "레몬은 제외하고 딸기 계열 음료를 추천해 달라는 요청으로 이해했습니다.",
+        "constraints": [
+          {
+            "kind": "excluded_flavor",
+            "value": "레몬",
+            "source_text": "레몬 말고"
+          },
+          {
+            "kind": "preferred_flavor",
+            "value": "딸기",
+            "source_text": "딸기 계열로 골라줘"
+          }
+        ],
+        "decision": {
+          "status": "recommend",
+          "recommendations": [
+            {
+              "menu_id": "strawberry_latte",
+              "temperature": "COLD",
+              "option_ids": [],
+              "basis_fields": [
+                "description"
+              ]
+            },
+            {
+              "menu_id": "strawberry_cookie_frappe",
+              "temperature": "COLD",
+              "option_ids": [],
+              "basis_fields": [
+                "description"
+              ]
+            },
+            {
+              "menu_id": "strawberry_yogurt_smoothie",
+              "temperature": "COLD",
+              "option_ids": [],
+              "basis_fields": [
+                "description"
+              ]
+            },
+            {
+              "menu_id": "strawberry_banana_juice",
+              "temperature": "COLD",
+              "option_ids": [],
+              "basis_fields": [
+                "description"
+              ]
+            },
+            {
+              "menu_id": "strawberry_juice",
+              "temperature": "COLD",
+              "option_ids": [],
+              "basis_fields": [
+                "description"
+              ]
+            }
+          ],
+          "questions": [],
+          "missing_information": [],
+          "unresolved_requirements": []
+        }
+      },
+      "raw_contract_valid": true,
+      "raw_contract_issues": [],
+      "candidate_annotation_check": true,
+      "interpretation_annotation_check": true,
+      "provider_seconds": 5.059,
+      "usage": {
+        "input_tokens": 30840,
+        "output_tokens": 234,
+        "total_tokens": 31074,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "cost_usd": 0.024183,
+      "delivered_ids": [
+        "strawberry_latte",
+        "strawberry_cookie_frappe",
+        "strawberry_yogurt_smoothie",
+        "strawberry_banana_juice",
+        "strawberry_juice"
+      ],
+      "normalizations": []
+    },
+    {
+      "task_id": "holdout_joint_exclusion.semantic",
+      "input": "레몬하고 망고는 싫고 딸기 음료가 좋아요",
+      "version": "semantic",
+      "state": "accepted",
+      "model_returned": "gpt-5.4-mini-2026-03-17",
+      "model_candidate": {
+        "request_summary": "레몬과 망고는 제외하고 딸기 계열 음료를 선호한다는 요청으로 이해했습니다.",
+        "constraints": [
+          {
+            "kind": "excluded_flavor",
+            "value": "레몬",
+            "source_text": "레몬하고 망고는 싫고 딸기 음료가 좋아요"
+          },
+          {
+            "kind": "excluded_flavor",
+            "value": "망고",
+            "source_text": "레몬하고 망고는 싫고 딸기 음료가 좋아요"
+          },
+          {
+            "kind": "preferred_flavor",
+            "value": "딸기",
+            "source_text": "레몬하고 망고는 싫고 딸기 음료가 좋아요"
+          }
+        ],
+        "decision": {
+          "status": "recommend",
+          "recommendations": [
+            {
+              "menu_id": "strawberry_latte",
+              "temperature": "COLD",
+              "option_ids": [],
+              "basis_fields": [
+                "description",
+                "categories",
+                "price_krw",
+                "temperature"
+              ]
+            },
+            {
+              "menu_id": "strawberry_cookie_frappe",
+              "temperature": "COLD",
+              "option_ids": [],
+              "basis_fields": [
+                "description",
+                "categories",
+                "price_krw",
+                "temperature"
+              ]
+            },
+            {
+              "menu_id": "strawberry_yogurt_smoothie",
+              "temperature": "COLD",
+              "option_ids": [],
+              "basis_fields": [
+                "description",
+                "categories",
+                "price_krw",
+                "temperature"
+              ]
+            },
+            {
+              "menu_id": "strawberry_juice",
+              "temperature": "COLD",
+              "option_ids": [],
+              "basis_fields": [
+                "description",
+                "categories",
+                "price_krw",
+                "temperature"
+              ]
+            },
+            {
+              "menu_id": "strawberry_banana_juice",
+              "temperature": "COLD",
+              "option_ids": [],
+              "basis_fields": [
+                "description",
+                "categories",
+                "price_krw",
+                "temperature"
+              ]
+            }
+          ],
+          "questions": [],
+          "missing_information": [],
+          "unresolved_requirements": []
+        }
+      },
+      "raw_contract_valid": true,
+      "raw_contract_issues": [],
+      "candidate_annotation_check": true,
+      "interpretation_annotation_check": true,
+      "provider_seconds": 4.046,
+      "usage": {
+        "input_tokens": 30845,
+        "output_tokens": 339,
+        "total_tokens": 31184,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "cost_usd": 0.02465925,
+      "delivered_ids": [
+        "strawberry_latte",
+        "strawberry_cookie_frappe",
+        "strawberry_yogurt_smoothie",
+        "strawberry_juice",
+        "strawberry_banana_juice"
+      ],
+      "normalizations": []
+    },
+    {
+      "task_id": "holdout_joint_exclusion.previous",
+      "input": "레몬하고 망고는 싫고 딸기 음료가 좋아요",
+      "version": "previous",
+      "state": "validation_rejected",
+      "error_code": "INCONSISTENT_STATUS",
+      "model_returned": "gpt-5.4-mini-2026-03-17",
+      "model_candidate": {
+        "status": "recommend",
+        "requested_menu_name": "",
+        "recommendations": [],
+        "questions": [],
+        "unresolved_requirements": [],
+        "missing_information": []
+      },
+      "raw_contract_valid": false,
+      "raw_contract_issues": [],
+      "candidate_annotation_check": false,
+      "interpretation_annotation_check": false,
+      "provider_seconds": 1.929,
+      "usage": {
+        "input_tokens": 32300,
+        "output_tokens": 40,
+        "total_tokens": 32340,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "cost_usd": 0.024405,
+      "delivered_ids": [],
+      "normalizations": []
+    },
+    {
+      "task_id": "holdout_double_negation.previous",
+      "input": "레몬이 싫다는 건 아니에요. 마실 것 좀 추천해 주세요",
+      "version": "previous",
+      "state": "accepted",
+      "model_returned": "gpt-5.4-mini-2026-03-17",
+      "model_candidate": {
+        "status": "recommend",
+        "requested_menu_name": "",
+        "recommendations": [
+          {
+            "menu_id": "lemonade",
+            "temperature": "COLD",
+            "basis_fields": [
+              "name",
+              "categories",
+              "description"
+            ]
+          },
+          {
+            "menu_id": "lemon_tea",
+            "temperature": "HOT",
+            "basis_fields": [
+              "name",
+              "categories",
+              "description"
+            ]
+          },
+          {
+            "menu_id": "lemon_tea_alias",
+            "temperature": "COLD",
+            "basis_fields": [
+              "name",
+              "categories",
+              "description"
+            ]
+          }
+        ],
+        "questions": [],
+        "unresolved_requirements": [],
+        "missing_information": []
+      },
+      "raw_contract_valid": true,
+      "raw_contract_issues": [],
+      "candidate_annotation_check": true,
+      "interpretation_annotation_check": false,
+      "provider_seconds": 2.247,
+      "usage": {
+        "input_tokens": 32019,
+        "output_tokens": 105,
+        "total_tokens": 32124,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "cost_usd": 0.02448675,
+      "delivered_ids": [
+        "lemonade",
+        "lemon_tea",
+        "lemon_tea_alias"
+      ],
+      "normalizations": []
+    },
+    {
+      "task_id": "holdout_double_negation.semantic",
+      "input": "레몬이 싫다는 건 아니에요. 마실 것 좀 추천해 주세요",
+      "version": "semantic",
+      "state": "accepted",
+      "model_returned": "gpt-5.4-mini-2026-03-17",
+      "model_candidate": {
+        "request_summary": "레몬은 꼭 싫은 건 아니고, 특별한 조건 없이 마실 것 추천을 요청한 것으로 이해했습니다.",
+        "constraints": [
+          {
+            "kind": "excluded_flavor",
+            "value": "레몬",
+            "source_text": "레몬이 싫다는 건 아니에요"
+          }
+        ],
+        "decision": {
+          "status": "recommend",
+          "recommendations": [
+            {
+              "menu_id": "hazelnut_latte",
+              "temperature": "HOT",
+              "option_ids": [],
+              "basis_fields": [
+                "description"
+              ]
+            },
+            {
+              "menu_id": "vanilla_latte",
+              "temperature": "HOT",
+              "option_ids": [],
+              "basis_fields": [
+                "description"
+              ]
+            },
+            {
+              "menu_id": "cafe_latte",
+              "temperature": "HOT",
+              "option_ids": [],
+              "basis_fields": [
+                "description"
+              ]
+            },
+            {
+              "menu_id": "brown_sugar_latte",
+              "temperature": "COLD",
+              "option_ids": [],
+              "basis_fields": [
+                "description"
+              ]
+            },
+            {
+              "menu_id": "cold_brew",
+              "temperature": "COLD",
+              "option_ids": [],
+              "basis_fields": [
+                "description"
+              ]
+            },
+            {
+              "menu_id": "peach_iced_tea",
+              "temperature": "COLD",
+              "option_ids": [],
+              "basis_fields": [
+                "description"
+              ]
+            }
+          ],
+          "questions": [],
+          "missing_information": [],
+          "unresolved_requirements": []
+        }
+      },
+      "raw_contract_valid": true,
+      "raw_contract_issues": [],
+      "candidate_annotation_check": true,
+      "interpretation_annotation_check": false,
+      "provider_seconds": 2.756,
+      "usage": {
+        "input_tokens": 30845,
+        "output_tokens": 235,
+        "total_tokens": 31080,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "cost_usd": 0.02419125,
+      "delivered_ids": [
+        "hazelnut_latte",
+        "vanilla_latte",
+        "cafe_latte",
+        "brown_sugar_latte",
+        "cold_brew",
+        "peach_iced_tea"
+      ],
+      "normalizations": []
+    },
+    {
+      "task_id": "holdout_positive_control.semantic",
+      "input": "딸기 맛 나는 걸로 골라주세요",
+      "version": "semantic",
+      "state": "accepted",
+      "model_returned": "gpt-5.4-mini-2026-03-17",
+      "model_candidate": {
+        "request_summary": "딸기 맛이 나는 메뉴를 추천해달라는 요청으로 이해했다.",
+        "constraints": [],
+        "decision": {
+          "status": "recommend",
+          "recommendations": [
+            {
+              "menu_id": "strawberry_latte",
+              "temperature": "COLD",
+              "option_ids": [],
+              "basis_fields": [
+                "name",
+                "categories",
+                "price_krw",
+                "temperature",
+                "description"
+              ]
+            },
+            {
+              "menu_id": "strawberry_cookie_frappe",
+              "temperature": "COLD",
+              "option_ids": [],
+              "basis_fields": [
+                "name",
+                "categories",
+                "price_krw",
+                "temperature",
+                "description"
+              ]
+            },
+            {
+              "menu_id": "strawberry_yogurt_smoothie",
+              "temperature": "COLD",
+              "option_ids": [],
+              "basis_fields": [
+                "name",
+                "categories",
+                "price_krw",
+                "temperature",
+                "description"
+              ]
+            },
+            {
+              "menu_id": "strawberry_juice",
+              "temperature": "COLD",
+              "option_ids": [],
+              "basis_fields": [
+                "name",
+                "categories",
+                "price_krw",
+                "temperature",
+                "description"
+              ]
+            },
+            {
+              "menu_id": "strawberry_banana_juice",
+              "temperature": "COLD",
+              "option_ids": [],
+              "basis_fields": [
+                "name",
+                "categories",
+                "price_krw",
+                "temperature",
+                "description"
+              ]
+            },
+            {
+              "menu_id": "strawberry_cookie_frappe",
+              "temperature": "COLD",
+              "option_ids": [],
+              "basis_fields": [
+                "name",
+                "categories",
+                "price_krw",
+                "temperature",
+                "description"
+              ]
+            }
+          ],
+          "questions": [],
+          "missing_information": [],
+          "unresolved_requirements": []
+        }
+      },
+      "raw_contract_valid": false,
+      "raw_contract_issues": [
+        "DUPLICATE_MENU_ID"
+      ],
+      "candidate_annotation_check": true,
+      "interpretation_annotation_check": false,
+      "provider_seconds": 2.759,
+      "usage": {
+        "input_tokens": 30837,
+        "output_tokens": 276,
+        "total_tokens": 31113,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "cost_usd": 0.02436975,
+      "delivered_ids": [
+        "strawberry_latte",
+        "strawberry_cookie_frappe",
+        "strawberry_yogurt_smoothie",
+        "strawberry_juice",
+        "strawberry_banana_juice"
+      ],
+      "normalizations": [
+        {
+          "kind": "duplicate_menu_id_removed",
+          "menu_id": "strawberry_cookie_frappe",
+          "kept_input_index": 1,
+          "removed_input_index": 5
+        }
+      ]
+    },
+    {
+      "task_id": "holdout_positive_control.previous",
+      "input": "딸기 맛 나는 걸로 골라주세요",
+      "version": "previous",
+      "state": "accepted",
+      "model_returned": "gpt-5.4-mini-2026-03-17",
+      "model_candidate": {
+        "status": "recommend",
+        "requested_menu_name": "",
+        "recommendations": [
+          {
+            "menu_id": "strawberry_cookie_frappe",
+            "temperature": "COLD",
+            "basis_fields": [
+              "name",
+              "categories",
+              "description"
+            ]
+          },
+          {
+            "menu_id": "strawberry_yogurt_smoothie",
+            "temperature": "COLD",
+            "basis_fields": [
+              "name",
+              "categories",
+              "description"
+            ]
+          },
+          {
+            "menu_id": "strawberry_banana_juice",
+            "temperature": "COLD",
+            "basis_fields": [
+              "name",
+              "categories",
+              "description"
+            ]
+          },
+          {
+            "menu_id": "strawberry_juice",
+            "temperature": "COLD",
+            "basis_fields": [
+              "name",
+              "categories",
+              "description"
+            ]
+          },
+          {
+            "menu_id": "strawberry_latte",
+            "temperature": "COLD",
+            "basis_fields": [
+              "name",
+              "categories",
+              "description"
+            ]
+          }
+        ],
+        "questions": [],
+        "unresolved_requirements": [],
+        "missing_information": []
+      },
+      "raw_contract_valid": true,
+      "raw_contract_issues": [],
+      "candidate_annotation_check": true,
+      "interpretation_annotation_check": true,
+      "provider_seconds": 1.633,
+      "usage": {
+        "input_tokens": 32035,
+        "output_tokens": 171,
+        "total_tokens": 32206,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "cost_usd": 0.02479575,
+      "delivered_ids": [
+        "strawberry_cookie_frappe",
+        "strawberry_yogurt_smoothie",
+        "strawberry_banana_juice",
+        "strawberry_juice",
+        "strawberry_latte"
+      ],
+      "normalizations": []
+    }
+  ]
+}

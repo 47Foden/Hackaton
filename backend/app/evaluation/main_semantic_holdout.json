@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "note": "Human-authored predeclared annotations, not model output. New wording relative to the first paid study. Not supplied to the model.",
+  "cases": [
+    {
+      "id": "holdout_simple_exclusion",
+      "text": "레몬 말고 딸기 계열로 골라줘",
+      "expected_constraints": [
+        {"kind": "excluded_flavor", "value": "레몬", "source_text": "레몬 말고"},
+        {"kind": "preferred_flavor", "value": "딸기", "source_text": "딸기 계열"}
+      ],
+      "fixture_menu_id": "strawberry_latte",
+      "fixture_temperature": "COLD"
+    },
+    {
+      "id": "holdout_joint_exclusion",
+      "text": "레몬하고 망고는 싫고 딸기 음료가 좋아요",
+      "expected_constraints": [
+        {"kind": "excluded_flavor", "value": "레몬", "source_text": "레몬하고 망고는 싫고"},
+        {"kind": "excluded_flavor", "value": "망고", "source_text": "레몬하고 망고는 싫고"},
+        {"kind": "preferred_flavor", "value": "딸기", "source_text": "딸기 음료가 좋아요"}
+      ],
+      "fixture_menu_id": "strawberry_latte",
+      "fixture_temperature": "COLD"
+    },
+    {
+      "id": "holdout_double_negation",
+      "text": "레몬이 싫다는 건 아니에요. 마실 것 좀 추천해 주세요",
+      "expected_constraints": [],
+      "fixture_menu_id": "lemonade",
+      "fixture_temperature": "COLD"
+    },
+    {
+      "id": "holdout_positive_control",
+      "text": "딸기 맛 나는 걸로 골라주세요",
+      "expected_constraints": [
+        {"kind": "preferred_flavor", "value": "딸기", "source_text": "딸기 맛"}
+      ],
+      "fixture_menu_id": "strawberry_latte",
+      "fixture_temperature": "COLD"
+    }
+  ]
+}
