@@ -1,0 +1,1329 @@
+{
+  "commits": {
+    "before": "f6bbfcbc772a7b06121b9329bda02e72e8d6cc4e",
+    "after": "2934221077688612d8852279e57028c206fdbf9d"
+  },
+  "model": "gpt-5.4-mini-2026-03-17",
+  "pricing": {
+    "input": 0.75,
+    "cached_input": 0.075,
+    "output": 4.5,
+    "unit": "USD per million tokens",
+    "checked_date": "2026-11-12",
+    "source": "https://developers.openai.com/api/docs/models/gpt-5.4-mini"
+  },
+  "availability": "synthetic all True",
+  "maximum_requests": 8,
+  "recorded_provider_attempts": 6,
+  "known_cost_usd": 0.123503,
+  "cost_complete": false,
+  "schema_version": 1,
+  "experiment_date": "2026-11-12",
+  "source_results_sha256": "c066b2fd2298057969517d54f7d73e6538f744e74e94dbbd9f2a15b61d97444f",
+  "completed_pairs": 2,
+  "planned_requests": 8,
+  "attempted_requests": 6,
+  "received_model_responses": 5,
+  "statistical_accuracy_measured": false,
+  "consistency_measured": false,
+  "normalization": "Provider HTTP failures are unmeasured, not incorrect recommendations. Original results preserved locally.",
+  "results": [
+    {
+      "version": "before",
+      "case_id": "exclude_then_include",
+      "input": "레몬 말고 딸기 음료 추천해 주세요",
+      "model_requested": "gpt-5.4-mini-2026-03-17",
+      "model_returned": "gpt-5.4-mini-2026-03-17",
+      "catalogue_sha256": "9f098c411f3620cc77bd91af2599cf1391542e72f82357966a22fe903e75716e",
+      "evidence_sha256": "47b56c99ed420b526ca30ab1b44db761a36e4599240523af3910330c977c9e89",
+      "instructions_sha256": "9c5e99f61a7245690a293b7da560b1931b7949ca355bb485186c7c8821a1ce63",
+      "request_sha256": "bf6715533dd4149ae279da1f613876c25ecf86bf0c9792904490cc1234cf59a1",
+      "eligible_ids": [],
+      "provider_attempts": 1,
+      "server_validation": "rejected_or_provider_error",
+      "error_code": "INCONSISTENT_STATUS",
+      "model_candidate": {
+        "status": "recommend",
+        "requested_menu_name": "",
+        "recommendations": [],
+        "questions": [],
+        "unresolved_requirements": [],
+        "missing_information": []
+      },
+      "server_result": null,
+      "model_selection_checks": [],
+      "task_achieved": false,
+      "provider_seconds": 4.268,
+      "total_seconds": 4.297,
+      "usage": {
+        "input_tokens": 32290,
+        "output_tokens": 39,
+        "total_tokens": 32329,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "cost_usd": 0.024393,
+      "evaluation_status": "evaluated_single_case"
+    },
+    {
+      "version": "after",
+      "case_id": "exclude_then_include",
+      "input": "레몬 말고 딸기 음료 추천해 주세요",
+      "model_requested": "gpt-5.4-mini-2026-03-17",
+      "model_returned": "gpt-5.4-mini-2026-03-17",
+      "catalogue_sha256": "9f098c411f3620cc77bd91af2599cf1391542e72f82357966a22fe903e75716e",
+      "evidence_sha256": "47b56c99ed420b526ca30ab1b44db761a36e4599240523af3910330c977c9e89",
+      "instructions_sha256": "9c5e99f61a7245690a293b7da560b1931b7949ca355bb485186c7c8821a1ce63",
+      "request_sha256": "5b0c0744e17125cd607db5bd61402a6de5ad9c7e297b752963619d4bafa502a9",
+      "eligible_ids": [
+        "strawberry_cookie_frappe",
+        "strawberry_yogurt_smoothie",
+        "strawberry_banana_juice",
+        "strawberry_juice",
+        "strawberry_latte"
+      ],
+      "provider_attempts": 1,
+      "server_validation": "accepted",
+      "error_code": null,
+      "model_candidate": {
+        "status": "recommend",
+        "requested_menu_name": "",
+        "recommendations": [
+          {
+            "menu_id": "strawberry_latte",
+            "temperature": "COLD",
+            "basis_fields": [
+              "description",
+              "categories",
+              "temperature",
+              "name"
+            ]
+          },
+          {
+            "menu_id": "strawberry_yogurt_smoothie",
+            "temperature": "COLD",
+            "basis_fields": [
+              "description",
+              "categories",
+              "temperature",
+              "name"
+            ]
+          },
+          {
+            "menu_id": "strawberry_banana_juice",
+            "temperature": "COLD",
+            "basis_fields": [
+              "description",
+              "categories",
+              "temperature",
+              "name"
+            ]
+          },
+          {
+            "menu_id": "strawberry_juice",
+            "temperature": "COLD",
+            "basis_fields": [
+              "description",
+              "categories",
+              "temperature",
+              "name"
+            ]
+          },
+          {
+            "menu_id": "strawberry_cookie_frappe",
+            "temperature": "COLD",
+            "basis_fields": [
+              "description",
+              "categories",
+              "temperature",
+              "name"
+            ]
+          }
+        ],
+        "questions": [],
+        "unresolved_requirements": [],
+        "missing_information": []
+      },
+      "server_result": {
+        "status": "recommend",
+        "requested_menu_name": "",
+        "recommendations": [
+          {
+            "menu_id": "strawberry_latte",
+            "temperature": "COLD",
+            "basis_fields": [
+              "description",
+              "categories",
+              "temperature",
+              "name"
+            ],
+            "reason": "요청에 맞는 후보로 모델이 선택했습니다. 확인 가격 3,700원, 선택 온도 COLD. 확인된 설명: 딸기과육이 풍부히 느껴지는 스테디 셀러 산뜻하고 달콤한 딸기가 가득해 부드러운 우유와 어우러져 더욱 기분 좋게 즐기는 아이스 라떼",
+            "evidence": [
+              {
+                "menu_id": "strawberry_latte",
+                "temperature": "COLD",
+                "field": "description",
+                "status": "verified",
+                "value": "딸기과육이 풍부히 느껴지는 스테디 셀러 산뜻하고 달콤한 딸기가 가득해 부드러운 우유와 어우러져 더욱 기분 좋게 즐기는 아이스 라떼",
+                "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=1",
+                "checked_date": "2026-11-10",
+                "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
+              },
+              {
+                "menu_id": "strawberry_latte",
+                "temperature": "COLD",
+                "field": "categories",
+                "value": [
+                  "음료",
+                  "논커피라떼"
+                ],
+                "source": "current_database_snapshot",
+                "checked_date": null
+              },
+              {
+                "menu_id": "strawberry_latte",
+                "temperature": "COLD",
+                "field": "temperature",
+                "value": "COLD",
+                "source": "current_database_snapshot",
+                "checked_date": null
+              },
+              {
+                "menu_id": "strawberry_latte",
+                "temperature": "COLD",
+                "field": "name",
+                "value": "딸기라떼",
+                "source": "current_database_snapshot",
+                "checked_date": null
+              }
+            ]
+          },
+          {
+            "menu_id": "strawberry_yogurt_smoothie",
+            "temperature": "COLD",
+            "basis_fields": [
+              "description",
+              "categories",
+              "temperature",
+              "name"
+            ],
+            "reason": "요청에 맞는 후보로 모델이 선택했습니다. 확인 가격 3,900원, 선택 온도 COLD. 확인된 설명: 요거트의 상큼함과 딸기의 상큼함을 상냥하게 어우른 상큼 스무디.",
+            "evidence": [
+              {
+                "menu_id": "strawberry_yogurt_smoothie",
+                "temperature": "COLD",
+                "field": "description",
+                "status": "verified",
+                "value": "요거트의 상큼함과 딸기의 상큼함을 상냥하게 어우른 상큼 스무디.",
+                "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=7",
+                "checked_date": "2026-11-10",
+                "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
+              },
+              {
+                "menu_id": "strawberry_yogurt_smoothie",
+                "temperature": "COLD",
+                "field": "categories",
+                "value": [
+                  "음료",
+                  "스무디/주스"
+                ],
+                "source": "current_database_snapshot",
+                "checked_date": null
+              },
+              {
+                "menu_id": "strawberry_yogurt_smoothie",
+                "temperature": "COLD",
+                "field": "temperature",
+                "value": "COLD",
+                "source": "current_database_snapshot",
+                "checked_date": null
+              },
+              {
+                "menu_id": "strawberry_yogurt_smoothie",
+                "temperature": "COLD",
+                "field": "name",
+                "value": "딸기요거트스무디",
+                "source": "current_database_snapshot",
+                "checked_date": null
+              }
+            ]
+          },
+          {
+            "menu_id": "strawberry_banana_juice",
+            "temperature": "COLD",
+            "basis_fields": [
+              "description",
+              "categories",
+              "temperature",
+              "name"
+            ],
+            "reason": "요청에 맞는 후보로 모델이 선택했습니다. 확인 가격 4,000원, 선택 온도 COLD. 확인된 설명: 상큼한 딸기와 부드러운 바나나가 만나, 새콤달콤한 매력이 살아 있는 과일 음료.",
+            "evidence": [
+              {
+                "menu_id": "strawberry_banana_juice",
+                "temperature": "COLD",
+                "field": "description",
+                "status": "verified",
+                "value": "상큼한 딸기와 부드러운 바나나가 만나, 새콤달콤한 매력이 살아 있는 과일 음료.",
+                "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=3",
+                "checked_date": "2026-11-10",
+                "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
+              },
+              {
+                "menu_id": "strawberry_banana_juice",
+                "temperature": "COLD",
+                "field": "categories",
+                "value": [
+                  "음료",
+                  "스무디/주스"
+                ],
+                "source": "current_database_snapshot",
+                "checked_date": null
+              },
+              {
+                "menu_id": "strawberry_banana_juice",
+                "temperature": "COLD",
+                "field": "temperature",
+                "value": "COLD",
+                "source": "current_database_snapshot",
+                "checked_date": null
+              },
+              {
+                "menu_id": "strawberry_banana_juice",
+                "temperature": "COLD",
+                "field": "name",
+                "value": "딸기바나나주스",
+                "source": "current_database_snapshot",
+                "checked_date": null
+              }
+            ]
+          },
+          {
+            "menu_id": "strawberry_juice",
+            "temperature": "COLD",
+            "basis_fields": [
+              "description",
+              "categories",
+              "temperature",
+              "name"
+            ],
+            "reason": "요청에 맞는 후보로 모델이 선택했습니다. 확인 가격 4,000원, 선택 온도 COLD. 확인된 설명: 새콤달콤한 딸기주스에 피쉬 콜라겐을 더해 건강한 블렌딩 주스",
+            "evidence": [
+              {
+                "menu_id": "strawberry_juice",
+                "temperature": "COLD",
+                "field": "description",
+                "status": "verified",
+                "value": "새콤달콤한 딸기주스에 피쉬 콜라겐을 더해 건강한 블렌딩 주스",
+                "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=3",
+                "checked_date": "2026-11-10",
+                "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
+              },
+              {
+                "menu_id": "strawberry_juice",
+                "temperature": "COLD",
+                "field": "categories",
+                "value": [
+                  "음료",
+                  "스무디/주스"
+                ],
+                "source": "current_database_snapshot",
+                "checked_date": null
+              },
+              {
+                "menu_id": "strawberry_juice",
+                "temperature": "COLD",
+                "field": "temperature",
+                "value": "COLD",
+                "source": "current_database_snapshot",
+                "checked_date": null
+              },
+              {
+                "menu_id": "strawberry_juice",
+                "temperature": "COLD",
+                "field": "name",
+                "value": "딸기주스",
+                "source": "current_database_snapshot",
+                "checked_date": null
+              }
+            ]
+          },
+          {
+            "menu_id": "strawberry_cookie_frappe",
+            "temperature": "COLD",
+            "basis_fields": [
+              "description",
+              "categories",
+              "temperature",
+              "name"
+            ],
+            "reason": "요청에 맞는 후보로 모델이 선택했습니다. 확인 가격 3,900원, 선택 온도 COLD. 확인된 설명: 부드러운 바닐라와 달달한 딸기, 바삭한 오레오 쿠키가 달콤한 하모니를 선물하는 프라페.",
+            "evidence": [
+              {
+                "menu_id": "strawberry_cookie_frappe",
+                "temperature": "COLD",
+                "field": "description",
+                "status": "verified",
+                "value": "부드러운 바닐라와 달달한 딸기, 바삭한 오레오 쿠키가 달콤한 하모니를 선물하는 프라페.",
+                "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=4",
+                "checked_date": "2026-11-10",
+                "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
+              },
+              {
+                "menu_id": "strawberry_cookie_frappe",
+                "temperature": "COLD",
+                "field": "categories",
+                "value": [
+                  "음료",
+                  "프라페"
+                ],
+                "source": "current_database_snapshot",
+                "checked_date": null
+              },
+              {
+                "menu_id": "strawberry_cookie_frappe",
+                "temperature": "COLD",
+                "field": "temperature",
+                "value": "COLD",
+                "source": "current_database_snapshot",
+                "checked_date": null
+              },
+              {
+                "menu_id": "strawberry_cookie_frappe",
+                "temperature": "COLD",
+                "field": "name",
+                "value": "딸기쿠키프라페",
+                "source": "current_database_snapshot",
+                "checked_date": null
+              }
+            ]
+          }
+        ],
+        "questions": [],
+        "unresolved_requirements": [],
+        "missing_information": []
+      },
+      "model_selection_checks": [
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "task_achieved": true,
+      "provider_seconds": 1.965,
+      "total_seconds": 1.997,
+      "usage": {
+        "input_tokens": 32046,
+        "output_tokens": 181,
+        "total_tokens": 32227,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "cost_usd": 0.024849,
+      "evaluation_status": "evaluated_single_case"
+    },
+    {
+      "version": "after",
+      "case_id": "exclude_only",
+      "input": "레몬은 빼고 음료 추천해 주세요",
+      "model_requested": "gpt-5.4-mini-2026-03-17",
+      "model_returned": "gpt-5.4-mini-2026-03-17",
+      "catalogue_sha256": "9f098c411f3620cc77bd91af2599cf1391542e72f82357966a22fe903e75716e",
+      "evidence_sha256": "47b56c99ed420b526ca30ab1b44db761a36e4599240523af3910330c977c9e89",
+      "instructions_sha256": "9c5e99f61a7245690a293b7da560b1931b7949ca355bb485186c7c8821a1ce63",
+      "request_sha256": "e18db24ea719a4af501129f06c303eb32d34731d8a0c1b3ba9c8b8f00e4ec35a",
+      "eligible_ids": [
+        "iced_americano",
+        "honey_americano",
+        "vanilla_americano",
+        "hazelnut_americano",
+        "cafe_latte",
+        "vanilla_latte",
+        "condensed_milk_latte",
+        "cappuccino",
+        "hazelnut_latte",
+        "cold_brew",
+        "decaf_americano",
+        "decaf_honey_americano",
+        "decaf_vanilla_americano",
+        "decaf_hazelnut_americano",
+        "decaf_cafe_latte",
+        "decaf_vanilla_latte",
+        "decaf_condensed_milk_latte",
+        "decaf_cappuccino",
+        "decaf_hazelnut_latte",
+        "decaf_cold_brew",
+        "grapefruit_ade",
+        "green_grape_ade",
+        "cookie_frappe",
+        "green_tea_frappe",
+        "coffee_frappe",
+        "strawberry_cookie_frappe",
+        "strawberry_yogurt_smoothie",
+        "plain_yogurt_smoothie",
+        "strawberry_banana_juice",
+        "strawberry_juice",
+        "mango_yogurt_smoothie",
+        "blueberry_yogurt_smoothie",
+        "strawberry_latte",
+        "oreo_chocolate_latte",
+        "green_tea_latte",
+        "brown_sugar_latte",
+        "peach_iced_tea",
+        "zero_peach_iced_tea",
+        "apple_citron_tea",
+        "grapefruit_tea",
+        "citron_tea",
+        "espresso"
+      ],
+      "provider_attempts": 1,
+      "server_validation": "accepted",
+      "error_code": null,
+      "model_candidate": {
+        "status": "recommend",
+        "requested_menu_name": "",
+        "recommendations": [
+          {
+            "menu_id": "zero_peach_iced_tea",
+            "temperature": "COLD",
+            "basis_fields": [
+              "description",
+              "categories"
+            ]
+          },
+          {
+            "menu_id": "peach_iced_tea",
+            "temperature": "COLD",
+            "basis_fields": [
+              "description",
+              "categories"
+            ]
+          },
+          {
+            "menu_id": "grapefruit_ade",
+            "temperature": "COLD",
+            "basis_fields": [
+              "description",
+              "categories"
+            ]
+          },
+          {
+            "menu_id": "green_grape_ade",
+            "temperature": "COLD",
+            "basis_fields": [
+              "description",
+              "categories"
+            ]
+          },
+          {
+            "menu_id": "strawberry_banana_juice",
+            "temperature": "COLD",
+            "basis_fields": [
+              "description",
+              "categories"
+            ]
+          },
+          {
+            "menu_id": "apple_citron_tea",
+            "temperature": "HOT",
+            "basis_fields": [
+              "description",
+              "categories"
+            ]
+          }
+        ],
+        "questions": [],
+        "unresolved_requirements": [],
+        "missing_information": []
+      },
+      "server_result": {
+        "status": "recommend",
+        "requested_menu_name": "",
+        "recommendations": [
+          {
+            "menu_id": "zero_peach_iced_tea",
+            "temperature": "COLD",
+            "basis_fields": [
+              "description",
+              "categories"
+            ],
+            "reason": "요청에 맞는 후보로 모델이 선택했습니다. 확인 가격 3,000원, 선택 온도 COLD. 확인된 설명: 깊게 우려진 홍차와 은은한 복숭아향의 아이스티를 제로슈가, 제로칼로리로 즐길 수 있는 음료 *대체당(알룰로스,에리스리톨)을 과도하게 섭취 시 개인에 따라 복통 및 설사 등을 유발 할 수 있으니 주의하세요.",
+            "evidence": [
+              {
+                "menu_id": "zero_peach_iced_tea",
+                "temperature": "COLD",
+                "field": "description",
+                "status": "verified",
+                "value": "깊게 우려진 홍차와 은은한 복숭아향의 아이스티를 제로슈가, 제로칼로리로 즐길 수 있는 음료 *대체당(알룰로스,에리스리톨)을 과도하게 섭취 시 개인에 따라 복통 및 설사 등을 유발 할 수 있으니 주의하세요.",
+                "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=3",
+                "checked_date": "2026-11-10",
+                "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
+              },
+              {
+                "menu_id": "zero_peach_iced_tea",
+                "temperature": "COLD",
+                "field": "categories",
+                "value": [
+                  "음료",
+                  "티"
+                ],
+                "source": "current_database_snapshot",
+                "checked_date": null
+              }
+            ]
+          },
+          {
+            "menu_id": "peach_iced_tea",
+            "temperature": "COLD",
+            "basis_fields": [
+              "description",
+              "categories"
+            ],
+            "reason": "요청에 맞는 후보로 모델이 선택했습니다. 확인 가격 3,000원, 선택 온도 COLD. 확인된 설명: 깊은 맛의 홍차와 달콤한 복숭아의 은은한 향이 어우러진 시원한 여름철 인기 음료.",
+            "evidence": [
+              {
+                "menu_id": "peach_iced_tea",
+                "temperature": "COLD",
+                "field": "description",
+                "status": "verified",
+                "value": "깊은 맛의 홍차와 달콤한 복숭아의 은은한 향이 어우러진 시원한 여름철 인기 음료.",
+                "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=8",
+                "checked_date": "2026-11-10",
+                "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
+              },
+              {
+                "menu_id": "peach_iced_tea",
+                "temperature": "COLD",
+                "field": "categories",
+                "value": [
+                  "음료",
+                  "티"
+                ],
+                "source": "current_database_snapshot",
+                "checked_date": null
+              }
+            ]
+          },
+          {
+            "menu_id": "grapefruit_ade",
+            "temperature": "COLD",
+            "basis_fields": [
+              "description",
+              "categories"
+            ],
+            "reason": "요청에 맞는 후보로 모델이 선택했습니다. 확인 가격 3,500원, 선택 온도 COLD. 확인된 설명: 자몽의 달콤쌉싸름한 맛과 탄산의 톡쏘는 목넘김이 어우러진 트로피컬 에이드.",
+            "evidence": [
+              {
+                "menu_id": "grapefruit_ade",
+                "temperature": "COLD",
+                "field": "description",
+                "status": "verified",
+                "value": "자몽의 달콤쌉싸름한 맛과 탄산의 톡쏘는 목넘김이 어우러진 트로피컬 에이드.",
+                "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=8",
+                "checked_date": "2026-11-10",
+                "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
+              },
+              {
+                "menu_id": "grapefruit_ade",
+                "temperature": "COLD",
+                "field": "categories",
+                "value": [
+                  "음료",
+                  "에이드"
+                ],
+                "source": "current_database_snapshot",
+                "checked_date": null
+              }
+            ]
+          },
+          {
+            "menu_id": "green_grape_ade",
+            "temperature": "COLD",
+            "basis_fields": [
+              "description",
+              "categories"
+            ],
+            "reason": "요청에 맞는 후보로 모델이 선택했습니다. 확인 가격 3,500원, 선택 온도 COLD. 확인된 설명: 산뜻한 청포도와 상쾌한 탄산의 달달한 조화가 인상적인 에이드.",
+            "evidence": [
+              {
+                "menu_id": "green_grape_ade",
+                "temperature": "COLD",
+                "field": "description",
+                "status": "verified",
+                "value": "산뜻한 청포도와 상쾌한 탄산의 달달한 조화가 인상적인 에이드.",
+                "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=8",
+                "checked_date": "2026-11-10",
+                "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
+              },
+              {
+                "menu_id": "green_grape_ade",
+                "temperature": "COLD",
+                "field": "categories",
+                "value": [
+                  "음료",
+                  "에이드"
+                ],
+                "source": "current_database_snapshot",
+                "checked_date": null
+              }
+            ]
+          },
+          {
+            "menu_id": "strawberry_banana_juice",
+            "temperature": "COLD",
+            "basis_fields": [
+              "description",
+              "categories"
+            ],
+            "reason": "요청에 맞는 후보로 모델이 선택했습니다. 확인 가격 4,000원, 선택 온도 COLD. 확인된 설명: 상큼한 딸기와 부드러운 바나나가 만나, 새콤달콤한 매력이 살아 있는 과일 음료.",
+            "evidence": [
+              {
+                "menu_id": "strawberry_banana_juice",
+                "temperature": "COLD",
+                "field": "description",
+                "status": "verified",
+                "value": "상큼한 딸기와 부드러운 바나나가 만나, 새콤달콤한 매력이 살아 있는 과일 음료.",
+                "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=3",
+                "checked_date": "2026-11-10",
+                "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
+              },
+              {
+                "menu_id": "strawberry_banana_juice",
+                "temperature": "COLD",
+                "field": "categories",
+                "value": [
+                  "음료",
+                  "스무디/주스"
+                ],
+                "source": "current_database_snapshot",
+                "checked_date": null
+              }
+            ]
+          },
+          {
+            "menu_id": "apple_citron_tea",
+            "temperature": "HOT",
+            "basis_fields": [
+              "description",
+              "categories"
+            ],
+            "reason": "요청에 맞는 후보로 모델이 선택했습니다. 확인 가격 3,500원, 선택 온도 HOT. 확인된 설명: 애플티의 향긋함과 유자청의 상큼달콤함을 한컵에 담아낸 과일티.",
+            "evidence": [
+              {
+                "menu_id": "apple_citron_tea",
+                "temperature": "HOT",
+                "field": "description",
+                "status": "verified",
+                "value": "애플티의 향긋함과 유자청의 상큼달콤함을 한컵에 담아낸 과일티.",
+                "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=8",
+                "checked_date": "2026-11-10",
+                "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
+              },
+              {
+                "menu_id": "apple_citron_tea",
+                "temperature": "HOT",
+                "field": "categories",
+                "value": [
+                  "음료",
+                  "티"
+                ],
+                "source": "current_database_snapshot",
+                "checked_date": null
+              }
+            ]
+          }
+        ],
+        "questions": [],
+        "unresolved_requirements": [],
+        "missing_information": []
+      },
+      "model_selection_checks": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "task_achieved": true,
+      "provider_seconds": 5.418,
+      "total_seconds": 5.456,
+      "usage": {
+        "input_tokens": 32275,
+        "output_tokens": 174,
+        "total_tokens": 32449,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "cost_usd": 0.02498925,
+      "evaluation_status": "evaluated_single_case"
+    },
+    {
+      "version": "before",
+      "case_id": "exclude_only",
+      "input": "레몬은 빼고 음료 추천해 주세요",
+      "model_requested": "gpt-5.4-mini-2026-03-17",
+      "model_returned": "gpt-5.4-mini-2026-03-17",
+      "catalogue_sha256": "9f098c411f3620cc77bd91af2599cf1391542e72f82357966a22fe903e75716e",
+      "evidence_sha256": "47b56c99ed420b526ca30ab1b44db761a36e4599240523af3910330c977c9e89",
+      "instructions_sha256": "9c5e99f61a7245690a293b7da560b1931b7949ca355bb485186c7c8821a1ce63",
+      "request_sha256": "eb3441f831e550185acc56b8227e4a8b277ecdd1d79a97a39d9573c858dc8b5e",
+      "eligible_ids": [
+        "lemonade",
+        "lemon_tea",
+        "lemon_tea_alias"
+      ],
+      "provider_attempts": 1,
+      "server_validation": "accepted",
+      "error_code": null,
+      "model_candidate": {
+        "status": "recommend",
+        "requested_menu_name": "",
+        "recommendations": [
+          {
+            "menu_id": "lemon_tea",
+            "temperature": "HOT",
+            "basis_fields": [
+              "name",
+              "categories",
+              "description"
+            ]
+          },
+          {
+            "menu_id": "lemon_tea_alias",
+            "temperature": "HOT",
+            "basis_fields": [
+              "name",
+              "categories",
+              "description"
+            ]
+          },
+          {
+            "menu_id": "lemonade",
+            "temperature": "COLD",
+            "basis_fields": [
+              "name",
+              "categories",
+              "description"
+            ]
+          }
+        ],
+        "questions": [],
+        "unresolved_requirements": [],
+        "missing_information": []
+      },
+      "server_result": {
+        "status": "recommend",
+        "requested_menu_name": "",
+        "recommendations": [
+          {
+            "menu_id": "lemon_tea",
+            "temperature": "HOT",
+            "basis_fields": [
+              "name",
+              "categories",
+              "description"
+            ],
+            "reason": "요청에 맞는 후보로 모델이 선택했습니다. 확인 가격 3,300원, 선택 온도 HOT. 확인된 설명: 상큼한 레몬의 맛과 향을 오롯이 살린 비타민C 가득한 과일티.",
+            "evidence": [
+              {
+                "menu_id": "lemon_tea",
+                "temperature": "HOT",
+                "field": "name",
+                "value": "레몬차",
+                "source": "current_database_snapshot",
+                "checked_date": null
+              },
+              {
+                "menu_id": "lemon_tea",
+                "temperature": "HOT",
+                "field": "categories",
+                "value": [
+                  "음료",
+                  "티"
+                ],
+                "source": "current_database_snapshot",
+                "checked_date": null
+              },
+              {
+                "menu_id": "lemon_tea",
+                "temperature": "HOT",
+                "field": "description",
+                "status": "verified",
+                "value": "상큼한 레몬의 맛과 향을 오롯이 살린 비타민C 가득한 과일티.",
+                "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=8",
+                "checked_date": "2026-11-10",
+                "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
+              }
+            ]
+          },
+          {
+            "menu_id": "lemon_tea_alias",
+            "temperature": "HOT",
+            "basis_fields": [
+              "name",
+              "categories",
+              "description"
+            ],
+            "reason": "요청에 맞는 후보로 모델이 선택했습니다. 확인 가격 3,300원, 선택 온도 HOT. 확인된 설명: 상큼한 레몬의 맛과 향을 오롯이 살린 비타민C 가득한 과일티.",
+            "evidence": [
+              {
+                "menu_id": "lemon_tea_alias",
+                "temperature": "HOT",
+                "field": "name",
+                "value": "레몬티",
+                "source": "current_database_snapshot",
+                "checked_date": null
+              },
+              {
+                "menu_id": "lemon_tea_alias",
+                "temperature": "HOT",
+                "field": "categories",
+                "value": [
+                  "음료",
+                  "티"
+                ],
+                "source": "current_database_snapshot",
+                "checked_date": null
+              },
+              {
+                "menu_id": "lemon_tea_alias",
+                "temperature": "HOT",
+                "field": "description",
+                "status": "verified",
+                "value": "상큼한 레몬의 맛과 향을 오롯이 살린 비타민C 가득한 과일티.",
+                "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=8",
+                "checked_date": "2026-11-10",
+                "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
+              }
+            ]
+          },
+          {
+            "menu_id": "lemonade",
+            "temperature": "COLD",
+            "basis_fields": [
+              "name",
+              "categories",
+              "description"
+            ],
+            "reason": "요청에 맞는 후보로 모델이 선택했습니다. 확인 가격 3,500원, 선택 온도 COLD. 확인된 설명: 시트러스향 가득한 레몬의 상큼함과 톡쏘는 탄산의 상쾌함이 만난 청량 에이드.",
+            "evidence": [
+              {
+                "menu_id": "lemonade",
+                "temperature": "COLD",
+                "field": "name",
+                "value": "레몬에이드",
+                "source": "current_database_snapshot",
+                "checked_date": null
+              },
+              {
+                "menu_id": "lemonade",
+                "temperature": "COLD",
+                "field": "categories",
+                "value": [
+                  "음료",
+                  "에이드"
+                ],
+                "source": "current_database_snapshot",
+                "checked_date": null
+              },
+              {
+                "menu_id": "lemonade",
+                "temperature": "COLD",
+                "field": "description",
+                "status": "verified",
+                "value": "시트러스향 가득한 레몬의 상큼함과 톡쏘는 탄산의 상쾌함이 만난 청량 에이드.",
+                "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=7",
+                "checked_date": "2026-11-10",
+                "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
+              }
+            ]
+          }
+        ],
+        "questions": [],
+        "unresolved_requirements": [],
+        "missing_information": []
+      },
+      "model_selection_checks": [
+        false,
+        false,
+        false
+      ],
+      "task_achieved": false,
+      "provider_seconds": 2.485,
+      "total_seconds": 2.512,
+      "usage": {
+        "input_tokens": 32012,
+        "output_tokens": 104,
+        "total_tokens": 32116,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "cost_usd": 0.024477,
+      "evaluation_status": "evaluated_single_case"
+    },
+    {
+      "version": "before",
+      "case_id": "positive_control",
+      "input": "딸기 음료 추천해 주세요",
+      "model_requested": "gpt-5.4-mini-2026-03-17",
+      "model_returned": "gpt-5.4-mini-2026-03-17",
+      "catalogue_sha256": "9f098c411f3620cc77bd91af2599cf1391542e72f82357966a22fe903e75716e",
+      "evidence_sha256": "47b56c99ed420b526ca30ab1b44db761a36e4599240523af3910330c977c9e89",
+      "instructions_sha256": "9c5e99f61a7245690a293b7da560b1931b7949ca355bb485186c7c8821a1ce63",
+      "request_sha256": "c699b4f5aeb3d5023cf7503354d1ba88d9f2d0b137cf51b2960519cd02f95830",
+      "eligible_ids": [
+        "strawberry_cookie_frappe",
+        "strawberry_yogurt_smoothie",
+        "strawberry_banana_juice",
+        "strawberry_juice",
+        "strawberry_latte"
+      ],
+      "provider_attempts": 1,
+      "server_validation": "accepted",
+      "error_code": null,
+      "model_candidate": {
+        "status": "recommend",
+        "requested_menu_name": "",
+        "recommendations": [
+          {
+            "menu_id": "strawberry_cookie_frappe",
+            "temperature": "COLD",
+            "basis_fields": [
+              "name",
+              "categories",
+              "description"
+            ]
+          },
+          {
+            "menu_id": "strawberry_yogurt_smoothie",
+            "temperature": "COLD",
+            "basis_fields": [
+              "name",
+              "categories",
+              "description"
+            ]
+          },
+          {
+            "menu_id": "strawberry_banana_juice",
+            "temperature": "COLD",
+            "basis_fields": [
+              "name",
+              "categories",
+              "description"
+            ]
+          },
+          {
+            "menu_id": "strawberry_juice",
+            "temperature": "COLD",
+            "basis_fields": [
+              "name",
+              "categories",
+              "description"
+            ]
+          },
+          {
+            "menu_id": "strawberry_latte",
+            "temperature": "COLD",
+            "basis_fields": [
+              "name",
+              "categories",
+              "description"
+            ]
+          }
+        ],
+        "questions": [],
+        "unresolved_requirements": [],
+        "missing_information": []
+      },
+      "server_result": {
+        "status": "recommend",
+        "requested_menu_name": "",
+        "recommendations": [
+          {
+            "menu_id": "strawberry_cookie_frappe",
+            "temperature": "COLD",
+            "basis_fields": [
+              "name",
+              "categories",
+              "description"
+            ],
+            "reason": "요청에 맞는 후보로 모델이 선택했습니다. 확인 가격 3,900원, 선택 온도 COLD. 확인된 설명: 부드러운 바닐라와 달달한 딸기, 바삭한 오레오 쿠키가 달콤한 하모니를 선물하는 프라페.",
+            "evidence": [
+              {
+                "menu_id": "strawberry_cookie_frappe",
+                "temperature": "COLD",
+                "field": "name",
+                "value": "딸기쿠키프라페",
+                "source": "current_database_snapshot",
+                "checked_date": null
+              },
+              {
+                "menu_id": "strawberry_cookie_frappe",
+                "temperature": "COLD",
+                "field": "categories",
+                "value": [
+                  "음료",
+                  "프라페"
+                ],
+                "source": "current_database_snapshot",
+                "checked_date": null
+              },
+              {
+                "menu_id": "strawberry_cookie_frappe",
+                "temperature": "COLD",
+                "field": "description",
+                "status": "verified",
+                "value": "부드러운 바닐라와 달달한 딸기, 바삭한 오레오 쿠키가 달콤한 하모니를 선물하는 프라페.",
+                "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=4",
+                "checked_date": "2026-11-10",
+                "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
+              }
+            ]
+          },
+          {
+            "menu_id": "strawberry_yogurt_smoothie",
+            "temperature": "COLD",
+            "basis_fields": [
+              "name",
+              "categories",
+              "description"
+            ],
+            "reason": "요청에 맞는 후보로 모델이 선택했습니다. 확인 가격 3,900원, 선택 온도 COLD. 확인된 설명: 요거트의 상큼함과 딸기의 상큼함을 상냥하게 어우른 상큼 스무디.",
+            "evidence": [
+              {
+                "menu_id": "strawberry_yogurt_smoothie",
+                "temperature": "COLD",
+                "field": "name",
+                "value": "딸기요거트스무디",
+                "source": "current_database_snapshot",
+                "checked_date": null
+              },
+              {
+                "menu_id": "strawberry_yogurt_smoothie",
+                "temperature": "COLD",
+                "field": "categories",
+                "value": [
+                  "음료",
+                  "스무디/주스"
+                ],
+                "source": "current_database_snapshot",
+                "checked_date": null
+              },
+              {
+                "menu_id": "strawberry_yogurt_smoothie",
+                "temperature": "COLD",
+                "field": "description",
+                "status": "verified",
+                "value": "요거트의 상큼함과 딸기의 상큼함을 상냥하게 어우른 상큼 스무디.",
+                "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=7",
+                "checked_date": "2026-11-10",
+                "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
+              }
+            ]
+          },
+          {
+            "menu_id": "strawberry_banana_juice",
+            "temperature": "COLD",
+            "basis_fields": [
+              "name",
+              "categories",
+              "description"
+            ],
+            "reason": "요청에 맞는 후보로 모델이 선택했습니다. 확인 가격 4,000원, 선택 온도 COLD. 확인된 설명: 상큼한 딸기와 부드러운 바나나가 만나, 새콤달콤한 매력이 살아 있는 과일 음료.",
+            "evidence": [
+              {
+                "menu_id": "strawberry_banana_juice",
+                "temperature": "COLD",
+                "field": "name",
+                "value": "딸기바나나주스",
+                "source": "current_database_snapshot",
+                "checked_date": null
+              },
+              {
+                "menu_id": "strawberry_banana_juice",
+                "temperature": "COLD",
+                "field": "categories",
+                "value": [
+                  "음료",
+                  "스무디/주스"
+                ],
+                "source": "current_database_snapshot",
+                "checked_date": null
+              },
+              {
+                "menu_id": "strawberry_banana_juice",
+                "temperature": "COLD",
+                "field": "description",
+                "status": "verified",
+                "value": "상큼한 딸기와 부드러운 바나나가 만나, 새콤달콤한 매력이 살아 있는 과일 음료.",
+                "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=3",
+                "checked_date": "2026-11-10",
+                "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
+              }
+            ]
+          },
+          {
+            "menu_id": "strawberry_juice",
+            "temperature": "COLD",
+            "basis_fields": [
+              "name",
+              "categories",
+              "description"
+            ],
+            "reason": "요청에 맞는 후보로 모델이 선택했습니다. 확인 가격 4,000원, 선택 온도 COLD. 확인된 설명: 새콤달콤한 딸기주스에 피쉬 콜라겐을 더해 건강한 블렌딩 주스",
+            "evidence": [
+              {
+                "menu_id": "strawberry_juice",
+                "temperature": "COLD",
+                "field": "name",
+                "value": "딸기주스",
+                "source": "current_database_snapshot",
+                "checked_date": null
+              },
+              {
+                "menu_id": "strawberry_juice",
+                "temperature": "COLD",
+                "field": "categories",
+                "value": [
+                  "음료",
+                  "스무디/주스"
+                ],
+                "source": "current_database_snapshot",
+                "checked_date": null
+              },
+              {
+                "menu_id": "strawberry_juice",
+                "temperature": "COLD",
+                "field": "description",
+                "status": "verified",
+                "value": "새콤달콤한 딸기주스에 피쉬 콜라겐을 더해 건강한 블렌딩 주스",
+                "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=3",
+                "checked_date": "2026-11-10",
+                "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
+              }
+            ]
+          },
+          {
+            "menu_id": "strawberry_latte",
+            "temperature": "COLD",
+            "basis_fields": [
+              "name",
+              "categories",
+              "description"
+            ],
+            "reason": "요청에 맞는 후보로 모델이 선택했습니다. 확인 가격 3,700원, 선택 온도 COLD. 확인된 설명: 딸기과육이 풍부히 느껴지는 스테디 셀러 산뜻하고 달콤한 딸기가 가득해 부드러운 우유와 어우러져 더욱 기분 좋게 즐기는 아이스 라떼",
+            "evidence": [
+              {
+                "menu_id": "strawberry_latte",
+                "temperature": "COLD",
+                "field": "name",
+                "value": "딸기라떼",
+                "source": "current_database_snapshot",
+                "checked_date": null
+              },
+              {
+                "menu_id": "strawberry_latte",
+                "temperature": "COLD",
+                "field": "categories",
+                "value": [
+                  "음료",
+                  "논커피라떼"
+                ],
+                "source": "current_database_snapshot",
+                "checked_date": null
+              },
+              {
+                "menu_id": "strawberry_latte",
+                "temperature": "COLD",
+                "field": "description",
+                "status": "verified",
+                "value": "딸기과육이 풍부히 느껴지는 스테디 셀러 산뜻하고 달콤한 딸기가 가득해 부드러운 우유와 어우러져 더욱 기분 좋게 즐기는 아이스 라떼",
+                "source": "https://www.mega-mgccoffee.com/menu/menu.php?page=1",
+                "checked_date": "2026-11-10",
+                "note": "Official base-menu description; additional order options are excluded. Not a measured taste score."
+              }
+            ]
+          }
+        ],
+        "questions": [],
+        "unresolved_requirements": [],
+        "missing_information": []
+      },
+      "model_selection_checks": [
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "task_achieved": true,
+      "provider_seconds": 2.293,
+      "total_seconds": 2.322,
+      "usage": {
+        "input_tokens": 32033,
+        "output_tokens": 171,
+        "total_tokens": 32204,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "cost_usd": 0.02479425,
+      "evaluation_status": "evaluated_single_case"
+    },
+    {
+      "version": "after",
+      "case_id": "positive_control",
+      "input": "딸기 음료 추천해 주세요",
+      "model_requested": "gpt-5.4-mini-2026-03-17",
+      "catalogue_sha256": "9f098c411f3620cc77bd91af2599cf1391542e72f82357966a22fe903e75716e",
+      "evidence_sha256": "47b56c99ed420b526ca30ab1b44db761a36e4599240523af3910330c977c9e89",
+      "instructions_sha256": "9c5e99f61a7245690a293b7da560b1931b7949ca355bb485186c7c8821a1ce63",
+      "request_sha256": "2ac2795a7a5007f17653e80648b039798e19e6935f271b96f28fca7517d1dbd3",
+      "eligible_ids": [
+        "strawberry_cookie_frappe",
+        "strawberry_yogurt_smoothie",
+        "strawberry_banana_juice",
+        "strawberry_juice",
+        "strawberry_latte"
+      ],
+      "provider_attempts": 1,
+      "server_validation": "rejected_or_provider_error",
+      "error_code": "PROVIDER_HTTP_429",
+      "model_candidate": null,
+      "server_result": null,
+      "model_selection_checks": [],
+      "task_achieved": null,
+      "provider_seconds": 0.887,
+      "total_seconds": 0.929,
+      "usage": null,
+      "cost_usd": null,
+      "evaluation_status": "provider_error_unmeasured"
+    }
+  ]
+}
