@@ -107,7 +107,7 @@ def select_unnamed_order(parsed: ParsedOrder, transcript: str, menus: dict[str, 
     start = phrase.find(mention)
     if len(mention) < 3 or start < 0 or EXCLUSION.match(phrase[start + len(mention):]):
         return None
-    if SequenceMatcher(None, mention, compact(menu["name"])).ratio() < 0.8:
+    if SequenceMatcher(None, mention, compact(menu["name"])).ratio() < 0.7:
         return None
     return SelectMenu(menu_id=item.menu_id)
 
