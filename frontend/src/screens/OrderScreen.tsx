@@ -17,7 +17,7 @@ import './order/OrderFlow.css';
 
 
 export function OrderScreen({ onHome, serviceType }: { onHome: () => void; serviceType: ServiceType }) {
-  const { order, dispatch, confirm, items, continueOrder, changeQuantity, removeItem, quantity, locked } = useOrderFlow(kioskApi, serviceType);
+  const { order, dispatch, back, canBack, confirm, items, continueOrder, changeQuantity, removeItem, quantity, locked } = useOrderFlow(kioskApi, serviceType);
   const { state: catalog, reload } = useMenus(kioskApi);
   const [menuView, setMenuView] = useState<MenuBoardView>({ enlarged: false });
 
@@ -35,7 +35,7 @@ export function OrderScreen({ onHome, serviceType }: { onHome: () => void; servi
   }
 
   return (
-    <KioskLayout {...guide}
+    <KioskLayout {...guide} onBack={canBack ? back : undefined}
       status={isMockOrderApi ? '개발용 화면 · 실제 주문은 저장되지 않아요.' : undefined}
       onHome={order.stage === 'submitting' ? undefined : onHome}
     >
@@ -48,12 +48,12 @@ export function OrderScreen({ onHome, serviceType }: { onHome: () => void; servi
           onSelect={menuId => applySelection({ type: 'select_menu', menuId })} />)}
       {order.stage === 'temperature' && <TemperatureScreen quantity={quantity} menu={order.menu}
         onSelect={temperature => applySelection({ type: 'set_temperature', temperature })} />}
-      {order.stage === 'customization' && <CustomizationScreen quantity={quantity} menu={order.menu} temperature={order.temperature}
+      {order.stage === 'customization' && <CustomizationScreen key={order.menu.id + JSON.stringify(order.voiceOptions)} initialSelectedIds={order.voiceOptions?.customization?.option_ids} quantity={quantity} menu={order.menu} temperature={order.temperature}
         onContinue={ids => dispatch({ type: 'set_options', ids })} />}
       {order.stage === 'service_type' && <ServiceTypeScreen quantity={quantity} items={items} menu={order.menu} temperature={order.temperature}
         selectedOptions={order.selectedOptions}
         onSelect={serviceType => applySelection({ type: 'set_service_type', serviceType })} />}
-      {(order.stage === 'review' || order.stage === 'submitting') && <ReviewScreen items={items} onContinue={continueOrder} onQuantity={changeQuantity} onRemove={removeItem} locked={locked} draft={order.draft}
+      {(order.stage === 'review' || order.stage === 'submitting') && <ReviewScreen items={items} onContinue={() => continueOrder()} onQuantity={changeQuantity} onRemove={removeItem} locked={locked} draft={order.draft}
         isMock={isMockOrderApi} pending={order.stage === 'submitting'}
         error={reviewError} onConfirm={confirm} />}
       {order.stage === 'complete' && <CompletionScreen items={items} draft={order.draft} result={order.result}

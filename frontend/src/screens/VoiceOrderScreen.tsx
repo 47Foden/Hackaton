@@ -25,7 +25,8 @@ import { getOrderGuidance } from '../data/orderGuidance';
 import './order/OrderFlow.css';
 
 export function VoiceOrderScreen({ onHome, serviceType }: { onHome: () => void; serviceType: ServiceType }) {
-  const { order, dispatch, confirm, items, continueOrder, deferService, changeQuantity, removeItem, quantity, setQuantity, locked } = useOrderFlow(kioskApi, serviceType);
+  const captureNavigation = useRef<() => () => void>(() => () => {});
+  const { order, dispatch, back, canBack, confirm, items, continueOrder, deferService, changeQuantity, removeItem, quantity, setQuantity, locked } = useOrderFlow(kioskApi, serviceType, () => captureNavigation.current());
   const { state: catalog, reload } = useMenus(kioskApi);
   const [candidates, setCandidates] = useState<string[] | null>(null);
   const [recommendationsExpanded, setRecommendationsExpanded] = useState(false);
@@ -47,11 +48,11 @@ export function VoiceOrderScreen({ onHome, serviceType }: { onHome: () => void; 
         service_type, unresolved_fields: unresolved_fields?.filter(field => field === 'service_type'),
       });
       setQueue(rest); setActiveItem(next); setQuantity(next.quantity); save(options);
-      dispatch({type: 'select_menu', menu, voiceOptions: options});
+      dispatch({type: 'select_menu', menu, voiceOptions: options}, items.length === 0);
     } else if (order.stage === 'service_type' && queue.length) {
       deferService(); setActiveItem(null);
     } else if (order.stage === 'review' && queue.length) {
-      continueOrder(); setActiveItem(null);
+      continueOrder(false); setActiveItem(null);
     }
   }, [order.stage, queue, catalog.status, activeItem]);
   const revision = useRef(0);
@@ -59,6 +60,14 @@ export function VoiceOrderScreen({ onHome, serviceType }: { onHome: () => void; 
   const sessionRef = useRef<VoiceOptions>({});
   const [session, setSession] = useState<VoiceOptions>({});
   useEffect(() => () => { ++revision.current; pending.current?.abort(); }, []);
+  captureNavigation.current = () => {
+    const options = sessionRef.current;
+    return () => {
+      setCandidates(candidates); setSelected(selected); setRecommendationsExpanded(recommendationsExpanded);
+      setQueue(order.stage === 'menu' ? [] : queue); setActiveItem(activeItem);
+      save(options); setTranscript(transcript); setError('');
+    };
+  };
   function save(options: VoiceOptions) { sessionRef.current = options; setSession(options); return options; }
   const contextMenu = selected ?? ('menu' in order ? order.menu : undefined);
   const contextTemperature = 'temperature' in order ? order.temperature : session.temperature;
@@ -188,7 +197,9 @@ export function VoiceOrderScreen({ onHome, serviceType }: { onHome: () => void; 
       if (pending.current === controller) pending.current = null;
     }
   }
-  return <KioskLayout {...guide} status={isMockOrderApi ? '개발용 주문입니다.' : undefined}
+  return <KioskLayout {...guide}
+    onBack={!locked && !advancingQueue && order.stage !== 'complete' && (selected || canBack)
+      ? () => { interrupt(); if (selected) setSelected(null); else back(); } : undefined} status={isMockOrderApi ? '개발용 주문입니다.' : undefined}
     onHome={order.stage === 'submitting' ? undefined : home}
     microphone={advancingQueue ? undefined : ['menu', 'recommendations'].includes(stage)
       ? <VoiceIntentMicrophone recommendationDisabled={candidates !== null} key={stage} onRecordingComplete={record} />
