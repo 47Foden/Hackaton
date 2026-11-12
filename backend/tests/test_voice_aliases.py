@@ -61,3 +61,24 @@ class AliasRoutes(unittest.TestCase):
     def test_no_substitution_inside_other_words(self):
         self.assertEqual(expand_order_aliases('아아메리카노'), '아아메리카노')
         self.assertEqual(expand_order_aliases('아아2잔'), '아이스 아메리카노2잔')
+
+    def test_observed_asr_variants_and_spaced_repetitions(self):
+        for heard in ['아샤추', '아샤주', '아 샤 추', '아 샤 주', '아 샷 추']:
+            with self.subTest(heard=heard):
+                body = self.post(heard + ' 한 잔')
+                self.assertEqual(body['action']['menu_id'], 'peach_iced_tea')
+                self.assertEqual(body['recognized_options']['customization']['option_ids'], ['shot:extra'])
+        for heard in ['아아', '아 아', '아  아']:
+            with self.subTest(heard=heard):
+                body = self.post(heard + ' 두 잔')
+                self.assertEqual(body['action']['items'][0]['menu_id'], 'iced_americano')
+                self.assertEqual(body['action']['items'][0]['temperature'], 'COLD')
+                self.assertEqual(body['action']['items'][0]['quantity'], 2)
+
+    def test_similar_generic_words_do_not_become_orders(self):
+        for text in ['아', '아주', '아 샤', '아아아', '아샤주스', '좋아아', '아 샤 주스']:
+            self.assertEqual(expand_order_aliases(text), text)
+        text = expand_order_aliases('아샤추 말고 아 아 두 잔')
+        self.assertEqual(text, '복숭아 아이스티 말고 아이스 아메리카노 두 잔')
+        body = self.post('아샤추 말고 아 아 두 잔')
+        self.assertEqual([item['menu_id'] for item in body['action']['items']], ['iced_americano'])

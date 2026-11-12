@@ -14,6 +14,23 @@ from app.services.voice.audio import MAX_AUDIO_SECONDS, PCM_SAMPLE_BYTES, SAMPLE
 MAX_PCM_BYTES = MAX_AUDIO_SECONDS * SAMPLE_RATE_HZ * PCM_SAMPLE_BYTES
 BATCH_WINDOW_SECONDS = 0.15
 logger = logging.getLogger(__name__)
+# Vocabulary context, not an instruction or a transcript to copy.
+CAFE_VOCABULARY = (
+    "카페 주문. 아아, 뜨아, 아샷추, 아카라, 아바라, 블요스, 망요스, 딸요스. "
+    "아이스 아메리카노, 따뜻한 아메리카노, 복숭아 아이스티, 카페라떼, 바닐라라떼, "
+    "블루베리요거트스무디, 망고요거트스무디, 딸기요거트스무디. "
+    "샷 추가, 사이즈업, 한 잔, 두 잔."
+)
+
+
+def decoding_options(processor, device):
+    return {
+        "language": "ko", "task": "transcribe", "num_beams": 1,
+        "prompt_ids": processor.get_prompt_ids(CAFE_VOCABULARY, return_tensors="pt").to(device),
+        # Repeated syllables can be meaningful menu shorthand ("아아").
+        "repetition_penalty": 1.0, "no_repeat_ngram_size": 0,
+    }
+
 
 
 def load_whisper(model_dir: Path, device: str, threads: int) -> Callable[[list[bytes]], list[str]]:
@@ -29,6 +46,8 @@ def load_whisper(model_dir: Path, device: str, threads: int) -> Callable[[list[b
     recognizer = pipeline("automatic-speech-recognition", model=model, tokenizer=processor.tokenizer,
                           feature_extractor=processor.feature_extractor, device=0 if device == "cuda" else -1)
 
+    generation = decoding_options(processor, recognizer.model.device)
+
     def transcribe_batch(recordings: list[bytes]) -> list[str]:
         transcripts = [""] * len(recordings)
         inputs = []
@@ -42,7 +61,7 @@ def load_whisper(model_dir: Path, device: str, threads: int) -> Callable[[list[b
         if inputs:
             results = recognizer(
                 inputs, batch_size=len(inputs), num_workers=0,
-                generate_kwargs={"language": "ko", "task": "transcribe", "num_beams": 1},
+                generate_kwargs=generation,
             )
             for index, result in zip(positions, results, strict=True):
                 transcripts[index] = result["text"].strip()
