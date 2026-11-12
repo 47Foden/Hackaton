@@ -36,7 +36,7 @@ def ordered_mentions(phrase: str, mentions: list[tuple[int, int, str]]) -> list[
     for index, mention in enumerate(mentions):
         stop = mentions[index + 1][0] if index + 1 < len(mentions) else len(phrase)
         suffix = phrase[mention[1]:stop]
-        if EXCLUSION.match(suffix):
+        if EXCLUSION.match(suffix) and not has_quantity_correction(suffix):
             continue
         if index + 1 < len(mentions):
             separator = QUANTITY.sub("", suffix, count=1)
@@ -83,11 +83,30 @@ def parse_cart(text, menus):
     return build_cart(phrase, menus, found, mentions)
 
 
+def quantity_sequence(suffix: str):
+    """Follow explicit corrections within a single menu's clause only."""
+    matches = list(QUANTITY.finditer(suffix))
+    if not matches:
+        return []
+    sequence = [matches[0]]
+    for match in matches[1:]:
+        between = suffix[sequence[-1].end():match.start()]
+        if not re.fullmatch(r'(?:은|는|이|가|으로|로)?(?:말고|아니고|아니라|아니|대신)(?:요)?', between):
+            break
+        sequence.append(match)
+    return sequence
+
+
+def has_quantity_correction(suffix: str) -> bool:
+    sequence = quantity_sequence(suffix)
+    return len(sequence) > 1 and sequence[0].start() == 0
+
+
 def read_quantity(suffix: str) -> int:
-    match = QUANTITY.search(suffix)
-    if not match:
+    sequence = quantity_sequence(suffix)
+    if not sequence:
         return 1
-    count = match[1]
+    count = sequence[-1][1]
     counts = {"한": 1, "하나": 1, "두": 2, "둘": 2, "세": 3, "셋": 3, "네": 4, "넷": 4, "다섯": 5, "여섯": 6}
     return counts[count] if count in counts else int(count)
 
