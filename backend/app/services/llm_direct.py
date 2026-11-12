@@ -52,7 +52,7 @@ def catalog_snapshot(menus):
 
 
 MAX_RECOMMENDATIONS = 6
-PROMPT_VERSION = 'direct-45-v5-official-taste-evidence'
+PROMPT_VERSION = 'direct-45-v6-flavor-exclusions'
 FIELDS = ['name', 'categories', 'price_krw', 'temperature', 'description', 'milk', 'caffeine_mg', 'allergens', 'options']
 SYSTEM = '''사용자 원문과 현재 메뉴 자료를 읽고 조건에 가장 적합하다고 판단한 메뉴를 최대 6개 직접 선택한다.
 사용자가 '두 개만', '세 가지 추천'처럼 추천 개수를 지정하면 그 개수를 최우선 상한으로 삼는다.
@@ -62,6 +62,8 @@ SYSTEM = '''사용자 원문과 현재 메뉴 자료를 읽고 조건에 가장 
 현재 주문은 메뉴 하나·한 잔이므로 여러 잔 조합 주문 요청은 insufficient_data로 처리한다.
 condition_examples는 실제 음성 전사의 조건 해석 예시다. 단어가 같다고 메뉴를 복사하거나 정답 메뉴표로 사용하지 않는다.
 한국어 금액(오천 원/5천 원/5,000원), 범위, 제외, 말의 수정은 원문 의미를 평가한다.
+"레몬 말고 딸기", "레몬이랑 망고는 빼고 딸기"는 딸기 음료를 원하며 레몬·망고는 원하는 맛이 아니다.
+guard_hints.flavors는 원하는 맛, excluded_flavors는 제외한 맛이다. 제외한 과일이 섞인 메뉴도 추천하지 않는다.
 '만원 정도'는 1만원 이하라는 뜻이 아니라 근접 가격 선호다. '아니'로 정정하면 마지막 수정 조건을 따른다.
 디카페인은 무카페인 0mg과 다르다. 커피도 차도 싫다는 두 종류 제외이며 카페인 전체 제외가 아니다.
 두유 변경 등 옵션은 실제 options에 있을 때만 가능하다. 없는 옵션을 있다고 만들지 않는다.

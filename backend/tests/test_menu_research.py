@@ -97,6 +97,38 @@ class GroundedTasteTests(unittest.TestCase):
             self.assertTrue(ctx['allowed'][mid])
         self.assertEqual(direct.build_request(ctx, 'fixture')['text']['format']['schema']['properties']['recommendations']['maxItems'], 2)
 
+    def test_excluded_fruits_do_not_become_required_flavors(self):
+        for text, excluded in [
+            ('레몬 말고 딸기', ['레몬']),
+            ('레몬이랑 망고는 빼고 딸기', ['레몬', '망고']),
+            ('레몬과 망고를 제외하고 딸기 음료 추천', ['레몬', '망고']),
+            ('레몬 말고 망고 말고 딸기', ['레몬', '망고']),
+        ]:
+            with self.subTest(text=text):
+                ctx = self.context(text)
+                self.assertEqual(ctx['guard']['flavors'], ['딸기'])
+                self.assertEqual(ctx['guard']['excluded_flavors'], excluded)
+                self.assertTrue(ctx['allowed']['strawberry_yogurt_smoothie'])
+                self.assertEqual(ctx['allowed']['mango_yogurt_smoothie'], [])
+                self.assertEqual(ctx['allowed']['plain_yogurt_smoothie'], [])
+                with self.assertRaisesRegex(direct.DirectError, 'INELIGIBLE_OPTION'):
+                    direct.validate_response(candidate('mango_yogurt_smoothie', fields=['description']), ctx)
+
+    def test_flavor_exclusion_rejects_blends_and_supports_exclusion_only(self):
+        guard = derive_conditions('레몬이랑 망고는 빼고 딸기')
+        def fields(value): return {'description': {'status': 'verified', 'value': value}}
+        self.assertTrue(supports_request(guard, fields('달콤한 딸기 음료')))
+        self.assertFalse(supports_request(guard, fields('딸기와 망고를 혼합한 음료')))
+        only = derive_conditions('레몬은 빼고 추천')
+        self.assertEqual(only['flavors'], [])
+        self.assertEqual(only['excluded_flavors'], ['레몬'])
+        self.assertFalse(supports_request(only, fields('상큼한 레몬 음료')))
+        keep = derive_conditions('레몬은 빼지 말고 추천')
+        self.assertEqual(keep['flavors'], ['레몬'])
+        self.assertEqual(keep['excluded_flavors'], [])
+        keep = derive_conditions('레몬은 제외하지 말고 추천')
+        self.assertEqual(keep['excluded_flavors'], [])
+
     def test_sugar_free_is_not_treated_as_not_sweet(self):
         ctx = self.context('달달한 티')
         self.assertTrue(ctx['allowed']['zero_peach_iced_tea'])  # Official description explicitly lists substitute sweeteners.

@@ -8,7 +8,7 @@ FLAVORS = {'과일': FRUIT, '초콜릿': r'초콜릿|초코', '딸기': r'딸기
 
 
 def requires_description(guard):
-    return bool(guard['preferences'] or guard['flavors'])
+    return bool(guard['preferences'] or guard['flavors'] or guard.get('excluded_flavors'))
 
 
 def positive_terms(pattern, description):
@@ -28,6 +28,9 @@ def supports_request(guard, fields):
     record = fields['description']
     if record['status'] != 'verified': return False
     description = record['value']
+    if any(positive_terms(FLAVORS[flavor], description)
+           for flavor in guard.get('excluded_flavors', []) if flavor in FLAVORS):
+        return False
     preferences = guard['preferences']
     if '단맛 높음' in preferences and '단맛 낮음' not in preferences and not positive_terms(SWEET, description):
         return False

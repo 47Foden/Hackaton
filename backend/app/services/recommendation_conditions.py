@@ -48,6 +48,31 @@ def category_matches(menu, category):
     return category in categories
 
 
+FLAVOR_NAMES = ('딸기', '레몬', '망고', '초콜릿', '과일')
+
+
+def flavor_conditions(text):
+    """Scope a shared exclusion postfix to a coordinated list of flavors."""
+    token = '(?:' + '|'.join(FLAVOR_NAMES) + ')'
+    join = r'(?:이랑|랑|하고|와|과|및|또는|,|、)'
+    group = token + '(?:' + join + token + ')*'
+    negative = re.compile(
+        '(' + group + r')(?:맛|음료|들)?(?:은|는|을|를|도|만)?'
+        r'(?:말고|말구|제외(?:하고|해|해줘|해주세요)?|빼고|빼줘|빼주세요|빼줄래|빼서|없이|없는|싫어)')
+    excluded = []
+    positive_text = text
+    spans = list(negative.finditer(text))
+    for match in spans:
+        # "제외하지 말고" asks to keep a flavor, not exclude it.
+        if text[match.end():].startswith(('하지말', '하지마', '하지않')):
+            continue
+        excluded.extend(re.findall(token, match[1]))
+        positive_text = positive_text[:match.start()] + ' ' * (match.end()-match.start()) + positive_text[match.end():]
+    excluded = list(dict.fromkeys(excluded))
+    included = [flavor for flavor in FLAVOR_NAMES if flavor in positive_text and flavor not in excluded]
+    return included, excluded
+
+
 def derive_conditions(text):
     # Latest explicit correction scopes price parsing; other constraints stay in the full text.
     corrected = re.split(r'(?:^|[\s,.])(?:아니|아니요|아니다)[\s,]+', text)[-1]
@@ -56,7 +81,7 @@ def derive_conditions(text):
               'temperature': None, 'included_categories': [], 'excluded_categories': [],
               'milk_free': False, 'max_caffeine_mg': None, 'requested_count': None,
               'order_quantity': None, 'total_budget_krw': None, 'sort_by': 'relevance',
-              'required_options': [], 'preferences': [], 'flavors': [],
+              'required_options': [], 'preferences': [], 'flavors': [], 'excluded_flavors': [],
               'required_questions': [], 'unsupported_conditions': [], 'evidence_spans': []}
     def upper(value):
         result['max_price_krw'] = min(result['max_price_krw'] if result['max_price_krw'] is not None else value, value)
@@ -125,8 +150,7 @@ def derive_conditions(text):
     if re.search(r'카페인(?:은|이|을)?(?:없는|없이|없|빼|제외|0(?:\.0)?mg)|무카페인', compact, re.I): result['max_caffeine_mg'] = 0
     for option in ('두유', '오트밀크', '아몬드밀크', '얼음많이', '얼음없이'):
         if option in compact: result['required_options'].append(option)
-    for flavor in ('딸기', '레몬', '망고', '초콜릿', '과일'):
-        if flavor in compact: result['flavors'].append(flavor)
+    result['flavors'], result['excluded_flavors'] = flavor_conditions(compact)
     for pattern, preference in [(r'쓴맛.{0,3}(?:약|덜|낮)|안쓴|쓰지않|씁쓰름한건싫', '쓴맛 낮음'),
                                 (r'달지않|안달|덜달|많이달지', '단맛 낮음'),
                                 (r'달달|달콤', '단맛 높음'), (r'새콤|상큼', '상큼함'),
