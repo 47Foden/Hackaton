@@ -8,8 +8,9 @@ import type { VoiceIntent } from '../../voice/voiceIntent';
 export type { VoiceIntent } from '../../voice/voiceIntent';
 export type IntentRecordingComplete = (audio: Blob, signal: AbortSignal, intent: VoiceIntent) => void | Promise<void>;
 
-export function VoiceIntentMicrophone({ disabledReason, onRecordingComplete }: {
+export function VoiceIntentMicrophone({ disabledReason, recommendationDisabled = false, onRecordingComplete }: {
   disabledReason?: string;
+  recommendationDisabled?: boolean;
   onRecordingComplete: IntentRecordingComplete;
 }) {
   const activeIntent = useRef<VoiceIntent>('order');
@@ -26,7 +27,7 @@ export function VoiceIntentMicrophone({ disabledReason, onRecordingComplete }: {
   function begin(intent: VoiceIntent) {
     // Ref guard runs before React renders disabled buttons, preventing two
     // permission requests and a second click changing the first request's intent.
-    if (unavailable || isActive()) return;
+    if (unavailable || isActive() || (intent === 'recommend' && recommendationDisabled)) return;
     activeIntent.current = intent;
     void start((audio, signal) => onRecordingComplete(audio, signal, intent));
   }
@@ -38,7 +39,7 @@ export function VoiceIntentMicrophone({ disabledReason, onRecordingComplete }: {
         const label = active && busy
           ? state.status === 'requesting' ? '권한 확인 중…' : state.status === 'recording' ? '녹음 종료' : '음성 처리 중…'
           : intent === 'order' ? '주문하기' : '메뉴 추천받기';
-        const disabled = Boolean(unavailable) || (busy && !(active && state.status === 'recording'));
+        const disabled = (intent === 'recommend' && recommendationDisabled) || Boolean(unavailable) || (busy && !(active && state.status === 'recording'));
         return disabled
           ? <MicrophoneButton key={intent} label={label} disabled describedBy={help ? helpId : undefined} />
           : <MicrophoneButton key={intent} label={label} describedBy={help ? helpId : undefined}

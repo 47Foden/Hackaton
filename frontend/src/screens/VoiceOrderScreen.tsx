@@ -67,7 +67,7 @@ export function VoiceOrderScreen({ onHome, serviceType }: { onHome: () => void; 
     ? '말씀하신 옵션 중 확인이 필요한 항목이 있어요. 가능한 선택은 유지했으니 화면에서 확인해 주세요.' : '';
   const stage = selected ? 'menu_confirmation' : order.stage === 'menu' && candidates?.length ? 'recommendations' : order.stage;
   const guide = selected ? { title: selected.name, description: '이 메뉴로 주문하시겠습니까? 네라고 말씀하시거나 버튼을 눌러 주세요.' }
-    : candidates !== null && order.stage === 'menu' ? { title: candidates.length ? '추천 메뉴' : '조건에 맞는 메뉴가 없어요.', description: '추천 메뉴를 터치하거나 주문하기를 눌러 선택해 주세요. 새 조건으로 추천받으려면 메뉴 추천받기를 눌러 주세요. 다시 추천받기는 초기 화면으로 돌아갑니다.' }
+    : candidates !== null && order.stage === 'menu' ? { title: candidates.length ? '추천 메뉴' : '조건에 맞는 메뉴가 없어요.', description: '추천 메뉴를 터치하거나 주문하기를 눌러 선택해 주세요. 새 조건으로 추천받으려면 다시 추천받기를 눌러 초기 화면으로 돌아가 주세요.' }
     : order.stage === 'menu' ? { title: '음성 주문', description: '메뉴를 정하셨다면 주문하기를, 추천이 필요하면 메뉴 추천받기를 눌러 말씀해 주세요.' }
     : order.stage === 'review' ? { title: '주문 내용을 확인해 주세요.', description: '주문 확정이라고 말씀하시거나 주문 확정 버튼을 눌러 주세요.' }
     : order.stage === 'complete' ? { title: '주문이 접수되었어요.', description: `주문번호는 ${order.result.order_number}번입니다.` }
@@ -191,7 +191,7 @@ export function VoiceOrderScreen({ onHome, serviceType }: { onHome: () => void; 
   return <KioskLayout {...guide} status={isMockOrderApi ? '개발용 주문입니다.' : undefined}
     onHome={order.stage === 'submitting' ? undefined : home}
     microphone={advancingQueue ? undefined : ['menu', 'recommendations'].includes(stage)
-      ? <VoiceIntentMicrophone key={stage} onRecordingComplete={record} />
+      ? <VoiceIntentMicrophone recommendationDisabled={candidates !== null} key={stage} onRecordingComplete={record} />
       : <OrderMicrophone key={stage} disabledReason={enabled ? undefined : '현재 단계에서는 녹음할 수 없어요.'} onRecordingComplete={record} />}>
     {enabled && <p className="order-step__note">{['menu', 'recommendations'].includes(stage)
       ? '주문하기 또는 메뉴 추천받기를 누르고 말씀하신 뒤 ‘녹음 종료’를 눌러 주세요. 종료 후 음성을 분석합니다.'
