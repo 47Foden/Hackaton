@@ -1,7 +1,7 @@
 """Extract explicit named order lines; recommendations remain on their own path."""
 import re
 from app.schemas.voice import Retry, SelectMenu, VoiceCart, VoiceCartItem, VoiceAction
-from app.services.voice.options import compact, TEMPERATURE_ALIASES as TEMPERATURES
+from app.services.voice.options import compact, extract_options, TEMPERATURE_ALIASES as TEMPERATURES
 
 
 def find_menu_mentions(phrase: str, menus: dict[str, dict], *,
@@ -121,5 +121,18 @@ def build_cart(phrase, menus, found, mentions, *, keep_unsupported_temperature=F
                     if label and label in remaining and choice["id"] not in option_ids:
                         option_ids.append(choice["id"])
                         remaining = remaining.replace(label, "", 1)
-        lines.append(VoiceCartItem(menu_id=key, temperature=temperature, quantity=quantity, option_ids=option_ids))
+        recognized = extract_options(suffix, menu=menu, temperature=temperature)
+        if recognized:
+            # The suffix may end with the next menu's temperature prefix.
+            # Only customization belongs to this line; scalars are scoped elsewhere.
+            recognized.temperature = None
+            recognized.service_type = None
+            recognized.unresolved_fields = []
+        if recognized and recognized.customization:
+            custom = recognized.customization
+            option_ids = custom.option_ids or [
+                intent.candidate_option_ids[0] for intent in custom.intents
+                if len(intent.candidate_option_ids) == 1]
+        lines.append(VoiceCartItem(menu_id=key, temperature=temperature, quantity=quantity,
+                                   option_ids=option_ids, recognized_options=recognized))
     return VoiceCart(items=lines)

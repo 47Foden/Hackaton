@@ -211,7 +211,8 @@ def apply_order_result(parsed: ParsedOrder | None, action: SelectMenu | VoiceCar
     cart_items = []
     for index, line in enumerate(lines):
         menu = menus[line.menu_id]
-        options = RecognizedOptions(temperature=line.temperature)
+        options = line.recognized_options.model_copy(deep=True) if line.recognized_options else RecognizedOptions()
+        options.temperature = line.temperature or options.temperature
         if isinstance(action, SelectMenu):
             options.temperature = shared.temperature
             options.customization = shared.customization

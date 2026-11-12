@@ -41,6 +41,8 @@ def option_aliases(common_dir: str) -> dict[str, set[str]]:
         if '시럽추가' in label:
             aliases.setdefault(label.removesuffix('추가'), set()).update(ids)
             aliases.setdefault(label.replace('시럽추가', '시럽도추가'), set()).update(ids)
+    for label in ('크게', '큰사이즈', '사이즈업', '사이즈업그레이드', '사이즈크게', '사이즈늘려줘', '라지사이즈', 'sizeup'):
+        aliases[label] = {'size:up'}
     aliases['휘핑빼고'] = {'whip:without'}
     return aliases
 

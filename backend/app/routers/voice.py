@@ -149,6 +149,11 @@ def interpret_audio(
     except TranscriptionError as error:
         raise HTTPException(error.status, detail={"code": error.code, "message": str(error)}) from None
 
+    original_transcript = transcript
+    if intent != 'recommend':
+        from app.services.voice.aliases import expand_order_aliases
+        transcript = expand_order_aliases(transcript)
+
     # Explicit recommendation never selects a menu, even for an exact name or
     # ordinal. Keep customization pending until a candidate is actually chosen.
     parsed_order = None
@@ -200,4 +205,4 @@ def interpret_audio(
         except (ValueError, OSError, KeyError):
             raise HTTPException(503, detail={'code': 'LLM_EVIDENCE_NOT_READY',
                 'message': '현재 메뉴와 LLM 근거 자료의 연결을 확인해 주세요.'}) from None
-    return VoiceInterpretResponse(transcript=transcript, action=action, recognized_options=recognized)
+    return VoiceInterpretResponse(transcript=original_transcript, action=action, recognized_options=recognized)
