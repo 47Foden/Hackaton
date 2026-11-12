@@ -69,5 +69,5 @@
 }
 
 .order-guide__navigation { display: flex; align-items: center; gap: 24px; }
-.order-guide__back { display: inline-flex; align-items: center; gap: 4px; min-height: 48px; }
+.order-guide__back { text-decoration: none; display: inline-flex; align-items: center; gap: 4px; min-height: 48px; }
 .order-guide__back:disabled { opacity: .4; }
