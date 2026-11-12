@@ -73,6 +73,19 @@ fi
 
 if [[ -z "${DATABASE_URL:-}" ]]; then
     db_dir=$state_dir/postgres
+    local_db_dir=/var/lib/postgresql/hackaton
+    if [[ ! -f "$db_dir/PG_VERSION" && -f "$local_db_dir/PG_VERSION" ]]; then
+        db_dir=$local_db_dir
+    fi
+    if ! install -d -m 700 -o postgres -g postgres "$db_dir" 2>/dev/null; then
+        if [[ -f "$db_dir/PG_VERSION" || "$db_dir" == "$local_db_dir" ]]; then
+            echo "Cannot set PostgreSQL directory permissions at $db_dir." >&2
+            exit 1
+        fi
+        db_dir=$local_db_dir
+        install -d -m 700 -o postgres -g postgres "$db_dir"
+        echo "Using the Pod container disk for PostgreSQL at $db_dir."
+    fi
     db_port=55432
     if [[ -f "$db_dir/PG_VERSION" ]]; then
         pg_bin=/usr/lib/postgresql/$(<"$db_dir/PG_VERSION")/bin
@@ -84,7 +97,6 @@ if [[ -z "${DATABASE_URL:-}" ]]; then
         echo "Install PostgreSQL $(<"$db_dir/PG_VERSION") to reopen the existing database in $db_dir." >&2
         exit 1
     fi
-    install -d -m 700 -o postgres -g postgres "$db_dir"
     if [[ ! -f "$db_dir/PG_VERSION" ]]; then
         runuser -u postgres -- "$pg_bin/initdb" -D "$db_dir" --auth-local=peer --auth-host=scram-sha-256
     fi
