@@ -129,6 +129,31 @@ class GroundedTasteTests(unittest.TestCase):
         keep = derive_conditions('레몬은 제외하지 말고 추천')
         self.assertEqual(keep['excluded_flavors'], [])
 
+    def test_caffeine_avoidance_includes_decaf_and_noncoffee_alternatives(self):
+        for text in ['카페인 없는 음료 추천', '카페인이 없다 그런 음료 추천', '카페인 없이 추천해줘']:
+            with self.subTest(text=text):
+                ctx = self.context(text)
+                self.assertTrue(ctx['guard']['caffeine_avoidance'])
+                self.assertIsNone(ctx['guard']['max_caffeine_mg'])
+                for mid in ['decaf_americano', 'decaf_cafe_latte', 'strawberry_yogurt_smoothie']:
+                    self.assertTrue(ctx['allowed'][mid], mid)
+                for mid in ['iced_americano', 'cafe_latte', 'peach_iced_tea', 'green_tea_latte']:
+                    self.assertEqual(ctx['allowed'][mid], [], mid)
+                value = candidate('decaf_americano', fields=['categories'])
+                self.assertEqual(direct.validate_response(value, ctx)['recommendations'][0]['menu_id'], 'decaf_americano')
+
+    def test_explicit_zero_caffeine_remains_strict(self):
+        for text in ['카페인 0mg 음료', '완전 무카페인 음료']:
+            ctx = self.context(text)
+            self.assertEqual(ctx['guard']['max_caffeine_mg'], 0)
+            self.assertEqual(ctx['allowed']['decaf_americano'], [])
+        ctx = self.context('삼천 원 이하 차가운 카페인 없는 음료')
+        self.assertEqual(ctx['allowed']['iced_americano'], [])
+        for row in self.rows:
+            if ctx['allowed'][row['menu_id']]:
+                self.assertLessEqual(row['price_krw'], 3000)
+                self.assertEqual(ctx['allowed'][row['menu_id']], ['COLD'])
+
     def test_sugar_free_is_not_treated_as_not_sweet(self):
         ctx = self.context('달달한 티')
         self.assertTrue(ctx['allowed']['zero_peach_iced_tea'])  # Official description explicitly lists substitute sweeteners.

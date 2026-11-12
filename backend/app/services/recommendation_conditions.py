@@ -79,7 +79,7 @@ def derive_conditions(text):
     compact = re.sub(r'\s+', '', text)
     result = {'min_price_krw': None, 'max_price_krw': None, 'approx_price_krw': None,
               'temperature': None, 'included_categories': [], 'excluded_categories': [],
-              'milk_free': False, 'max_caffeine_mg': None, 'requested_count': None,
+              'milk_free': False, 'max_caffeine_mg': None, 'caffeine_avoidance': False, 'requested_count': None,
               'order_quantity': None, 'total_budget_krw': None, 'sort_by': 'relevance',
               'required_options': [], 'preferences': [], 'flavors': [], 'excluded_flavors': [],
               'required_questions': [], 'unsupported_conditions': [], 'evidence_spans': []}
@@ -147,7 +147,11 @@ def derive_conditions(text):
     result['excluded_categories'] = list(dict.fromkeys(result['excluded_categories']))
     keep_milk = re.search(r'우유.{0,4}(?:빼지|제외하지)(?:말|마|않)', compact)
     result['milk_free'] = bool(not keep_milk and re.search(r'우유.{0,10}(?:빼|제외|없이|없는|싫|안들어|안돼|안되)|무우유', compact))
-    if re.search(r'카페인(?:은|이|을)?(?:없는|없이|없|빼|제외|0(?:\.0)?mg)|무카페인', compact, re.I): result['max_caffeine_mg'] = 0
+    if re.search(r'카페인(?:은|이|을)?(?:없는|없이|없|빼|제외|안들어)|무카페인', compact):
+        result['caffeine_avoidance'] = True
+    if re.search(r'카페인(?:은|이|을)?0(?:\.0)?(?:mg|밀리그램)|완전(?:히)?무카페인|카페인(?:이)?전혀없', compact, re.I):
+        result['max_caffeine_mg'] = 0
+        result['caffeine_avoidance'] = False
     for option in ('두유', '오트밀크', '아몬드밀크', '얼음많이', '얼음없이'):
         if option in compact: result['required_options'].append(option)
     result['flavors'], result['excluded_flavors'] = flavor_conditions(compact)

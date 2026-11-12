@@ -291,7 +291,8 @@
         "included_categories": [
           "티"
         ],
-        "max_caffeine_mg": 0
+        "max_caffeine_mg": null,
+        "caffeine_avoidance": true
       },
       "annotation_status": "assistant_draft_from_audio_transcripts",
       "note": ""

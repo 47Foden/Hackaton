@@ -41,3 +41,20 @@ def supports_request(guard, fields):
     if any(not positive_terms(FLAVORS[flavor], description) for flavor in guard['flavors'] if flavor in FLAVORS):
         return False
     return True
+
+
+def supports_caffeine_avoidance(menu, fields):
+    """Offer decaf and non-coffee alternatives, never a numeric zero guarantee."""
+    if menu['categories'][0] == '디카페인':
+        return True
+    caffeine = fields['caffeine_mg']
+    if caffeine['status'] == 'verified':
+        return caffeine['value'] == 0
+    if menu['categories'][0] != '음료':
+        return False
+    description = fields['description']
+    if description['status'] != 'verified':
+        return False
+    # Known caffeine-bearing bases disqualify a non-coffee alternative.
+    text = menu['name'] + description['value']
+    return not re.search(r'커피|에스프레소|콜드브루|홍차|녹차|말차|우롱|얼그레이|블랙티|초코|코코아|카카오|카페인', text)
