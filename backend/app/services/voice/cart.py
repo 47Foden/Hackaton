@@ -7,8 +7,13 @@ from app.services.voice.options import compact, extract_options, TEMPERATURE_ALI
 def find_menu_mentions(phrase: str, menus: dict[str, dict], *,
                        include_order_aliases: bool = False) -> list[tuple[int, int, str]]:
     names = [(compact(menu["name"]), key) for key, menu in menus.items()]
-    if include_order_aliases and "cafe_latte" in menus:
-        names.append(("라떼", "cafe_latte"))
+    if include_order_aliases:
+        spoken_names = [(name.replace("라떼", "라테"), key) for name, key in names if "라떼" in name]
+        if "lemonade" in menus:
+            spoken_names.append(("레모네이드", "lemonade"))
+        if "cafe_latte" in menus:
+            spoken_names.append(("라떼", "cafe_latte"))
+        names.extend(spoken_names)
     names.sort(key=lambda entry: -len(entry[0]))
     found = []
     pos = 0
