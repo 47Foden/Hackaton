@@ -75,6 +75,23 @@ class AliasRoutes(unittest.TestCase):
                 self.assertEqual(body['action']['items'][0]['temperature'], 'COLD')
                 self.assertEqual(body['action']['items'][0]['quantity'], 2)
 
+    def test_menu_name_transcription_variants(self):
+        for transcript, menu_id in [
+            ('카페라테 한잔', 'cafe_latte'),
+            ('디카페인 카페 라테 한 잔', 'decaf_cafe_latte'),
+            ('딸기 라테 한 잔이요.', 'strawberry_latte'),
+            ('레모네이드 한 잔이요.', 'lemonade'),
+        ]:
+            with self.subTest(transcript=transcript):
+                self.assertEqual(self.post(transcript)['action'], {'type': 'select_menu', 'menu_id': menu_id})
+
+        items = self.post('레모네이드 두 잔이랑 딸기 라테 한 잔')['action']['items']
+        self.assertEqual([(item['menu_id'], item['quantity']) for item in items],
+                         [('lemonade', 2), ('strawberry_latte', 1)])
+
+        action = self.post('레모네이드 말고 카페라테 한 잔')['action']
+        self.assertEqual(action, {'type': 'select_menu', 'menu_id': 'cafe_latte'})
+
     def test_similar_generic_words_do_not_become_orders(self):
         for text in ['아', '아주', '아 샤', '아아아', '아샤주스', '좋아아', '아 샤 주스']:
             self.assertEqual(expand_order_aliases(text), text)

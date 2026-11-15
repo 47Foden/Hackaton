@@ -159,6 +159,16 @@ class VoiceIntentTests(unittest.TestCase):
                 _, body, _, _ = self.post(text, 'order', rows=[americano], order_result=parsed)
                 self.assertEqual(body['action']['type'], expected)
 
+    def test_order_model_transcription_correction_similarity_threshold(self):
+        americano = {**menu(), 'menu_id': 'iced_americano', 'name': '아메리카노'}
+        for phrase, expected in [('아메리커너', 'select_menu'), ('아메라커너', 'retry')]:
+            with self.subTest(phrase=phrase):
+                item = {'menu_id': 'iced_americano', 'menu_phrase': phrase, 'quantity': 1,
+                        'temperature': None, 'option_ids': None, 'unresolved_fields': []}
+                parsed = {'items': [item], 'service_type': None, 'unresolved_fields': []}
+                status, body, _, _ = self.post(phrase + ' 한 잔', 'order', rows=[americano], order_result=parsed)
+                self.assertEqual((status, body['action']['type']), (200, expected))
+
     def test_order_model_validates_cart_items_independently(self):
         americano = {**menu(), 'menu_id': 'iced_americano', 'name': '아메리카노'}
         parsed = {'items': [
