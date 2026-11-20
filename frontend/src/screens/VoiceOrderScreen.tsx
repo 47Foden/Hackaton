@@ -119,9 +119,15 @@ export function VoiceOrderScreen({ onHome, serviceType }: { onHome: () => void; 
       }
       const response = await fetch('/api/voice/interpret', { method: 'POST', body,
         signal: AbortSignal.any([signal, controller.signal, AbortSignal.timeout(140_000)]) });
-      const data = await response.json();
+      const data = await response.json().catch(() => null);
       if (signal.aborted || controller.signal.aborted || id !== revision.current) return;
-      if (!response.ok) throw new Error(`${data?.detail?.message ?? '음성을 처리하지 못했어요. 다시 시도해 주세요.'}${data?.detail?.code ? ` (${data.detail.code})` : ''}`);
+      if (!response.ok || !data) {
+        const fallback = intent === 'recommend'
+          ? '메뉴 추천 서버에 연결하지 못했어요. 잠시 후 다시 시도해 주세요.'
+          : '음성을 처리하지 못했어요. 다시 시도해 주세요.';
+        const detail = data?.detail;
+        throw new Error(`${detail?.message ?? fallback}${detail?.code ? ` (${detail.code})` : ''}`);
+      }
       setTranscript(typeof data.transcript === 'string' ? data.transcript : '');
       voice.cancel();
       const action = data.action;
