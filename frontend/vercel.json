@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://owi34gc56sf1fi-8000.proxy.runpod.net/api/:path*"
+      "destination": "https://3rnjrfstx0shy7-8000.proxy.runpod.net/api/:path*"
     }
   ]
 }
